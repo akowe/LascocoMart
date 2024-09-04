@@ -194,7 +194,7 @@
                               <div class="card-body">
                                     <div class="d-flex align-items-center">
                                           <div class="subheader"> <a class="subheader"
-                                                      href="{{url('users_list')}}">Active users</a></div>
+                                                      href="">Active users</a></div>
                                           <div class="ms-auto lh-1">
                                                 <div class="dropdown">
                                                       <a class="dropdown-toggle text-secondary" href="#"
