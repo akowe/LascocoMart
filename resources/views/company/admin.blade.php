@@ -261,7 +261,7 @@
                                                                   {{ $count_sales->count() }} Transaction (s)
                                                             </div>
                                                             <div class="text-secondary">
-                                                                  12 products
+                                                                {{$countProductSold}}  products
                                                             </div>
                                                       </div>
                                                 </div>

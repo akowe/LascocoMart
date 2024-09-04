@@ -73,7 +73,8 @@ class SuperAdminController extends Controller
 
         $countProductSold = DB::table('order_items')
         ->join('orders', 'orders.id', 'order_items.order_id')
-        ->where('orders.pay_status', 'success');
+        ->where('orders.pay_status', 'success')
+        ->sum('order_items.order_quantity');
 
         $sumSales = Order::where('orders.pay_status', 'success')->get('grandtotal');
 
