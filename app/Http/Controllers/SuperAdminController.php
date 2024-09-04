@@ -76,6 +76,9 @@ class SuperAdminController extends Controller
         ->where('deleted_at',   NULL)
         ->get(['users.*']);
 
+        $activeUser =  User::where('last_login', '>', new DateTime('last day of previous month'))
+        ->get();
+
         // count orders  User::
 
         $count_orders = Order::all()
@@ -139,7 +142,7 @@ class SuperAdminController extends Controller
         return view('company.admin', compact('sales', 'funds','cooperatives', 'sellers', 'members', 
         'count_orders', 'count_sales',  'products', 'users', 
         'onlinePayment', 'sumSales', 'countProductSold', 
-        'onlinePayment', 'bankPayment', 'fmcg', 'fmcgProducts'))->with('registeredUsers',json_encode($result));
+        'onlinePayment', 'bankPayment', 'fmcg', 'fmcgProducts', 'activeUser'))->with('registeredUsers',json_encode($result));
     }
     else { return Redirect::to('/login');}
    

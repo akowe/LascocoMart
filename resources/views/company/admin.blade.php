@@ -83,10 +83,10 @@
                                           </div>
                                     </div>
                                     <div class="d-flex align-items-baseline">
-                                          <div class="h1 mb-0 me-2">₦4,300</div>
+                                          <div class="h1 mb-0 me-2">₦0</div>
                                           <div class="me-auto">
                                                 <span class="text-green d-inline-flex align-items-center lh-1">
-                                                      8%
+                                                      0%
                                                       <!-- Download SVG icon from http://tabler-icons.io/i/trending-up -->
                                                       <svg xmlns="http://www.w3.org/2000/svg" class="icon ms-1"
                                                             width="24" height="24" viewBox="0 0 24 24" stroke-width="2"
@@ -122,7 +122,7 @@
                                           </div>
                                     </div>
                                     <div class="d-flex align-items-baseline">
-                                          <div class="h1 mb-3 me-2">₦6,782</div>
+                                          <div class="h1 mb-3 me-2">₦0</div>
                                           <div class="me-auto">
                                                 <span class="text-yellow d-inline-flex align-items-center lh-1">
                                                       0%
@@ -160,12 +160,12 @@
                                                 </div>
                                           </div>
                                     </div>
-                                    <div class="h1 mb-3">75%</div>
+                                    <div class="h1 mb-3">0%</div>
                                     <div class="d-flex mb-2">
                                           <div>Conversion rate</div>
                                           <div class="ms-auto">
                                                 <span class="text-green d-inline-flex align-items-center lh-1">
-                                                      7%
+                                                      0%
                                                       <!-- Download SVG icon from http://tabler-icons.io/i/trending-up -->
                                                       <svg xmlns="http://www.w3.org/2000/svg" class="icon ms-1"
                                                             width="24" height="24" viewBox="0 0 24 24" stroke-width="2"
@@ -182,7 +182,7 @@
                                           <div class="progress-bar bg-primary" style="width: 75%" role="progressbar"
                                                 aria-valuenow="75" aria-valuemin="0" aria-valuemax="100"
                                                 aria-label="75% Complete">
-                                                <span class="visually-hidden">75% Complete</span>
+                                                <span class="visually-hidden">0% Complete</span>
                                           </div>
                                     </div>
                               </div>
@@ -212,7 +212,7 @@
                                           <div class="h1 mb-3 me-2">{{ $users->count() }}</div>
                                           <div class="me-auto">
                                                 <span class="text-green d-inline-flex align-items-center lh-1">
-                                                      4%
+                                                      {{ $activeUser->count() }}%
                                                       <!-- Download SVG icon from http://tabler-icons.io/i/trending-up -->
                                                       <svg xmlns="http://www.w3.org/2000/svg" class="icon ms-1"
                                                             width="24" height="24" viewBox="0 0 24 24" stroke-width="2"
