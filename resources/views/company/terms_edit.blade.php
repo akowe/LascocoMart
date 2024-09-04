@@ -8,10 +8,10 @@
                   <div class="col">
                         <!-- Page pre-title -->
                         <div class="page-pretitle">
-                              T&C
+                             Edit  T&C
                         </div>
                         <h2 class="page-title">
-                              <span class=" d-none  d-md-block"> Terms and Condition</span>
+                              <span class=" d-none  d-md-block">Edit  Terms and Condition</span>
 
                         </h2>
                   </div>
