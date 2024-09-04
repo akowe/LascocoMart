@@ -136,6 +136,9 @@ Route::controller(SuperAdminController::class)->group(function () {
     Route::get('products_list', 'products_list')->name('products_list');
     Route::get('fmcg-products-list', 'fmcgProductsList')->name('fmcg-products-list');
     Route::get('edit-vendor-product/{id}', 'editVendorProduct')->name('edit-vendor-product');
+    Route::get('edit-fmcg-product/{id}', 'editFmcgProduct')->name('edit-fmcg-product');
+    Route::put('update-fmcg-product/{id}', 'updateFmcgProduct')->name('update-fmcg-product');
+    
     Route::post('company-remove-product',  'removeAllProduct')->name('company-remove-product');
     Route::get('removed_product',  'removed_product')->name('removed_product');
     Route::get('users_list', 'users_list')->name('users_list');
