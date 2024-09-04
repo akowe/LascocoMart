@@ -121,6 +121,7 @@
                                                                         name="price" class="form-control">
                                                             </div>
                                                       </div>
+                                                     <p></p>
                                                       <div class="form-group">
                                                             <button type="submit" class="btn btn-outline-danger"><i
                                                                         class="fa fa-arrow-up"></i>
