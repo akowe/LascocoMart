@@ -22,9 +22,6 @@
                   </div>
             </div>
       </div>
-
-
-
       <!-- Page body -->
       <div class="page-body">
             <!-- Alert start --->
