@@ -130,8 +130,8 @@
                                     <div class="col-md-6">
                                           <input type="hidden" name="order_id" value="{{$order->id}}">
 
-                                          <input type="text" name="amount" value="" placeholder="Enter Amount"
-                                                class="form-control" pattern="^[0-9]*$" id="amount" onkeyup="myFunction()" data-mask="00000000,00" data-mask-visible="true" placeholder="00000000,00" data-mask-reverse="true" autocomplete="off" >
+                                          <input type="number" name="amount" value="" placeholder="Enter Amount"
+                                                class="form-control" pattern="^[0-9]*$" id="amount" onkeyup="myFunction()" >
                                           <span class="" id="wrong_amount">
                                           </span>
 
