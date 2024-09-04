@@ -261,7 +261,7 @@
                                                                   {{ $count_sales->count() }} Transaction (s)
                                                             </div>
                                                             <div class="text-secondary">
-                                                                {{$countProductSold}}  products
+                                                                {{$countProductSold}}  products sold
                                                             </div>
                                                       </div>
                                                 </div>
@@ -388,7 +388,7 @@
                                                 <div class="row align-items-center">
                                                       <div class="col-auto">
                                                             <span class="avatar bg-facebook">
-                                                                  <a href="{{ url('order-history') }}"
+                                                                  <a href="{{ url('all-vendors') }}"
                                                                         class="text-white" cursor>
                                                                         <!-- Download SVG icon from http://tabler-icons.io/i/shopping-cart -->
                                                                         <svg xmlns="http://www.w3.org/2000/svg"
@@ -418,7 +418,7 @@
                                                             </div>
 
                                                             <div class="text-secondary">
-                                                                  0 products
+                                                                  {{$products->count()}} products
                                                             </div>
                                                       </div>
 
@@ -482,7 +482,7 @@
                                                 <div class="row align-items-center">
                                                       <div class="col-auto">
                                                             <span class="avatar bg-blue">
-                                                                  <a href="{{ url('sales-details') }}"
+                                                                  <a href="{{ url('all-fmcgs') }}"
                                                                         class="text-white" cursor>
                                                                         <!-- Download SVG icon from http://tabler-icons.io/i/shopping-cart -->
                                                                         <svg xmlns="http://www.w3.org/2000/svg"
@@ -507,11 +507,11 @@
                                                       <div class="col">
                                                             <div class="font-weight-medium">
 
-                                                                  0 FMCG (s)
+                                                                  {{$fmcg->count()}} FMCG (s)
                                                             </div>
 
                                                             <div class="text-secondary">
-                                                                  0 products
+                                                                  {{$fmcgProducts->count()}} products
                                                             </div>
                                                       </div>
 

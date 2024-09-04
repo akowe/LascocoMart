@@ -72,6 +72,10 @@ class SuperAdminController extends Controller
         ->where('deleted_at',   NULL)
         ->where('role_name', '!=', 'cooperative')
         ->get(['users.*']);
+        $fmcg = User::where('role', '33')
+        ->where('deleted_at',   NULL)
+        ->get(['users.*']);
+
         // count orders  User::
 
         $count_orders = Order::all()
@@ -93,7 +97,13 @@ class SuperAdminController extends Controller
         $onlinePayment = Transaction::join('users', 'users.id', '=', 'transactions.user_id')
         ->get('tran_amount');
 
-        $products = Product::all(); 
+        $products = Product::where('deleted_at', null)
+        ->where('prod_status',   'approve')
+        ->get('*'); 
+
+        $fmcgProducts = FcmgProduct::where('deleted_at', null)
+        ->where('prod_status',   'approve')
+        ->get('*'); 
         $funds = User::join('fund_request', 'fund_request.user_id', '=', 'users.id')
         ->where('fund_request.status', 'approve');
 
@@ -129,7 +139,7 @@ class SuperAdminController extends Controller
         return view('company.admin', compact('sales', 'funds','cooperatives', 'sellers', 'members', 
         'count_orders', 'count_sales',  'products', 'users', 
         'onlinePayment', 'sumSales', 'countProductSold', 
-        'onlinePayment', 'bankPayment'))->with('registeredUsers',json_encode($result));
+        'onlinePayment', 'bankPayment', 'fmcg', 'fmcgProducts'))->with('registeredUsers',json_encode($result));
     }
     else { return Redirect::to('/login');}
    
@@ -583,6 +593,8 @@ public function eachVendorProduct(Request $request, $id){
   ->get();
 
   $countProduct = Product::where('seller_id', $id)
+  // ->where('prod_status',   'approve')
+  ->where('deleted_at',   NULL)
   ->get();
 
   $perPage = $request->perPage ?? 12;
