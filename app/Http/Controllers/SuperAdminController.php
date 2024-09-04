@@ -62,10 +62,18 @@ class SuperAdminController extends Controller
         $users = User::all()->except(Auth::id());
         $id = Auth::user()->id;
 
-        $cooperatives = User::where('role', '2')->get('*');
-        $sellers = User::where('role', '3')->get('*');
-        $members = User::where('role', '4')->get('*');
-        // count orders 
+        $cooperatives = User::where('role', '2')
+        ->where('deleted_at',   NULL)
+        ->get(['users.*']);
+        $sellers = User::where('role', '3')
+        ->where('deleted_at',   NULL)
+        ->get(['users.*']);
+        $members = User::where('role', '4')
+        ->where('deleted_at',   NULL)
+        ->where('role_name', '!=', 'cooperative')
+        ->get(['users.*']);
+        // count orders  User::
+
         $count_orders = Order::all()
         ->where('status', '!=', 'awaits approval')
         ->where('status', '!=', 'cancel');
