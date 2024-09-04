@@ -70,6 +70,11 @@ class SuperAdminController extends Controller
         ->where('status', '!=', 'awaits approval')
         ->where('status', '!=', 'cancel');
         $count_sales = Order::where('orders.pay_status', 'success');
+
+        $countProductSold = DB::table('order_items')
+        ->join('orders', 'orders.id', 'order_items.order_id')
+        ->where('orders.pay_status', 'success');
+
         $sumSales = Order::where('orders.pay_status', 'success')->get('grandtotal');
 
         $offlinePayment = Order::where('pay_type', '=', 'Offline');
@@ -113,7 +118,9 @@ class SuperAdminController extends Controller
           }
           \LogActivity::addToLog('SuperAdmin');
         return view('company.admin', compact('sales', 'funds','cooperatives', 'sellers', 'members', 
-        'count_orders', 'count_sales',  'products', 'users', 'onlinePayment', 'sumSales', 'offlinePayment', 'onlinePayment', 'bankPayment'))->with('registeredUsers',json_encode($result));
+        'count_orders', 'count_sales',  'products', 'users', 
+        'onlinePayment', 'sumSales', 'countProductSold', 
+        'onlinePayment', 'bankPayment'))->with('registeredUsers',json_encode($result));
     }
     else { return Redirect::to('/login');}
    
@@ -860,7 +867,7 @@ public function resetUserPassword(Request $request, $id){
   \LogActivity::addToLog('Reset password'); 
   return redirect()->back()->with('status',  $msg);
 }
-
+ 
  public function transactions(Request $request){
       if( Auth::user()->role_name  == 'superadmin'){
        //view all transactions by cooperatives
