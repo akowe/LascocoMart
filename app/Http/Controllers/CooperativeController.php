@@ -654,7 +654,7 @@ class CooperativeController extends Controller
         Notification::send($getMember, $notification);
         \LogActivity::addToLog('Order cancel');
 
-        return redirect('cooperative')->with('success', 'Canceled successful!');
+        return redirect('admin-member-order')->with('success', 'Canceled successful!');
     }
 
 
