@@ -434,7 +434,7 @@
                                                 <div class="row align-items-center">
                                                       <div class="col-auto">
                                                             <span class="avatar bg-azure">
-                                                                  <a href="{{ url('sales-details') }}"
+                                                                  <a href="{{ url('all-cooperatives') }}"
                                                                         class="text-white" cursor>
                                                                         <!-- Download SVG icon from http://tabler-icons.io/i/shopping-cart -->
                                                                         <svg xmlns="http://www.w3.org/2000/svg"
