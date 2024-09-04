@@ -1,8 +1,4 @@
 @extends('layouts.home')
-
-@extends('layouts.sidebar')
-
-
 @section('content')
 
    <!-- ALL CART SECTION -->
