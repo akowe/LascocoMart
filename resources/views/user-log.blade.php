@@ -1,0 +1,1 @@
+@livewire('d-user-activity')
