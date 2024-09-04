@@ -7,7 +7,7 @@
                   <div class="col">
                         <!-- Page pre-title -->
                         <div class="page-pretitle">
-                        Edit About page
+                        About Us
                         </div>
                         <h2 class="page-title">
                               <span class=" d-none  d-md-block">About Page</span>
