@@ -79,8 +79,6 @@ class SuperAdminController extends Controller
         $activeUser =  User::where('last_login', '>', new DateTime('last day of previous month'))
         ->get();
 
-        // count orders  User::
-
         $count_orders = Order::all()
         ->where('status', '!=', 'awaits approval')
         ->where('status', '!=', 'cancel');
@@ -123,7 +121,9 @@ class SuperAdminController extends Controller
         $result[++$key] = [$value->year,  (int)$value->total_user ];
         }
 
-        //dd(json_encode($result));
+        //wallet account
+        $activeWallet = Wallet::where('last_transation_date', null)->get();
+    
         
         $salesChart = Order::select(
           \DB::raw("COUNT(*) as total_sales"),
