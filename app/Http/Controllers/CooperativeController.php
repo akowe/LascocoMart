@@ -940,8 +940,6 @@ class CooperativeController extends Controller
          // check admin wallet
 
          // CHECK ADIM LOAN SETINGS
-    
-
          $product_loan_type = Order::join('loan_type', 'loan_type.id', 'orders.loan_type_id')
          ->where('orders.id', $order_id)
          ->get('loan_type.name')->pluck('name')->first() ;
@@ -973,7 +971,6 @@ class CooperativeController extends Controller
             $monthlyPrincipal = $principal / (int)$product_loan_duration;
             $monthlyInterest = $annualInterest / (int)$product_loan_duration;
             $totalMonthlyDue = $monthlyPrincipal + $monthlyInterest ;
-          
          }
 
          if($rateType == 'simple interest'){
@@ -1005,7 +1002,6 @@ class CooperativeController extends Controller
              return redirect('cooperative-create-loan')->with('loan', 'Interest on cash loan can not be "0" . Click here set interest '.$setInterest); 
          }
 
-
          $WalletAccountNumber =  DB::table('wallet')
          ->select(['wallet_account_number'])
          ->where('user_id', $id)
@@ -1014,7 +1010,6 @@ class CooperativeController extends Controller
          if(empty($WalletAccountNumber)){
             Session::flash('no-wallet', ' You do not have a wallet. Click here to create one.'); 
         }
-
          $WalletAccountName = DB::table('wallet')
          ->select(['fullname'])
          ->where('user_id', $id)
@@ -1136,6 +1131,18 @@ class CooperativeController extends Controller
                 $debitWalletTransaction->amount                     = $grandtotal;
                 $debitWalletTransaction->type                       = 'debit';
                 $debitWalletTransaction->save();
+                  //wallet last active account
+                $activeWallet = Wallet::where('user_id', $id)->get('last_transaction_date');
+                if (empty($activeWallet)) {
+                $storeTransactionDate = Wallet::where('user_id', $id);
+                $storeTransactionDate->last_transaction_date = Carbon::now();
+                $storeTransactionDate->save();
+                }
+                elseif (!empty($activeWallet)) {
+                $storeTransactionDate = Wallet::where('user_id', $id);
+                $storeTransactionDate->last_transaction_date = Carbon::now();
+                $storeTransactionDate->save();
+                } 
                 
                 $status     = 'paid'; 
                 $pay_status = 'success'; 
@@ -1148,8 +1155,6 @@ class CooperativeController extends Controller
                 ]);
 
                 $member_id = Order::where('id',  $order_id)->get('user_id')->pluck('user_id')->first();
-            
-          
                 $loan = new Loan;
                 $loan->member_id            = $member_id;
                 $loan->cooperative_code     = $code;
