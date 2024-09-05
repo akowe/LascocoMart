@@ -127,6 +127,7 @@
                                                 <div class="col-md">
                                                       <p></p>
                                                       <div class="form-label">Your Order Total Amount </div>
+                                                      <input type="hidden" id ="order_id" value="{{$getOrderID}}" class="form-control" disabled>
                                                       <input type="text" id ="amount" value="{{$getOrderTotal}}" class="form-control" disabled>
                                                       <span id="amountError"></span>
 
@@ -371,7 +372,7 @@
                                     <div class="form-group">
                                           <p></p>
                                     </div>
-                                    @if($principal)
+                                    @if($principal) 
                                     <form action="{{ route('send-to-admin',$getOrderID)}}" method="get">
                                           @csrf
                                           <input type="hidden" name="id" value="{{$getOrderID}}">
@@ -417,6 +418,7 @@
             let id = document.getElementById('ratetype').value;
             let amount = document.getElementById('amount').value;
             let duration = document.getElementById('loanTenure').value;
+            let order = document.getElementById('order_id').value;
 
             if (amount == null || amount == "" || amount == 0) {
                   document.getElementById('amountError').style.color = 'red';
@@ -444,7 +446,7 @@
             } else {
                   document.getElementById('preview').style.display = 'block';
                   document.getElementById('monthError').innerHTML = ' ';
-                  var url = "{{ URL('calculate-product-interest/') }}" + "/" + id + "/" + amount + "/" + duration;
+                  var url = "{{ URL('calculate-product-interest/') }}" + "/" + id + "/" + order + "/" + duration;
                   location.href = url;
             }
 
