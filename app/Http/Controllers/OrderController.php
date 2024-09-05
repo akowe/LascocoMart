@@ -125,45 +125,7 @@ class OrderController extends Controller
             $shipDetails->save();
        
         $request->session()->forget('cart');
-          // $superadmin = User::where('role_name', '=', 'superadmin')->get();
-          // $get_superadmin_id =Arr::pluck($superadmin, 'id');
-          // $superadmin_id = implode('', $get_superadmin_id);
-
-          // $notification = new NewOrder($order_number);
-          // Notification::send($superadmin, $notification);
-          
-          // $name =  \DB::table('users')->where('id', $order->user_id)->get('fname') ; 
-          // $username = Arr::pluck($name, 'fname'); // 
-          // $get_name = implode(" ",$username);
-
-          // $getCode =  \DB::table('users')->where('id', $order->user_id)->get('code') ; 
-          // $userCoopcode = Arr::pluck($getCode, 'code'); // 
-          // $code = implode(" ",$userCoopcode);
-
-          // $coopEmail = \DB::table('users')->where('code', $code)->where('role', '2')->get('email') ; 
-          // $getEmail= Arr::pluck($coopEmail, 'email'); // 
-          // $adminEmail = implode(" ",$getEmail);
-
-          // $coopName = \DB::table('users')->where('code', $code)->where('role', '2')->get('coopname') ; 
-          // $getCoop= Arr::pluck($coopName, 'coopname'); // 
-          // $cooperative = implode(" ",$getCoop);
-
-          // $coopId = User::where('code', $code)->where('role', '=', '2')->get() ; 
-          // $getId= Arr::pluck($coopId, 'id'); // 
-          // $adminId = implode('', $getId);
-          
-          // $notification = new NewOrder($order_number);
-          // Notification::send($coopId, $notification);
-          //  //send emails
-          //   $data = array(
-          //   'cooperative'   => $cooperative,
-          //   'order_number' => $order_number,  
-          //   'amount'       => $grandtotal, // delivery inclusive
-          //   'name'       => $get_name,       
-          //       );
-
-          //    Mail::to($adminEmail)->send(new AwaitsApprovalEmail($data)); 
-          //    Mail::to('info@lascocomart.com')->send(new OrderEmail($data));              
+                   
              \LogActivity::addToLog('New Order');
       return redirect('request-product-loan/'.$order->id)->with('order', 'You are requesting a product loan. How long do you want to pay back');
       
