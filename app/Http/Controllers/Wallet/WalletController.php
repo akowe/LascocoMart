@@ -702,8 +702,21 @@ class WalletController extends Controller
             $debitWalletTransaction->payment_reference          = $walletPaymentReference;
             $debitWalletTransaction->amount                     = $amount;
             $debitWalletTransaction->type                       = 'debit';
-            $debitWalletTransaction->save();   
+            $debitWalletTransaction->save(); 
             
+           //wallet last active account
+        $activeWallet = Wallet::where('user_id', $id)->get('last_transaction_date');
+        if (empty($activeWallet)) {
+          $storeTransactionDate = Wallet::where('user_id', $id);
+          $storeTransactionDate->last_transaction_date = Carbon::now();
+          $storeTransactionDate->save();
+        }
+        elseif (!empty($activeWallet)) {
+           $storeTransactionDate = Wallet::where('user_id', $id);
+           $storeTransactionDate->last_transaction_date = Carbon::now();
+           $storeTransactionDate->save();
+        } 
+ 
             $data = [];
 
                 foreach ($cart as $item) {
@@ -906,7 +919,19 @@ class WalletController extends Controller
         $debitWalletTransaction->payment_reference          = $walletPaymentReference;
         $debitWalletTransaction->amount                     = $amount;
         $debitWalletTransaction->type                       = 'debit';
-        $debitWalletTransaction->save();   
+        $debitWalletTransaction->save();  
+          //wallet last active account
+          $activeWallet = Wallet::where('user_id', $id)->get('last_transaction_date');
+          if (empty($activeWallet)) {
+            $storeTransactionDate = Wallet::where('user_id', $id);
+            $storeTransactionDate->last_transaction_date = Carbon::now();
+            $storeTransactionDate->save();
+          }
+          elseif (!empty($activeWallet)) {
+             $storeTransactionDate = Wallet::where('user_id', $id);
+             $storeTransactionDate->last_transaction_date = Carbon::now();
+             $storeTransactionDate->save();
+          }  
         
         $data = [];
 
