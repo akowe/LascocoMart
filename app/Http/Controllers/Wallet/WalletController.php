@@ -704,18 +704,19 @@ class WalletController extends Controller
             $debitWalletTransaction->type                       = 'debit';
             $debitWalletTransaction->save(); 
             
-           //wallet last active account
-        $activeWallet = Wallet::where('user_id', $id)->get('last_transaction_date');
-        if (empty($activeWallet)) {
-          $storeTransactionDate = Wallet::where('user_id', $id);
-          $storeTransactionDate->last_transaction_date = Carbon::now();
-          $storeTransactionDate->save();
-        }
-        elseif (!empty($activeWallet)) {
-           $storeTransactionDate = Wallet::where('user_id', $id);
-           $storeTransactionDate->last_transaction_date = Carbon::now();
-           $storeTransactionDate->save();
-        } 
+            $activeWallet = Wallet::where('user_id', $id)->get('last_transaction_date');
+            if (empty($activeWallet)) {
+                $storeTransactionDate = 
+                Wallet::where('user_id', $id)->update([
+                'last_transaction_date'     => Carbon::now(),
+                ]);
+            }
+            elseif (!empty($activeWallet)) {
+            $storeTransactionDate = 
+            Wallet::where('user_id', $id)->update([
+            'last_transaction_date'     => Carbon::now(),
+            ]);
+            } 
  
             $data = [];
 
@@ -923,15 +924,17 @@ class WalletController extends Controller
           //wallet last active account
           $activeWallet = Wallet::where('user_id', $id)->get('last_transaction_date');
           if (empty($activeWallet)) {
-            $storeTransactionDate = Wallet::where('user_id', $id);
-            $storeTransactionDate->last_transaction_date = Carbon::now();
-            $storeTransactionDate->save();
+              $storeTransactionDate = 
+              Wallet::where('user_id', $id)->update([
+              'last_transaction_date'     => Carbon::now(),
+              ]);
           }
           elseif (!empty($activeWallet)) {
-             $storeTransactionDate = Wallet::where('user_id', $id);
-             $storeTransactionDate->last_transaction_date = Carbon::now();
-             $storeTransactionDate->save();
-          }  
+          $storeTransactionDate = 
+          Wallet::where('user_id', $id)->update([
+          'last_transaction_date'     => Carbon::now(),
+          ]);
+          } 
         
         $data = [];
 
