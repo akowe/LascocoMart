@@ -492,8 +492,8 @@
                                                             @elseif($order->status =='cancel')
                                                             <span class="badge bg-red-lt">{{$order->status}}</span>
 
-                                                            @elseif($order->status =='product loan')
-                                                            <span class="badge bg-yellow-lt">request for {{$order->status}}</span>
+                                                            @elseif($order->status =='awaits approval')
+                                                            <span class="badge bg-yellow-lt">{{$order->status}}</span>
 
                                                             @else
                                                             @endif
