@@ -63,7 +63,7 @@ class OrderController extends Controller
             . $characters[rand(0, strlen($characters) - 1)];
         // shuffle pin
         $order_number = str_shuffle($pin);
-        $order_status  = 'product loan'; 
+        $order_status  = 'pending'; 
         $pay_status  = 'pending';
         $ship_address  = $_POST['ship_address'];
         $ship_city     = $_POST['ship_city'];
@@ -115,14 +115,6 @@ class OrderController extends Controller
             $orderItem->unit_cost     = $item['price'];
             $orderItem->amount     = $amount;
             $orderItem->save();
-
-            //upade seller wallet 
-            //Wallet::where('user_id', $seller_id)->increment('credit',$seller_price);
-             //for every new order decrease product quantity
-            // $stock = \DB::table('products')->where('id', $product_id)->first()->quantity;
-            // if($stock > $quantity){
-            //   \DB::table('products')->where('id', $product_id)->decrement('quantity',$quantity);
-            // }
         }
            $shipDetails = new ShippingDetail();
             $shipDetails->shipping_id = $order->id;
