@@ -579,6 +579,7 @@ class CooperativeController extends Controller
          ->where('users.code', $code)
          ->where('orders.user_id', '!=', Auth::user()->id)
           ->where('orders.status', '!=', 'cancel')
+          ->where('orders.status', '!=', 'pending')
         // ->where('orders.status', '=', 'awaits approval')
          ->where('orders.cooperative_code', '=', $code)
          ->orderBy('orders.date', 'desc')
