@@ -12,6 +12,7 @@ use App\Models\SMS;
 use App\Models\Profile;
 use App\Models\Voucher;
 use App\Models\Wallet;
+use App\Models\WalletHistory;
 use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\ShippingDetail;
@@ -34,6 +35,13 @@ use App\Mail\ConfirmPaymentEmail;
 use App\Mail\ConfirmOrderEmail;
 use App\Mail\SalesEmail;
 use App\Mail\OrderEmail;
+use App\Models\Loan;
+use App\Models\LoanType;
+use App\Models\LoanRepayment;
+use App\Models\LoanSetting;
+use App\Models\DueLoans;
+use App\Models\LoanPaymentTransaction;
+
 
 use Carbon\Carbon;
 use Carbon\CarbonPeriod;
