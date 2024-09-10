@@ -369,7 +369,7 @@
                                                                   {{$countLoan->count()}} Loan (s)
                                                             </div>
                                                             <div class="text-secondary">
-                                                                  0 payouts
+                                                                  {{$countLoanPayout->count()}} payouts
                                                             </div>
                                                       </div>
                                                 </div>
