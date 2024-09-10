@@ -329,7 +329,7 @@
                                                       </div>
                                                       <div class="col">
                                                             <div class="font-weight-medium">
-                                                                  0 Wallet Account (s)
+                                                                  {{$countWalletAccount->count()}} Wallet Account (s)
                                                             </div>
                                                             <div class="text-secondary">
                                                                   {{$activeWallet->count()}} active
