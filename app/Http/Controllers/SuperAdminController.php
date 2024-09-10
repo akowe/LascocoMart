@@ -122,6 +122,7 @@ class SuperAdminController extends Controller
         }
 
         //wallet account
+        $countWallet = Wallet::all()->pluck('wallet_account_number');
         $activeWallet = Wallet::where('last_transaction_date', '!=', null)->get();
     
         
