@@ -5,29 +5,50 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Str;
 use App\Models\User;
+use App\Models\Role;
+use App\Models\CooperativeMemberRole;
 use App\Models\SMS;
 use App\Models\Profile;
 use App\Models\Voucher;
+use App\Models\Wallet;
+use App\Models\WalletHistory;
 use App\Models\Order;
 use App\Models\OrderItem;
-use App\Models\ShippingDetail;
-use App\Models\Transaction;
-use Illuminate\Support\Carbon;
-use App\Mail\MemberWelcomeEmail;
-use App\Models\Wallet;
 use App\Models\Loan;
 use App\Models\LoanType;
 use App\Models\LoanRepayment;
 use App\Models\LoanSetting;
 use App\Models\DueLoans;
+use App\Models\LoanPaymentTransaction;
+use App\Models\Credit;
+use App\Models\ShippingDetail;
+use App\Models\Transaction;
+use App\Models\Categories;
+use App\Models\Product;
+use App\Models\FcmgProduct;
+use App\Mail\SendMail;
+use App\Mail\OrderApprovedEmail;
+use App\Mail\SalesEmail;
+use App\Mail\OrderEmail;
+use App\Mail\CooperativeWelcomeEmail;
+use App\Mail\MemberWelcomeEmail;
 use App\Models\Settings;
 use App\Models\ChooseBank;
-
+use App\Notifications\AdminCancelOrder;
+use App\Notifications\NewProduct;
+use Carbon\Carbon;
+use Carbon\CarbonPeriod;
 use Auth;
 use Validator;
 use Session;
+use Paystack;
+use Storage;
 use Mail;
+use Notification;
+use DateTime;
 
 
 class MembersController extends Controller
@@ -35,8 +56,7 @@ class MembersController extends Controller
        public function __construct()
     {
           $this->middleware(['auth', 'verified']);
-            $this->middleware('members');
-           
+            $this->middleware('members');      
     }
 
     public function index(Request $request){
@@ -213,7 +233,7 @@ class MembersController extends Controller
                   "from"             => $lastTenDays,
                   "to"               => $todayDate,
                   );
-
+ 
                   $jsonWalletData = json_encode($walletdData);
                  // dd($jsonWalletData);
                   $walletHistoryUrl = "https://api.staging.ogaranya.com/v1/2347033141516/wallet/history";
