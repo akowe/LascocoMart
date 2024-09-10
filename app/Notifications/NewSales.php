@@ -6,10 +6,12 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
+use Illuminate\Support\Str;
 use App\Models\User;
 use Auth;
 
-class AdminCancelOrder extends Notification
+ 
+class NewSales extends Notification
 {
     use Queueable;
 
@@ -19,14 +21,11 @@ class AdminCancelOrder extends Notification
      * @return void
      */
     protected $order_number; 
-    protected $credit; 
-    public function __construct($order_number, $credit)
+    public function __construct($order_number)
     {
         //
         $this->order_number = $order_number;
-        $this->credit = $credit;
     }
-
 
     /**
      * Get the notification's delivery channels.
@@ -63,9 +62,7 @@ class AdminCancelOrder extends Notification
     {
         $fname = Auth::user()->fname;
         $lname = Auth::user()->lname;
-        $coopname = Auth::user()->coopname;
         
-        return 'Admin has cancel your Order ' .$this->order_number. ' You are Eligile for  ' . $this->credit;
-    
+        return 'New Sales from ' .$fname.  ' order number ' .$this->order_number;
     }
 }

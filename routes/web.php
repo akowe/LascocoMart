@@ -372,6 +372,10 @@ Route::controller(NotificationController::class)->group(function () {
     Route::get('/read-company-payment/{id}',' ')->name('read-company-payment');
     Route::get('/read-all-order','allNewOrderNotification')->name('read-all-order');
     Route::get('/read-admin-order/{id}','readAnOrderNotification')->name('read-admin-order');
+    Route::get('/read-admin-member-order/{id}','readAdminMemberOrderNotification')->name('read-admin-member-order');
+    
+    Route::get('/read-member-order/{id}','readMemberApprovedOrder')->name('read-member-order');
+    
     Route::get('/read-company-order/{id}','readAnOrderSuperadmin')->name('read-company-order');
     Route::get('/read-all-cancel-order','AdminCancelOrderNotification')->name('read-all-cancel-order');
     Route::get('/read-cancel-order/{id}','readAdminCancelOrderNotification')->name('read-cancel-order');

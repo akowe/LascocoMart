@@ -307,6 +307,34 @@ public function readAnOrderNotification($id){
    return redirect('admin-order-history');
 } 
 
+
+public function readAdminMemberOrderNotification($id){
+    $notification = auth()->user()->unreadNotifications()
+    ->where('type', 'App\Notifications\NewOrder')
+    ->where('id', $id)->first();
+    if ($notification) {
+         $notification->markAsRead();
+    } 
+    auth()->user()->readNotifications()
+    ->where('type', 'App\Notifications\NewOrder')
+    ->where('id', $id)->delete();
+    return redirect('admin-member-order');
+ } 
+
+
+ public function readMemberApprovedOrder($id){
+    $notification = auth()->user()->unreadNotifications()
+    ->where('type', 'App\Notifications\ApprovedOrder')
+    ->where('id', $id)->first();
+    if ($notification) {
+         $notification->markAsRead();
+    } 
+    auth()->user()->readNotifications()
+    ->where('type', 'App\Notifications\ApprovedOrder')
+    ->where('id', $id)->delete();
+    return redirect('member-order');
+ } 
+
 public function readAnOrderSuperadmin($id){
     $notification = auth()->user()->unreadNotifications()
     ->where('type', 'App\Notifications\NewOrder')

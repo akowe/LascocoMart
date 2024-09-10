@@ -36,6 +36,8 @@ use App\Mail\OrderEmail;
 use App\Mail\CooperativeWelcomeEmail;
 use App\Notifications\AdminCancelOrder;
 use App\Notifications\NewProduct;
+use App\Notifications\NewSales;
+use App\Notifications\ApprovedOrder;
 use Carbon\Carbon;
 use Carbon\CarbonPeriod;
 use Auth;
@@ -1331,19 +1333,32 @@ class CooperativeController extends Controller
                 'name'          => $memberName, 
                 'status'        => $orderStatus,      
             );
-            $getSellerEmail = OrderItem::join('users', 'users.id', '=', 'order_items.seller_id')
+            $allSellerEmail = OrderItem::join('users', 'users.id', '=', 'order_items.seller_id')
             ->join('orders', 'orders.id', '=', 'order_items.order_id')
             ->whereIn('users.id', $seller_id)
             ->where('order_items.order_id', $order_id)
-            ->get('email'); 
-
-            // foreach ($getSellerEmail as $key => $user) {
+            ->get('users.*'); 
+            //send email to vendor
+            $asker = User::findOrFail($seller_id);
+            $vendorNotification = new NewSales($order_number);
+            Notification::send($asker, $vendorNotification); 
+          
+            foreach ($allSellerEmail as  $user) {
            
-            //     Mail::to($user->email)->send(new SalesEmail($sellerData)); 
-            // }
+                Mail::to($user->email)->send(new SalesEmail($sellerData)); 
+            }
 
+            $askerMember = User::findOrFail($memberID);
+            $memberNotification = new ApprovedOrder($order_number);
+            Notification::send($askerMember, $memberNotification);
             Mail::to($memberEmail)->send(new OrderApprovedEmail($memberData)); 
+
+            $superadmin = User::where('role_name', '=', 'superadmin')->get();
+            $get_superadmin_id =Arr::pluck($superadmin, 'id');
+            $superadmin_id = implode('', $get_superadmin_id);
          
+            $companyNotification = new NewSales($order_number);
+            Notification::send($superadmin, $companyNotification);
             Mail::to('info@lascocomart.com')->send(new OrderEmail($data));    
             return redirect('admin-member-order')->with('success', 'Approved successful!'); 
         }
