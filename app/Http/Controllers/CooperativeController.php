@@ -968,7 +968,6 @@ class CooperativeController extends Controller
          if($rateType == 'flat rate'){
             $annualInterest = $percentage * $maxTenure; 
             $totalDue = $principal + $annualInterest;//for flat rate interest type
-    
             $monthlyPrincipal = $principal / (int)$product_loan_duration;
             $monthlyInterest = $annualInterest / (int)$product_loan_duration;
             $totalMonthlyDue = $monthlyPrincipal + $monthlyInterest ;
@@ -976,6 +975,7 @@ class CooperativeController extends Controller
 
          if($rateType == 'simple interest'){
             $annualInterest = $percentage * (int)$product_loan_duration;
+            $totalDue = $principal + $annualInterest;//for flat rate interest type
             $monthlyPrincipal = $principal / (int)$product_loan_duration;
             $monthlyInterest = $annualInterest / (int)$product_loan_duration;
             $totalMonthlyDue = $monthlyPrincipal + $monthlyInterest ;
