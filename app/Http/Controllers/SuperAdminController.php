@@ -123,7 +123,9 @@ class SuperAdminController extends Controller
 
         //wallet account
         $countWalletAccount = Wallet::all()->pluck('wallet_account_number');
-        $activeWallet = Wallet::where('last_transaction_date', '!=', null)->get();
+        $activeWallet = Wallet::where('last_transaction_date', '>', new DateTime('last day of previous month'))
+        ->get();
+        //Wallet::where('last_transaction_date', '!=', null)->get();
     
         
         $salesChart = Order::select(
