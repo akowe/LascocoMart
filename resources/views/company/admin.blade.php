@@ -332,7 +332,7 @@
                                                                   0 Wallet Account (s)
                                                             </div>
                                                             <div class="text-secondary">
-                                                                  0 active
+                                                                  {{$activeWallet->count()}} active
                                                             </div>
                                                       </div>
                                                 </div>
