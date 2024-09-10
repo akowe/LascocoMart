@@ -94,7 +94,7 @@
                   <div class="col-12">
                         <div class="card">
                         <div class="card-header">
-                        <p class="card-title">Vendor details </p>
+                        <p class="card-title">Vendor details for each product</p>
                         </div>
 
                               <div class="card-body border-bottom py-3">
