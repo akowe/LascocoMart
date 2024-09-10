@@ -321,21 +321,38 @@ class SuperAdminController extends Controller
  public function order_details(Request $request, $order_number )
     {
      if( Auth::user()->role_name  == 'superadmin'){
-      // 
-         $orders = Product::join('order_items', 'order_items.product_id', '=', 'products.id')
+      $perPage = $request->perPage ?? 10;
+      $search = $request->input('search');
+
+      $orders = Product::join('order_items', 'order_items.product_id', '=', 'products.id')
          ->join('users', 'users.id', '=', 'products.seller_id')          
          ->join('orders', 'orders.id', '=', 'order_items.order_id')
           ->where('orders.order_number', $order_number)
           ->orderBy('orders.date', 'desc')
-                        // ->get(['orders.*', 'users.*', 'order_items.*', 'products.*']);
-          ->paginate( $request->get('per_page', 5)); 
-          \LogActivity::addToLog('SuperAdmin orderDetails');
-    return view('company.order_details', compact('orders'));
+       ->where(function ($query) use ($search) {  // <<<
+      $query->where('users.coopname', 'LIKE', '%'.$search.'%')
+          ->orWhere('orders.order_number', 'LIKE', '%'.$search.'%')
+          ->orWhere('orders.grandtotal', 'LIKE', '%'.$search.'%')
+          ->orWhere('orders.date', 'LIKE', '%'.$search.'%')
+          ->orWhere('orders.status', 'LIKE', '%'.$search.'%')
+          ->orderBy('orders.created_at', 'desc');
+       })->paginate($perPage, $columns = ['*'], $pageName = 'orders'
+       )->appends([
+      'per_page'   => $perPage
+       ]);
+       $pagination = $orders->appends ( array ('search' => $search) );
+      if (count ( $pagination ) > 0){
+          return view('company.order_details', compact('perPage','orders'))->withDetails( $pagination );     
+        } 
+           else{
+               redirect()->back()->with('status', 'No order record found'); 
            }
 
-    else { return Redirect::to('/login');
-    
-        }             
+          \LogActivity::addToLog('SuperAdmin orderDetails');
+          return view('company.order_details', compact('perPage','orders'));
+      }
+
+    else { return Redirect::to('/login');}             
     }
 
 
