@@ -122,7 +122,7 @@ class SuperAdminController extends Controller
         }
 
         //wallet account
-        $countWallet = Wallet::all()->pluck('wallet_account_number');
+        $countWalletAccount = Wallet::all()->pluck('wallet_account_number');
         $activeWallet = Wallet::where('last_transaction_date', '!=', null)->get();
     
         
@@ -144,7 +144,7 @@ class SuperAdminController extends Controller
         'count_orders', 'count_sales',  'products', 'users', 
         'onlinePayment', 'sumSales', 'countProductSold', 
         'onlinePayment', 'bankPayment', 'fmcg', 'fmcgProducts',
-        'activeUser', 'activeWallet'))->with('registeredUsers',json_encode($result));
+        'activeUser', 'activeWallet', 'countWalletAccount'))->with('registeredUsers',json_encode($result));
     }
     else { return Redirect::to('/login');}
    
