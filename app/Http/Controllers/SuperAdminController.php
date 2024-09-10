@@ -122,7 +122,7 @@ class SuperAdminController extends Controller
         }
 
         //wallet account
-        $activeWallet = Wallet::where('last_transation_date', null)->get();
+        $activeWallet = Wallet::where('last_transaction_date', null)->get();
     
         
         $salesChart = Order::select(
