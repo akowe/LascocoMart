@@ -366,7 +366,7 @@
                                                       </div>
                                                       <div class="col">
                                                             <div class="font-weight-medium">
-                                                                  0 Loan (s)
+                                                                  {{$countLoan->count()}} Loan (s)
                                                             </div>
                                                             <div class="text-secondary">
                                                                   0 payouts
