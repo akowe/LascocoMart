@@ -7,7 +7,7 @@
                   <div class="col">
                         <!-- Page pre-title -->
                         <div class="page-pretitle">
-                              Overview
+                              Each Product
                         </div>
                         <h2 class="page-title">
                               Vendor Details
