@@ -127,6 +127,9 @@ class SuperAdminController extends Controller
         ->get();
         //Wallet::where('last_transaction_date', '!=', null)->get();
     
+        //count loan
+        $countLoan = Loan::all();
+        $countLoanPayout = Loan::where('loan_status', 'payout')->get();
         
         $salesChart = Order::select(
           \DB::raw("COUNT(*) as total_sales"),
@@ -146,7 +149,8 @@ class SuperAdminController extends Controller
         'count_orders', 'count_sales',  'products', 'users', 
         'onlinePayment', 'sumSales', 'countProductSold', 
         'onlinePayment', 'bankPayment', 'fmcg', 'fmcgProducts',
-        'activeUser', 'activeWallet', 'countWalletAccount'))->with('registeredUsers',json_encode($result));
+        'activeUser', 'activeWallet', 'countWalletAccount', 'countLoan',
+        'countLoanPayout'))->with('registeredUsers',json_encode($result));
     }
     else { return Redirect::to('/login');}
    
