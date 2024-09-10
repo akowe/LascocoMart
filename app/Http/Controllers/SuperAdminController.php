@@ -122,7 +122,7 @@ class SuperAdminController extends Controller
         }
 
         //wallet account
-        $activeWallet = Wallet::where('last_transaction_date', null)->get();
+        $activeWallet = Wallet::where('last_transaction_date', '!=', null)->get();
     
         
         $salesChart = Order::select(
@@ -142,7 +142,8 @@ class SuperAdminController extends Controller
         return view('company.admin', compact('sales', 'funds','cooperatives', 'sellers', 'members', 
         'count_orders', 'count_sales',  'products', 'users', 
         'onlinePayment', 'sumSales', 'countProductSold', 
-        'onlinePayment', 'bankPayment', 'fmcg', 'fmcgProducts', 'activeUser'))->with('registeredUsers',json_encode($result));
+        'onlinePayment', 'bankPayment', 'fmcg', 'fmcgProducts',
+        'activeUser', 'activeWallet'))->with('registeredUsers',json_encode($result));
     }
     else { return Redirect::to('/login');}
    
