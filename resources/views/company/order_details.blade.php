@@ -93,7 +93,10 @@
             <div class="row row-deck row-cards">
                   <div class="col-12">
                         <div class="card">
-                          <p>Sellers details of "Paid" orders </p>
+                        <div class="card-header">
+                        <p class="card-title">Vendor details </p>
+                        </div>
+
                               <div class="card-body border-bottom py-3">
                                     <div class="d-flex">
                                           <div class="text-secondary">
@@ -149,7 +152,6 @@
                                                             </svg>
                                                       </th>
 
-                                                      <th>Payment Date</th>
                                                       <th>Seller Details</th>
                                                       <th>Order Number</th>
                                                       <th>Product</th>
@@ -172,7 +174,6 @@
                                                       {{ $order['fname'] }}
                                                       <br>
                                                       {{ $order['lname'] }}
-
                                                       <br>
                                                       {{ $order['email'] }}
                                                       <br>
@@ -189,10 +190,6 @@
                                                 <td> {{ number_format($order['price']) }}</td>
                                                 <td> {{ number_format($order['seller_price']) }}</td>
                                                 <td>{{ $order['pay_type'] }} </td>
-
-                     
-
-
                                                 </tr>
                                                 @endforeach
 
