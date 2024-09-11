@@ -31,6 +31,6 @@ class SalesEmail extends Mailable
      */
     public function build()
     {
-        return $this->from('noreply@coopmart.com', 'CoopMart')->subject('New Sales Notification')->view('email.sales')->with('sellerData', $this->sellerData);
+        return $this->from('noreply@coopmart.com', 'Lascocomart')->subject('New Sales Notification')->view('email.sales')->with('sellerData', $this->sellerData);
     }
 }
