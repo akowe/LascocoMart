@@ -257,7 +257,7 @@
                                                                                                 class=" text-secondary">
                                                                                                 <small> {{$notification->data}}</small>
                                                                                           
-                                                                                          </a>
+                                                                                          </a><br>
                                                                                          @endforeach
                                                                                       
                                                                                           <!-- customer order here--->
@@ -269,7 +269,7 @@
                                                                                                       Customer: {!!
                                                                                                       Str::limit("$notification->data",
                                                                                                       50, ' ...') !!}
-                                                                                                </a>
+                                                                                                </a><br>
                                                                                          
                                                                                           @endforeach
                                                                                     </div>
@@ -325,7 +325,7 @@
                                                                                                 {!!
                                                                                                 Str::limit("$notification->data",
                                                                                                 50, ' ...') !!}
-                                                                                          </a>
+                                                                                          </a><br>
                                                                                           @endforeach
                                                                                           <!-- product delivery here product i boguth when a seller click delivery -->
                                                                                           @foreach(auth()->user()->unreadNotifications->where('type', 'App\Notifications\ProductDelivered') as $notification)
@@ -335,7 +335,7 @@
                                                                                                 {!!
                                                                                                 Str::limit("$notification->data",
                                                                                                 50, ' ...') !!}
-                                                                                          </a>
+                                                                                          </a><br>
                                                                                           @endforeach
                                                                                     </div>
                                                                               </div>
@@ -391,7 +391,7 @@
                                                                                                       Str::limit("$notification->data",
                                                                                                       50, ' ...') !!}
 
-                                                                                                </a>
+                                                                                                </a><br>
                                                                                        
                                                                                           @endforeach
 
@@ -406,7 +406,7 @@
                                                                                                       Str::limit("$notification->data",
                                                                                                       50, ' ...') !!}
 
-                                                                                                </a>
+                                                                                                </a><br>
                                                                                           @endforeach
                                                                                     </div>
                                                                               </div>
@@ -526,10 +526,8 @@
                                                                                                 class=" text-secondary">
 
                                                                                      <small> {!! Str::limit("$notification->data", 100, ' ...') !!}</small>
-                                                                                    </a>
-                                                                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                                                                          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                                                                         
+                                                                                    </a><br>
+                                                                                  
                                                                                     @endforeach
                                                                                     @foreach(auth()->user()->unreadNotifications->where('type', 'App\Notifications\AdminCancelOrder') as $notification)
                                                                                  <a href="{{ url('read-cancel-order') }}/{{ $notification->id }}"
@@ -537,10 +535,7 @@
                                                                                                 class=" text-secondary">
 
                                                                                      <small> {!! Str::limit("$notification->data", 100, ' ...') !!}</small>
-                                                                                    </a>
-                                                                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                                                                          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                                                                         
+                                                                                    </a><br>
                                                                                     @endforeach
                                                                               </div>
                                                                         </div>
@@ -703,7 +698,11 @@
                                                                                     <div class=" text-secondary">
                                                                                           <a href="" data-id=""
                                                                                                 class=" text-secondary">
-
+                                                                                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                                                                          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                                                                          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                                                                          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                                                                           
                                                                                           </a>
                                                                                     </div>
                                                                               </div>
