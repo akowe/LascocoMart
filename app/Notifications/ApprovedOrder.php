@@ -64,9 +64,9 @@ class ApprovedOrder extends Notification
         $fname = Auth::user()->fname;
         $lname = Auth::user()->lname;
 
-        $getOrderNuber =Arr::pluck($this->order_number, 'order_number');
-        $orderNumber = implode('', $getOrderNuber);
+        // $getOrderNuber =Arr::pluck($this->order_number, 'order_number');
+        // $orderNumber = implode('', $getOrderNuber);
         
-        return 'Admin has approved your order number ' .$orderNumber;
+        return 'Admin has approved your order number ' .$this->order_number;
     }
 }
