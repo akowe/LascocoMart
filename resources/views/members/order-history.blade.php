@@ -278,7 +278,7 @@
                                                       <td><input class="form-check-input m-0 align-middle"
                                                                   type="checkbox" aria-label="Select"></td>
                                                       <td><span
-                                                                  class="text-secondary">{{ date('m/d/Y', strtotime($order->date))}}</span>
+                                                                  class="text-secondary">{{ date('m/d/Y', strtotime($order->updated_at))}}</span>
                                                       </td>
 
                                                       <td>{{$order->fname}}

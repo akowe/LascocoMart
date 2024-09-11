@@ -267,7 +267,7 @@
                                                                                     
                                                                                                       @if(auth()->user()->unreadNotifications->where('type',
                                                                                                       'App\Notifications\NewOrder'))
-                                                                                                      <a href="{{route('read-all-order')}}"
+                                                                                                      <a href="{{url('read-order')}}/{{ $notification->id }}"
                                                                                                             title="Clear" alt="Clear"
                                                                                                             class="list-group-item-actions  show text-white">
                                                                                                             <small><svg
