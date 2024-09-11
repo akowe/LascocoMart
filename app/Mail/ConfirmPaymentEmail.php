@@ -30,6 +30,6 @@ class ConfirmPaymentEmail extends Mailable
      */
     public function build()
     {
-         return $this->from('noreply@coopmart.com', 'CoopMart')->subject('Payment Confirmation')->view('email.confirm_payment')->with('data', $this->data);
+         return $this->from('noreply@coopmart.com', 'LascocoMart')->subject('Payment Confirmation')->view('email.confirm_payment')->with('data', $this->data);
     }
 }
