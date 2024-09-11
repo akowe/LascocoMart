@@ -293,6 +293,19 @@ public function allNewOrderNotification(){
     return redirect()->back();
     
 } 
+
+
+public function NewOrderNotification($id){
+    $notification =   Auth::user()->unreadNotifications->where('type', 'App\Notifications\NewOrder')->markAsRead();
+    auth()->user()->readNotifications()
+    ->where('type', 'App\Notifications\NewOrder')
+    ->where('id', $id)->first();
+    if ($notification) {
+        $notification->delete();
+   } 
+    return redirect()->back();
+    
+} 
 //admin
 public function readAnOrderNotification($id){
    $notification = auth()->user()->unreadNotifications()
