@@ -229,7 +229,7 @@
                                                       <span
                                                             class="badge bg-red text-white">{{ auth()->user()->unreadNotifications()->count() }}</span>
                                                 </a>
-                                                <div class="dropdown-menu dropdown-menu-arrow dropdown-menu-end dropdown-menu-card show"
+                                                <div class="dropdown-menu dropdown-menu-arrow dropdown-menu-end dropdown-menu-card"
                                                       data-bs-popper="static">
                                                       <div class="card">
                                                             <div class="card-header">
@@ -651,27 +651,7 @@
                                                                               </div>
                                                                         </div>
                                                                         <div class="col-auto">
-                                                                              @if(auth()->user()->unreadNotifications->where('type', 'App\Notifications\AdminCancelOrder'))
-                                                                              <a href="" title="Clear" alt="Clear"
-                                                                                    class="small"><svg
-                                                                                          xmlns="http://www.w3.org/2000/svg"
-                                                                                          class="icon icon-tabler icon-tabler-x"
-                                                                                          width="24" height="24"
-                                                                                          viewBox="0 0 24 24"
-                                                                                          stroke-width="1.5"
-                                                                                          stroke="currentColor"
-                                                                                          fill="none"
-                                                                                          stroke-linecap="round"
-                                                                                          stroke-linejoin="round">
-                                                                                          <path stroke="none"
-                                                                                                d="M0 0h24v24H0z"
-                                                                                                fill="none" />
-                                                                                          <path d="M18 6l-12 12" />
-                                                                                          <path d="M6 6l12 12" />
-                                                                                    </svg>
-                                                                              </a>
-
-                                                                              @endif
+                                                                        
                                                                         </div>
                                                                   </div>
                                                             </div>

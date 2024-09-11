@@ -378,8 +378,8 @@
                                                       <tr>
                                                             <td>
                                                                   <p>Hello,</p>
-                                                                  <p>You have new order <strong>{{ $sellerData['order_number'] }} </strong>
-                                                                has been  <strong style="color:green;">approved</strong> by cooperative:<strong style="text-transform:uppercase;">{{$sellerData['name']}}</strong>.</p>
+                                                                  <p>You have new  sales, order number <strong>{{ $sellerData['order_number'] }} </strong>
+                                                                has been  <strong style="color:green;">approved</strong> by cooperative:<strong style="text-transform:uppercase;">{{$sellerData['cooperative']}}</strong>.</p>
                                                                 <p><h4>Order Details</h4></p>  
                                                                 <table role="presentation" border="0" cellpadding="0"
                                                                         cellspacing="0" class="btn btn-primary">

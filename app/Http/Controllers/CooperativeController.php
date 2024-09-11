@@ -568,11 +568,52 @@ class CooperativeController extends Controller
                 $result =  json_decode($res, true);
                // dd($result);
               }
+              if ($result == null) {
+                    
+                $perPage = $request->perPage ?? 10;
+                $search = $request->input('search');
+                $orders = User::join('orders', 'orders.user_id', '=', 'users.id')
+                ->where('users.code', $code)
+                ->where('orders.user_id', '!=', Auth::user()->id)
+                ->where('orders.status', '!=', 'cancel')
+                ->where('orders.status', '!=', 'pending')
+                // ->where('orders.status', '=', 'awaits approval')
+                ->where('orders.cooperative_code', '=', $code)
+                ->orderBy('orders.updated_at', 'desc')
+                ->where(function ($query) use ($search) {  // <<<
+                $query->where('users.fname', 'LIKE', '%'.$search.'%')
+                    ->orWhere('users.lname', 'LIKE', '%'.$search.'%')
+                    ->orWhere('orders.order_number', 'LIKE', '%'.$search.'%')
+                    ->orWhere('orders.grandtotal', 'LIKE', '%'.$search.'%')
+                    ->orWhere('orders.date', 'LIKE', '%'.$search.'%')
+                    ->orWhere('orders.status', 'LIKE', '%'.$search.'%')
+                    ->orderBy('orders.created_at', 'desc');
+                })->paginate($perPage, $columns = ['*'], $pageName = 'orders'
+                )->appends([
+                'per_page'   => $perPage
+                ]);
+                $pagination = $orders->appends ( array ('search' => $search) );
+                if (count ( $pagination ) > 0){
+                    return view('cooperative.member-order', compact(
+                    'perPage',
+                    'countMemberOrders', 
+                    'credit', 
+                    'orders', 
+                    'sumApproveOrder',
+                    'WalletAccountNumber', 
+                    'WalletAccountName',
+                    'WalletBankName'))->withDetails ( $pagination );     
+                    } 
+                    else{
+                        redirect()->back()->with('status', 'No record found'); 
+                    }
+               }
                if($result['status'] == 'success'){
                 $accountBalance = $result['data']['available_balance'];
               }
-               if($result['status'] == 'error'){
-                  Session::flash('error',  ' Oops! something went wrong'); 
+              if($result['status'] == 'error'){
+                Session::flash('error',  ' Oops! something went wrong'); 
+                
               }
 
         $perPage = $request->perPage ?? 10;
@@ -584,7 +625,7 @@ class CooperativeController extends Controller
           ->where('orders.status', '!=', 'pending')
         // ->where('orders.status', '=', 'awaits approval')
          ->where('orders.cooperative_code', '=', $code)
-         ->orderBy('orders.date', 'desc')
+         ->orderBy('orders.updated_at', 'desc')
          ->where(function ($query) use ($search) {  // <<<
         $query->where('users.fname', 'LIKE', '%'.$search.'%')
             ->orWhere('users.lname', 'LIKE', '%'.$search.'%')
@@ -928,7 +969,10 @@ class CooperativeController extends Controller
         $cooperative = Auth::user()->coopname;
         $order_id = $request->order_id;
         $order = Order::find($order_id);
-        $order_number = Order::where('id', $order_id)->get('order_number') ;
+        $order_number = Order::where('id', $order_id)
+        //->get('order_number')
+        ->pluck('order_number')
+        ->first();
         
         $grandtotal = \DB::table('orders')->where('id', $order_id)->first()->grandtotal;
         // $credit = Voucher::join('users', 'users.id', '=', 'vouchers.user_id')
