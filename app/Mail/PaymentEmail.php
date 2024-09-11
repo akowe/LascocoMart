@@ -31,6 +31,6 @@ class PaymentEmail extends Mailable
      */
     public function build()
     {
-        return $this->from('noreply@coopmart.com', 'CoopMart')->subject('New Payment Notification')->view('email.payment_email')->with('data', $this->data);
+        return $this->from('noreply@coopmart.com', 'LascocoMart')->subject('New Payment Notification')->view('email.payment_email')->with('data', $this->data);
     }
 }
