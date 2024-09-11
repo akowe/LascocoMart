@@ -313,7 +313,7 @@
                                                                                     
                                                                                                       @if(auth()->user()->unreadNotifications->where('type',
                                                                                                       'App\Notifications\NewOrder'))
-                                                                                                      <a href="{{route('read-all-order')}}"
+                                                                                                      <a href="{{ url('read-order') }}/{{$notification->id}}"
                                                                                                             title="Clear" alt="Clear"
                                                                                                             class="list-group-item-actions  show text-white">
                                                                                                             <small><svg
@@ -549,32 +549,104 @@
                                                             <!-- my order notification--->
                                                             <div class="list-group-item">
                                                                   <div class="row align-items-center">
-                                                                        <div class="col-auto "><span
-                                                                                    class="status-dot status-dot-animated bg-yellow d-block"></span>
+                                                                        <div class="col-auto ">
+                                                                              <!-- <span
+                                                                                    class="status-dot status-dot-animated bg-yellow d-block"></span> -->
                                                                         </div>
                                                                         <div class="col text-truncate">
-                                                                              <span class="text-body d-block">
-                                                                              {{auth()->user()->unreadNotifications()->where('type', 'App\Notifications\ApprovedOrder')->count()}}
-                                                                                    
+                                                                              <span class="text-body d-block">  
                                                                                     Order (s)
                                                                               </span>
                                                                               <div
                                                                                     class="d-block text-secondary text-truncate mt-n1">
                                                                                     @foreach(auth()->user()->unreadNotifications->where('type', 'App\Notifications\ApprovedOrder') as $notification)
-                                                                                 <a href="{{ url('read-member-order') }}/{{ $notification->id }}"
-                                                                                                data-id="{{$notification->id}}"
-                                                                                                class=" text-secondary">
+                                                                                 
+                                                                                    <div class="row align-items-center">
+                                                                                                <div class="col-auto">
+                                                                                                      <small> <span class="status-dot status-dot-animated bg-green d-block"></span>  </small> 
+                                                                                                </div>
+                                                                                                <div class="col text-truncate">
+                                                                                                <a href="{{ url('read-member-order') }}/{{ $notification->id }}"
+                                                                                                      data-id="{{$notification->id}}"
+                                                                                                      class=" text-secondary">
+                                                                                                      <small> {{$notification->data}}</small></a><br>
+                                                                                                </div>
+                                                                                                <div class="col-auto">
+                                                                                    
+                                                                                                      @if(auth()->user()->unreadNotifications->where('type',
+                                                                                                      'App\Notifications\ApprovedOrder'))
+                                                                                                      <a href="{{url('read-order')}}/{{ $notification->id }}"
+                                                                                                            title="Clear" alt="Clear"
+                                                                                                            class="list-group-item-actions  show text-white">
+                                                                                                            <small><svg
+                                                                                                                  xmlns="http://www.w3.org/2000/svg"
+                                                                                                                  class="icon icon-tabler icon-tabler-x"
+                                                                                                                  width="24" height="24"
+                                                                                                                  viewBox="0 0 24 24"
+                                                                                                                  stroke-width="1.5"
+                                                                                                                  stroke="currentColor"
+                                                                                                                  fill="none"
+                                                                                                                  stroke-linecap="round"
+                                                                                                                  stroke-linejoin="round">
+                                                                                                                  <path stroke="none"
+                                                                                                                        d="M0 0h24v24H0z"
+                                                                                                                        fill="none" />
+                                                                                                                  <path
+                                                                                                                        d="M18 6l-12 12" />
+                                                                                                                  <path d="M6 6l12 12" />
+                                                                                                            </svg></small>
+                                                                                                      </a>
 
-                                                                                     <small> {!! Str::limit("$notification->data", 100, ' ...') !!}</small>
-                                                                                    </a><br>
+                                                                                                      @endif
+                                                                                                </div>
+                                                                                          </div>
+                                                                                        
+             
                                                                                     @endforeach
-                                                                                    @foreach(auth()->user()->unreadNotifications->where('type', 'App\Notifications\AdminCancelOrder') as $notification)
-                                                                                 <a href="{{ url('read-cancel-order') }}/{{ $notification->id }}"
-                                                                                                data-id="{{$notification->id}}"
-                                                                                                class=" text-secondary">
 
-                                                                                     <small> {!! Str::limit("$notification->data", 100, ' ...') !!}</small>
-                                                                                    </a><br>
+                                                                                    @foreach(auth()->user()->unreadNotifications->where('type', 'App\Notifications\AdminCancelOrder') as $notification)
+                                                                                    <div class="row align-items-center">
+                                                                                                <div class="col-auto">
+                                                                                                      <small> <span class="status-dot status-dot-animated bg-red d-block"></span>  </small> 
+                                                                                                </div>
+                                                                                                <div class="col text-truncate">
+                                                                                                <a href="{{ url('read-cancel-order') }}/{{ $notification->id }}"
+                                                                                                      data-id="{{$notification->id}}"
+                                                                                                      class=" text-secondary">
+                                                                                                      <small> {{$notification->data}}</small></a><br>
+                                                                                                </div>
+                                                                                                <div class="col-auto">
+                                                                                    
+                                                                                                      @if(auth()->user()->unreadNotifications->where('type',
+                                                                                                      'App\Notifications\AdminCancelOrder'))
+                                                                                                      <a href="{{url('read-cancel-order')}}/{{ $notification->id }}"
+                                                                                                            title="Clear" alt="Clear"
+                                                                                                            class="list-group-item-actions  show text-white">
+                                                                                                            <small><svg
+                                                                                                                  xmlns="http://www.w3.org/2000/svg"
+                                                                                                                  class="icon icon-tabler icon-tabler-x"
+                                                                                                                  width="24" height="24"
+                                                                                                                  viewBox="0 0 24 24"
+                                                                                                                  stroke-width="1.5"
+                                                                                                                  stroke="currentColor"
+                                                                                                                  fill="none"
+                                                                                                                  stroke-linecap="round"
+                                                                                                                  stroke-linejoin="round">
+                                                                                                                  <path stroke="none"
+                                                                                                                        d="M0 0h24v24H0z"
+                                                                                                                        fill="none" />
+                                                                                                                  <path
+                                                                                                                        d="M18 6l-12 12" />
+                                                                                                                  <path d="M6 6l12 12" />
+                                                                                                            </svg></small>
+                                                                                                      </a>
+
+                                                                                                      @endif
+                                                                                                </div>
+                                                                                          </div>
+                                                                                        
+
+                                  
                                                                                     @endforeach
                                                                               </div>
                                                                         </div>
