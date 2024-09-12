@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Controllers\Wallet;
-
+use Illuminate\Pagination\LengthAwarePaginator;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -165,10 +165,18 @@ class WalletController extends Controller
                         $getWalletAmount = Arr::pluck($arrayWalletTransaction, 'amount');
                         $walletAmount = implode(" ",$getWalletAmount);
                         $walletTransaction = $detail['data'];
+                        $perPage = $request->perPage ?? 10;
+                        $current_page = LengthAwarePaginator::resolveCurrentPage();
+
+                        
+                        $orders = $detail['data'];
+                        $current_page_orders = array_slice($orders, ($current_page - 1) * $perPage, $perPage);
+                        $orders_collection = collect($orders); // alternative. You can use helper function
+                        $orders_to_show = new LengthAwarePaginator($current_page_orders, count($orders_collection), $perPage);
                       }
                        if($detail['status'] == 'error'){
                         return view('wallet.user-wallet', compact('WalletAccountNumber',
-                        'WalletAccountName', 'WalletBankName', 'phoneNumber'));
+                        'WalletAccountName', 'WalletBankName', 'phoneNumber', 'orders_to_show'));
                       }            
 
             return view('wallet.user-wallet', compact('WalletAccountNumber',
