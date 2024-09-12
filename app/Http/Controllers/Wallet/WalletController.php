@@ -572,7 +572,27 @@ class WalletController extends Controller
                 }
               
                 if($detail['status'] == 'success'){
-                  $data = $detail['data'];
+                  $perPage = $request->perPage ?? 10;
+                  $search = $request->input('search');
+                  $data = $detail['data']
+                  ->orderBy('created_at', 'desc')
+                  ->where(function ($query) use ($search) {  // <<<
+                 $query->orderBy('created_at', 'desc');
+                  })->paginate($perPage, $columns = ['*'], $pageName = 'products'
+                  )->appends([
+                 'per_page'   => $perPage
+                  ]);
+                  $pagination = $data->appends ( array ('search' => $search) );
+                      if (count ( $pagination ) > 0){
+                            \LogActivity::addToLog('Wallet History');
+                          return view ('wallet.history',  compact(
+                          'perPage', 
+                          'data'))->withDetails ( $pagination );    
+                      }  
+                      else{
+                          redirect()->back()->with('status', 'No record found'); 
+                      }
+
                 }
                  if($detail['status'] == 'error'){
                  // Session::flash('no-wallet', $error); 
