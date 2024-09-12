@@ -27,6 +27,8 @@
                                     <form action="/approve-loan" method="post" name="submit">
                                           @csrf
                                           <input type="hidden" name="loan_id" value="{{$loan_id}}">
+                                          <input type="hidden" name="member_id" value="{{$loanMemberID}}">
+                                          <input type="hidden" name="amount" value="{{$loanPrincipal}}">
                                           <button type="submit" name="submit" class="btn "
                                                 title="approve">
                                                 Approve Now</button>

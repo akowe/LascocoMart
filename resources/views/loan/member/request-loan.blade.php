@@ -128,10 +128,8 @@
                                                 <div class="col-md">
                                                       <p></p>
                                                       <div class="form-label required">Amount </div>
-                                                      <input type="text" name="amount" id="amount" class="form-control"
-                                                            data-mask="00000000,00" data-mask-visible="true"
+                                                      <input type="number" name="amount" id="amount" pattern="[0-9.]+" class="form-control"
                                                             placeholder="Enter the amount you are requsting"
-                                                            data-mask-reverse="true" autocomplete="off"
                                                             value="{{$principal}}" required>
                                                       <span id="amountError"></span>
 

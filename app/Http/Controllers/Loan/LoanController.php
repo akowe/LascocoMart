@@ -28,6 +28,9 @@ use App\Models\ShippingDetail;
 use App\Models\Transaction;
 use App\Models\Categories;
 use App\Models\Product;
+use App\Notifications\NewLoan;
+use App\Notifications\AdminApproveLoan;
+use App\Mail\LoanRequestEmail;
 
 use Carbon\Carbon;
 use Auth;
@@ -59,6 +62,16 @@ class LoanController extends Controller
         if( Auth::user()){
             $id = Auth::user()->id;
             $cooperativeCode = Auth::user()->code;
+            $cooperative = Auth::user()->coopname;
+            $fname = Auth::user()->fname;
+            $coopId = User::where('role', '=', '2')
+            ->where('code', $cooperativeCode)
+            ->get();
+
+            $adminEmail = User::where('role', '=', '2')
+            ->where('code', $cooperativeCode)
+            ->get()->pluck('email')->first();
+
             $this->validate($request, [  
                 'service_fee'     => 'string|max:255',
             ]);
@@ -114,7 +127,20 @@ class LoanController extends Controller
                     return redirect('member-request-loan')->with('loan', 'Opps! Something went wrong');
                 }
             //}
+            $amount = $request->principal;
+            $loan_type = $request->ratetype;
           
+            $notification = new NewLoan($amount);
+            Notification::send($coopId, $notification);
+             //send emails
+              $data = array(
+              'cooperative'   => $cooperative,
+              'loan_type'     => $loan_type,  
+              'amount'        => $amount, 
+              'name'          => $fname, 
+                );
+  
+            Mail::to($adminEmail)->send(new LoanRequestEmail($data)); 
            return redirect('member-loan-history')->with('loan', 'Loan request successful!');
 
         }

@@ -26,6 +26,8 @@ use App\Models\FundRequest;
 use App\Notifications\NewCardPayment;
 use App\Notifications\ApproveFund;
 use App\Notifications\CancelFundRequest;
+use App\Notifications\ProductApproved;
+
 use App\Mail\PasswordResetEmail;
 use App\Models\FcmgOrder;
 use App\Models\FcmgOrderItem;
@@ -572,15 +574,20 @@ public function editFmcgProduct(Request $request, $id){
   {
         if(null !== $_POST['submit']){
             $id  = $request->input('id');
-             //mark order as paid
             \DB::table('products')
                 ->where('id', $id)
                 ->update(['prod_status' => 'approve']);
 
+          //send notification to vendor
+            $seller_id = User::findOrFail($request->seller_id);
+            $product_name = Product::where('id', $id)
+            ->get()->pluck('prod_name')->first();
+            $vendorNotification = new ProductApproved($product_name);
+            Notification::send($seller_id, $vendorNotification); 
+
             Session::flash('approve', ' Product approved successful!.'); 
             Session::flash('alert-class', 'alert-success'); 
         }
-            //return view('cooperative.credit_limit', compact('credit'));
             \LogActivity::addToLog('Approve product');
              return redirect()->back()->with('success', 'Product approved successful!..');
 }

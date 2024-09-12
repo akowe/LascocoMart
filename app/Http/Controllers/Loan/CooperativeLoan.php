@@ -28,6 +28,11 @@ use App\Models\ShippingDetail;
 use App\Models\Transaction;
 use App\Models\Categories;
 use App\Models\Product;
+use App\Notifications\NewLoan;
+use App\Notifications\AdminApproveLoan;
+
+use App\Mail\LoanRequestEmail;
+use App\Mail\LoanApprovedEmail;
 
 use Carbon\Carbon;
 use Carbon\CarbonPeriod;
@@ -375,7 +380,7 @@ class CooperativeLoan extends Controller
                 Session::flash('alert-class', 'alert-warning');  
             }
             return view('loan.cooperative.approve-loan', compact('checkApprovalLevel', 
-            'loanPrincipal', 'loanMember', 'loan_id'));
+            'loanPrincipal', 'loanMember', 'loan_id',  'loanMemberID'));
             
         }
         else{ return Redirect::to('/login');}
@@ -385,6 +390,9 @@ class CooperativeLoan extends Controller
         if(Auth::user()){
             $id = Auth::user()->id;
             $code = Auth::user()->code;
+            $cooperative = Auth::user()->coopname;
+            $adminEmail= Auth::user()->email;
+
             $loanID = $request->loan_id;
             $loanApprovalLevel = DB::table('loan')
             ->where('cooperative_code', $code)
@@ -400,6 +408,21 @@ class CooperativeLoan extends Controller
                 'loan_approval_level'   =>  $approvalLevel,
                 'approval_agent'        => $id,
             ]);
+            $amount = $request->amount;
+            $member_id = User::findOrFail($request->member_id);
+            $memberName =  User::where('id', $member_id)->get()->pluck('fname')->first();
+            //send notification for aprrove loan to member
+            $notification = new AdminApproveLoan($amount);
+            Notification::send($member_id, $notification);
+            //send emails
+            $data = array(
+                'cooperative'   => $cooperative, 
+                'amount'        => $amount, 
+                'name'          => $memberName, 
+            );
+    
+              Mail::to($adminEmail)->send(new LoanApprovedEmail($data)); 
+
         return redirect('cooperative-loan')->with('success', 'Loan approval successful');
 
         }

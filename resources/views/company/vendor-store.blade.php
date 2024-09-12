@@ -274,6 +274,8 @@
                                                                                     @csrf
                                                                                     <input type="hidden" name="id"
                                                                                           value="{{$details->id }}">
+                                                                                          <input type="hidden" name="seller_id"
+                                                                                    value="{{$details->seller_id }}">
                                                                                     <button type="submit" name="submit"
                                                                                           class="btn btn-success btn-sm">
                                                                                           Approve</button>

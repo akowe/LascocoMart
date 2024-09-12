@@ -358,8 +358,13 @@ Route::controller(NotificationController::class)->group(function () {
     Route::get('/mark-as-read', 'markAllNotificationAsRead')->name('mark-as-read');
     Route::get('/read/{id}', 'readNotification')->name('read'); 
     Route::get('superadmin-read-fund-request/{id}',  'fundRequestNotification')->name('superadmin-read-fund-request');
+    //new product
     Route::get('/new-product','allNewProductNotification')->name('new-product');
-    Route::get('/read-product/{id}','readAProductNotification')->name('read-product');
+    Route::get('/read-product/{id}','readAProductNotification')->name('read-product'); 
+    //product approved
+    Route::get('/product-approved','NewApprovedProductNotification')->name('product-approved');
+    Route::get('/read-product-approved/{id}','readNewApprovedProductNotification')->name('read-product-approved');
+    
     Route::post('order-delivery/{id}/{product_id}', 'orderDelivered')->name('order-delivery');
     Route::post('fmcg-order-delivery/{id}/{product_id}', 'fmcgOrderDelivered')->name('fmcg-order-delivery');
     Route::get('/product-delivered','allProductDeliveredNotification')->name('product-delivered');
@@ -371,19 +376,26 @@ Route::controller(NotificationController::class)->group(function () {
     Route::get('/read-seller-payment/{id}','readACardPaymentNotification')->name('read-seller-payment');
     Route::get('/read-company-payment/{id}',' ')->name('read-company-payment');
     Route::get('/read-all-order','allNewOrderNotification')->name('read-all-order');
-    
     Route::get('/read-order/{id}','NewOrderNotification')->name('read-order');
     Route::get('/read-admin-order/{id}','readAnOrderNotification')->name('read-admin-order');
     Route::get('/read-admin-member-order/{id}','readAdminMemberOrderNotification')->name('read-admin-member-order');
-    
     Route::get('/read-member-order/{id}','readMemberApprovedOrder')->name('read-member-order');
-    
     Route::get('/read-company-order/{id}','readAnOrderSuperadmin')->name('read-company-order');
     Route::get('/read-all-cancel-order','AdminCancelOrderNotification')->name('read-all-cancel-order');
     Route::get('/read-cancel-order/{id}','readAdminCancelOrderNotification')->name('read-cancel-order');
     Route::get('/read-all-approve-funds','ApproveFundNotification')->name('read-all-approve-funds');
     Route::get('/read-approve-funds/{id}','readApproveFundNotification')->name('read-approve-funds');
     Route::get('/read-cancel-funds/{id}','readCancelFundNotification')->name('read-cancel-funds');
+    //admin  loan
+    Route::get('/new-loan/{id}','NewLoanNotification')->name('new-loan');
+    Route::get('/read-new-loan/{id}','readNewLoanNotification')->name('read-new-loan');
+    //member loan
+    Route::get('/approve-loan/{id}','ApprovedLoanNotification')->name('approve-loan');
+    Route::get('/read-approve-loan/{id}','readApprovedLoanNotification')->name('read-approve-loan');
+    //vendor  sales 
+    Route::get('/new-sales/{id}','NewSalesNotification')->name('new-sales');
+    Route::get('/read-new-sales/{id}','readNewSalesNotification')->name('read-new-sales');
+    
 });
 
 Route::controller(LoanController::class)->group(function () {

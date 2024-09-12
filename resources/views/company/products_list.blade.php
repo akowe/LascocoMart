@@ -258,6 +258,8 @@
                                                                               @csrf
                                                                               <input type="hidden" name="id"
                                                                                     value="{{$product->id }}">
+                                                                                    <input type="hidden" name="seller_id"
+                                                                                    value="{{$product->seller_id }}">
                                                                               <button type="submit" name="submit"
                                                                                     class="btn btn-outline-success btn-sm">
                                                                                     <i class="fa fa-check"></i>&nbsp;

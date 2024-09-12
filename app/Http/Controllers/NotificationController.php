@@ -16,6 +16,10 @@ use App\Notifications\ProductReceived;
 use App\Notifications\AdminCancelOrder;
 use App\Notifications\ApproveFund;
 use App\Notifications\CancelFundRequest;
+use App\Notifications\NewLoan;
+use App\Notifications\AdminApproveLoan;
+use App\Notifications\NewSales;
+
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Arr;
 use App\Models\Voucher;
@@ -27,6 +31,13 @@ use App\Models\FcmgProduct;
 use App\Models\OrderItem;
 use App\Models\fcmgOrder;
 use App\Models\fcmgOrderItem;
+use App\Models\Loan;
+use App\Models\LoanType;
+use App\Models\LoanRepayment;
+use App\Models\LoanSetting;
+use App\Models\DueLoans;
+use App\Models\LoanPaymentTransaction;
+
 use App\Mail\RequestFundEmail;
 use App\Mail\MemberRequestFundEmail;
 use Validator;
@@ -304,8 +315,7 @@ public function NewOrderNotification($id){
     auth()->user()->readNotifications()
     ->where('type', 'App\Notifications\NewOrder')
     ->where('id', $id)->delete();
-    return redirect()->back();
-    
+    return redirect()->back();    
 } 
 
 //admin
@@ -335,7 +345,6 @@ public function readAdminMemberOrderNotification($id){
     ->where('id', $id)->delete();
     return redirect('admin-member-order');
  } 
-
 
 
  public function readMemberApprovedOrder($id){
@@ -448,9 +457,122 @@ public function fundRequestNotification($id){
      if($fund){
         auth()->user()->readNotifications()->where('id', $id)->delete();
      }
-
      return view('fundrequest', compact('fund'));
 
 }
+//Vendor
+//clear new sales
+public function NewSalesNotification($id){
+    $notification = auth()->user()->unreadNotifications()
+    ->where('type', 'App\Notifications\NewSales')
+    ->where('id', $id)->first();
+    if ($notification) {
+         $notification->markAsRead();
+    } 
+    auth()->user()->readNotifications()
+    ->where('type', 'App\Notifications\NewSales')
+    ->where('id', $id)->delete();
+    return redirect()->back(); 
+} 
+
+//vendor read new sales
+public function readNewSalesNotification($id){
+    $notification = auth()->user()->unreadNotifications()
+    ->where('type', 'App\Notifications\NewSales')
+    ->where('id', $id)->first();
+    if ($notification) {
+         $notification->markAsRead();
+    } 
+    auth()->user()->readNotifications()
+    ->where('type', 'App\Notifications\NewSales')
+    ->where('id', $id)->delete();
+    return redirect('vendor-sales');
+ } 
+
+
+//Loan Notifications
+//clear approve loan
+public function ApprovedLoanNotification($id){
+    $notification = auth()->user()->unreadNotifications()
+    ->where('type', 'App\Notifications\AdminApproveLoan')
+    ->where('id', $id)->first();
+    if ($notification) {
+         $notification->markAsRead();
+    } 
+    auth()->user()->readNotifications()
+    ->where('type', 'App\Notifications\AdminApproveLoan')
+    ->where('id', $id)->delete();
+    return redirect()->back(); 
+} 
+
+//member read approveloan
+public function readApprovedLoanNotification($id){
+    $notification = auth()->user()->unreadNotifications()
+    ->where('type', 'App\Notifications\AdminApproveLoan')
+    ->where('id', $id)->first();
+    if ($notification) {
+         $notification->markAsRead();
+    } 
+    auth()->user()->readNotifications()
+    ->where('type', 'App\Notifications\AdminApproveLoan')
+    ->where('id', $id)->delete();
+    return redirect('member-loan-history');
+ } 
+
+//admin read new loan notification
+//clear a single notification
+public function NewLoanNotification($id){
+    $notification = auth()->user()->unreadNotifications()
+    ->where('type', 'App\Notifications\NewLoan')
+    ->where('id', $id)->first();
+    if ($notification) {
+         $notification->markAsRead();
+    } 
+    auth()->user()->readNotifications()
+    ->where('type', 'App\Notifications\NewLoan')
+    ->where('id', $id)->delete();
+    return redirect()->back(); 
+} 
+public function readNewLoanNotification($id){
+    $notification = auth()->user()->unreadNotifications()
+    ->where('type', 'App\Notifications\NewLoan')
+    ->where('id', $id)->first();
+    if ($notification) {
+         $notification->markAsRead();
+    } 
+    auth()->user()->readNotifications()
+    ->where('type', 'App\Notifications\NewLoan')
+    ->where('id', $id)->delete();
+    return redirect('requested-loans');
+ } 
+
+ //vendor product approved
+ public function NewApprovedProductNotification($id){
+    $notification = auth()->user()->unreadNotifications()
+    ->where('type', 'App\Notifications\ProductApproved')
+    ->where('id', $id)->first();
+    if ($notification) {
+         $notification->markAsRead();
+    } 
+    auth()->user()->readNotifications()
+    ->where('type', 'App\Notifications\ProductApproved')
+    ->where('id', $id)->delete();
+    return redirect()->back(); 
+} 
+
+public function readNewApprovedProductNotification($id){
+    $notification = auth()->user()->unreadNotifications()
+    ->where('type', 'App\Notifications\ProductApproved')
+    ->where('id', $id)->first();
+    if ($notification) {
+         $notification->markAsRead();
+    } 
+    auth()->user()->readNotifications()
+    ->where('type', 'App\Notifications\ProductApproved')
+    ->where('id', $id)->delete();
+    return redirect('vendor-products');
+ } 
+
+
 
 }
