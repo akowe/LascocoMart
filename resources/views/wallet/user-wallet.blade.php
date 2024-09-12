@@ -333,8 +333,10 @@
                               </div>
                               <div class="card-footer d-flex align-items-center">
                                     <p class="m-0 text-secondary">
-
+                                    @if(empty($walletTransaction))
+                                    @else
                                     {{ $history_to_show->links() }}
+                                    @endif
                                     </p>
 
                                     <ul class="pagination m-0 ms-auto">
