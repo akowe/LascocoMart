@@ -172,7 +172,7 @@ class WalletController extends Controller
                         $page = request()->has('page') ? request('page') : 1;
 
                       // Set default per page
-                      $perPage = request()->has('per_page') ? request('per_page') : 15;
+                      $perPage = request()->has('per_page') ? request('per_page') : 10;
 
                       // Offset required to take the results
                       $offset = ($page * $perPage) - $perPage;
