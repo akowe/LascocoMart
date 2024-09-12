@@ -165,22 +165,40 @@ class WalletController extends Controller
                         $getWalletAmount = Arr::pluck($arrayWalletTransaction, 'amount');
                         $walletAmount = implode(" ",$getWalletAmount);
                         $walletTransaction = $detail['data'];
-                        $perPage = $request->perPage ?? 10;
-                        $current_page = LengthAwarePaginator::resolveCurrentPage();
+                      
+                        $history = $detail['data'];
+                 
+                        // Set default page
+                        $page = request()->has('page') ? request('page') : 1;
 
-                        
-                        $orders = $detail['data'];
-                        $current_page_orders = array_slice($orders, ($current_page - 1) * $perPage, $perPage);
-                        $orders_collection = collect($orders); // alternative. You can use helper function
-                        $orders_to_show = new LengthAwarePaginator($current_page_orders, count($orders_collection), $perPage);
+                      // Set default per page
+                      $perPage = request()->has('per_page') ? request('per_page') : 15;
+
+                      // Offset required to take the results
+                      $offset = ($page * $perPage) - $perPage;
+
+                      // At here you might transform your data into collection
+                      $url = "";
+                      $newCollection = collect($history, true);
+
+                      // Set custom pagination to result set
+                      $history_to_show =  new LengthAwarePaginator(
+                          $newCollection->slice($offset, $perPage),
+                          $newCollection->count(),
+                          $perPage,
+                          $page,
+                          ['path' => request()->url(), 'query' => request()->query()]
+                      );
+
                       }
                        if($detail['status'] == 'error'){
                         return view('wallet.user-wallet', compact('WalletAccountNumber',
-                        'WalletAccountName', 'WalletBankName', 'phoneNumber', 'orders_to_show'));
+                        'WalletAccountName', 'WalletBankName', 'phoneNumber'));
                       }            
 
             return view('wallet.user-wallet', compact('WalletAccountNumber',
-            'WalletAccountName', 'WalletBankName', 'phoneNumber', 'accountBalance', 'walletTransaction'));
+            'WalletAccountName', 'WalletBankName', 'phoneNumber', 'accountBalance', 
+            'walletTransaction', 'history_to_show'));
         }
         else { return Redirect::to('/login');}
     }

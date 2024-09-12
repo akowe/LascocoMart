@@ -300,7 +300,7 @@
 
                                           <tbody>@if(empty($walletTransaction))
                                                 @else
-                                                @foreach($walletTransaction as $data)
+                                                @foreach($history_to_show as $data)
                                                 <tr>
                                                       <td><input class="form-check-input m-0 align-middle"
                                                                   type="checkbox" aria-label="Select"></td>
@@ -329,11 +329,12 @@
                                           </tbody>
 
                                     </table>
+                                   
                               </div>
                               <div class="card-footer d-flex align-items-center">
                                     <p class="m-0 text-secondary">
 
-
+                                    {{ $history_to_show->links() }}
                                     </p>
 
                                     <ul class="pagination m-0 ms-auto">
