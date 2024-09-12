@@ -448,7 +448,7 @@ document.getElementById('pagination').onchange = function() {
       window.location = "{!! $orders->url(1) !!}&perPage=" + this.value;
 };
 </script>
-<script>
+<!-- <script>
 $(document).ready(function() {
       $("#show_hide_wallet a").on('click', function(event) {
             event.preventDefault();
@@ -463,6 +463,6 @@ $(document).ready(function() {
             }
       });
 });
-</script>
+</script> -->
 
 @endsection
