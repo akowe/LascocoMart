@@ -101,11 +101,16 @@ class WalletController extends Controller
             "phone"            => $phoneNumber,
             "account_number"   => $WalletAccountNumber,
             );
-            $testToken = '';
-            $liveToken = '';
+            $testToken = DB::table('ogaranya_api_token')
+            ->select('*')->pluck('test_token')->first();
+            $testPublicKey = DB::table('ogaranya_api_token')
+            ->select('*')->pluck('test_publickey')->first();
 
-            $testPublicKey = '';
-            $livePublicKey = '';
+            $liveToken = DB::table('ogaranya_api_token')
+            ->select('*')->pluck('live_token')->first();
+            $livePublicKey = DB::table('ogaranya_api_token')
+            ->select('*')->pluck('live_publickey')->first();
+
             $jsonData = json_encode($data);
              $url = "https://api.staging.ogaranya.com/v1/2347033141516/wallet/info";
             if($jsonData) {
