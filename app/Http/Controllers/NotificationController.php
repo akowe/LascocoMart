@@ -573,6 +573,25 @@ public function readNewApprovedProductNotification($id){
     return redirect('vendor-products');
  } 
 
-
-
+ public function showAllUnreadNotification(Request $request){
+    $perPage = $request->perPage ?? 10;
+        $search = $request->input('search');
+    $notification = auth()->user()->unreadNotifications()
+    ->orderBy('created_at', 'desc')
+        ->where(function ($query) use ($search) {  // <<<
+       $query->where('created_at', 'LIKE', '%'.$search.'%')
+           ->orderBy('created_at', 'desc');
+        })->paginate($perPage, $columns = ['*'], $pageName = 'notification'
+        )->appends(['per_page'   => $perPage]);
+        $pagination = $notification->appends ( array ('search' => $search) );
+            if (count ( $pagination ) > 0){
+                  \LogActivity::addToLog('Show All Notification');
+                return view('notification.notifications', compact(
+                'perPage', 'notification',))->withDetails ( $pagination );    
+            }  
+            else{
+                redirect()->back()->with('status', 'No record found'); 
+            };
+     return view('notification.notifications', compact( 'perPage', 'notification'));  
+ }
 }

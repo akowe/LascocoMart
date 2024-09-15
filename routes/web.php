@@ -363,8 +363,7 @@ Route::controller(NotificationController::class)->group(function () {
     Route::get('/read-product/{id}','readAProductNotification')->name('read-product'); 
     //product approved
     Route::get('/product-approved','NewApprovedProductNotification')->name('product-approved');
-    Route::get('/read-product-approved/{id}','readNewApprovedProductNotification')->name('read-product-approved');
-    
+    Route::get('/read-product-approved/{id}','readNewApprovedProductNotification')->name('read-product-approved');  
     Route::post('order-delivery/{id}/{product_id}', 'orderDelivered')->name('order-delivery');
     Route::post('fmcg-order-delivery/{id}/{product_id}', 'fmcgOrderDelivered')->name('fmcg-order-delivery');
     Route::get('/product-delivered','allProductDeliveredNotification')->name('product-delivered');
@@ -395,6 +394,7 @@ Route::controller(NotificationController::class)->group(function () {
     //vendor  sales 
     Route::get('/new-sales/{id}','NewSalesNotification')->name('new-sales');
     Route::get('/read-new-sales/{id}','readNewSalesNotification')->name('read-new-sales');
+    Route::get('/all-notification','showAllUnreadNotification')->name('all-notification');
     
 });
 

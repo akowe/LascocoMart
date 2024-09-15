@@ -561,7 +561,7 @@
                                                                   <div class="list-group-item bg-white">
                                                                         <div class="row align-items-center">
                                                                               <div class="col-auto ">
-                                                                                    <a href=""
+                                                                                    <a href="{{ url('all-notification') }}"
                                                                                           class="small text-secondary">
                                                                                           Show all notifications 
                                                                                     </a>
@@ -583,7 +583,7 @@
                                                                                     </div>
                                                                               </div>
                                                                               <div class="col-auto">
-                                                                                    <a href="" title="Clear" alt="Clear"
+                                                                              <a href="{{ url('mark-as-read') }}"  title="Clear" alt="Clear"
                                                                                           class="text-secondary small">
                                                                                           Cancel all
                                                                                     </a>
@@ -910,7 +910,7 @@
                                                             <div class="list-group-item bg-white">
                                                                   <div class="row align-items-center">
                                                                         <div class="col-auto ">
-                                                                              <a href="" class="small text-secondary">
+                                                                              <a href="{{ url('all-notification') }}" class="small text-secondary">
                                                                                     Show all notifications
                                                                               </a>
                                                                         </div>
@@ -933,7 +933,7 @@
                                                                               </div>
                                                                         </div>
                                                                         <div class="col-auto">
-                                                                              <a href="" title="Clear" alt="Clear"
+                                                                        <a href="{{ url('mark-as-read') }}" title="Clear" alt="Clear"
                                                                                     class="text-secondary small">
                                                                                     Cancel all
                                                                               </a>
@@ -1115,7 +1115,7 @@
                                                       <div class="list-group-item bg-white">
                                                             <div class="row align-items-center">
                                                                   <div class="col-auto ">
-                                                                        <a href="" class="small text-secondary">
+                                                                        <a href="{{ url('all-notification') }}" class="small text-secondary">
                                                                               Show all notifications
                                                                         </a>
                                                                   </div>
@@ -1137,7 +1137,7 @@
                                                                         </div>
                                                                   </div>
                                                                   <div class="col-auto">
-                                                                        <a href="" title="Clear" alt="Clear"
+                                                                  <a href="{{ url('mark-as-read') }}"  title="Clear" alt="Clear"
                                                                               class="text-secondary small">
                                                                               Cancel all
                                                                         </a>
@@ -1291,7 +1291,7 @@
                                                 <div class="list-group-item bg-white">
                                                       <div class="row align-items-center">
                                                             <div class="col-auto ">
-                                                                  <a href="" class="small text-secondary">
+                                                                  <a href="{{ url('all-notification') }}" class="small text-secondary">
                                                                         Show all notifications
                                                                   </a>
                                                             </div>
@@ -1307,7 +1307,7 @@
                                                                   </div>
                                                             </div>
                                                             <div class="col-auto">
-                                                                  <a href="" title="Clear" alt="Clear"
+                                                            <a href="{{ url('mark-as-read') }}" title="Clear" alt="Clear"
                                                                         class="text-secondary small">
                                                                         Cancel all
                                                                   </a>
@@ -1547,7 +1547,7 @@
                                     <div class="list-group-item bg-white">
                                           <div class="row align-items-center">
                                                 <div class="col-auto ">
-                                                      <a href="" class="small text-secondary">
+                                                      <a href="{{ url('all-notification') }}" class="small text-secondary">
                                                             Show all notifications
                                                       </a>
                                                 </div>
@@ -1561,7 +1561,7 @@
                                                       </div>
                                                 </div>
                                                 <div class="col-auto">
-                                                      <a href="" title="Clear" alt="Clear" class="text-secondary small">
+                                                      <a href="{{ url('mark-as-read') }}" title="Clear" alt="Clear" class="text-secondary small">
                                                             Cancel all
                                                       </a>
                                                 </div>
