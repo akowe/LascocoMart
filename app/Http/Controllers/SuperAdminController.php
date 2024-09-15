@@ -23,6 +23,7 @@ use App\Models\Privacy;
 use App\Models\ReturnRefund; 
 use App\Models\Terms;
 use App\Models\FundRequest;
+use App\Models\OgaranyaAPI;
 use App\Notifications\NewCardPayment;
 use App\Notifications\ApproveFund;
 use App\Notifications\CancelFundRequest;
