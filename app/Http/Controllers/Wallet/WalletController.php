@@ -122,8 +122,8 @@ class WalletController extends Controller
                      CURLOPT_POSTFIELDS =>$jsonData,
                      CURLOPT_HTTPHEADER => array(
                        'Content-Type: application/json',
-                       'token: e4f3f028-c0b4-4c9b-b8ef-8be41a7613f6',
-                        'publickey: 62f2da03d13992642d5416b3b1977071bf3adfe99a93b8daea6194306b168b84901f49025f25a245f083b0d627c921f5642ff124047e4a143dfe4cc1dd526d1b',
+                       'token: '.$testToken,
+                        'publickey:  '.$testPublicKey,
           
                        )
                      ));
