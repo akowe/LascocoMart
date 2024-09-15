@@ -29,6 +29,7 @@ use App\Models\Transaction;
 use App\Models\Categories;
 use App\Models\Product;
 use App\Models\FcmgProduct;
+use App\Models\OgaranyaAPI;
 use App\Mail\SendMail;
 use App\Mail\OrderApprovedEmail;
 use App\Mail\SalesEmail;
