@@ -100,6 +100,11 @@ class WalletController extends Controller
             "phone"            => $phoneNumber,
             "account_number"   => $WalletAccountNumber,
             );
+            $testToken = '';
+            $liveToken = '';
+
+            $testPublicKey = '';
+            $livePublicKey = '';
             $jsonData = json_encode($data);
              $url = "https://api.staging.ogaranya.com/v1/2347033141516/wallet/info";
             if($jsonData) {
