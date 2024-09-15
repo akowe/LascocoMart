@@ -195,7 +195,11 @@ class MembersController extends Controller
           ->select('*')->pluck('live_publickey')->first();
 
           $jsonData = json_encode($data);
-           $url = "https://api.staging.ogaranya.com/v1/2347033141516/wallet/info";
+
+          $testURl = "https://api.staging.ogaranya.com/v1/2347033141516/wallet/info";
+          $liveURL = 'https://api.ogaranya.com/v1/2347033141516/wallet/info';
+
+           $url = $liveURL ;
           if($jsonData) {
                    $curl = curl_init();
                    curl_setopt_array($curl, array(
@@ -205,8 +209,8 @@ class MembersController extends Controller
                    CURLOPT_POSTFIELDS =>$jsonData,
                    CURLOPT_HTTPHEADER => array(
                      'Content-Type: application/json',
-                     'token: '.$testToken,
-                      'publickey:  '.$testPublicKey,
+                     'token: '.$liveToken,
+                      'publickey:  '.$livePublicKey,
                      )
                    ));
                 $res = curl_exec($curl);
@@ -249,7 +253,10 @@ class MembersController extends Controller
  
                   $jsonWalletData = json_encode($walletdData);
                  // dd($jsonWalletData);
-                  $walletHistoryUrl = "https://api.staging.ogaranya.com/v1/2347033141516/wallet/history";
+                 $testURl = "https://api.staging.ogaranya.com/v1/2347033141516/wallet/history";
+                 $liveURL = 'https://api.ogaranya.com/v1/2347033141516/wallet/history';
+
+                  $walletHistoryUrl =   $liveURL;
                   if($jsonWalletData) {
                            $curlopt = curl_init();
                            curl_setopt_array($curlopt, array(
@@ -259,8 +266,8 @@ class MembersController extends Controller
                            CURLOPT_POSTFIELDS =>$jsonWalletData,
                            CURLOPT_HTTPHEADER => array(
                              'Content-Type: application/json',
-                             'token: '.$testToken,
-                             'publickey:  '.$testPublicKey,
+                             'token: '.$liveToken,
+                             'publickey:  '.$livePublicKey,
                             )
                            ));
                         $response = curl_exec($curlopt);
