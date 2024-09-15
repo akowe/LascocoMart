@@ -16,6 +16,10 @@ return new class extends Migration
         Schema::create('ogaranya_api_token', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
+            $table->string('test_token')->nullable();
+            $table->string('live_token')->nullable();
+            $table->string('test_publickey')->nullable();
+            $table->string('live_publickey')->nullable();
         });
     }
 
