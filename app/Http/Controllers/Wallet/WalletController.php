@@ -105,7 +105,10 @@ class WalletController extends Controller
             ->select('*')->pluck('live_publickey')->first();
 
             $jsonData = json_encode($data);
-             $url = "https://api.staging.ogaranya.com/v1/2347033141516/wallet/info";
+
+            $testURl = "https://api.staging.ogaranya.com/v1/2347033141516/wallet/info";
+            $liveURL = 'https://api.ogaranya.com/v1/2347033141516/wallet/info';
+             $url =   $liveURL;
             if($jsonData) {
                      $curl = curl_init();
                      curl_setopt_array($curl, array(
@@ -115,8 +118,8 @@ class WalletController extends Controller
                      CURLOPT_POSTFIELDS =>$jsonData,
                      CURLOPT_HTTPHEADER => array(
                        'Content-Type: application/json',
-                       'token: '.$testToken,
-                        'publickey:  '.$testPublicKey,
+                       'token: '.$liveToken,
+                       'publickey:  '.$livePublicKey,
           
                        )
                      ));
@@ -143,8 +146,10 @@ class WalletController extends Controller
                   );
 
                   $jsonWalletData = json_encode($walletdData);
+                  $testURl = "https://api.staging.ogaranya.com/v1/2347033141516/wallet/history";
+                  $liveURL = 'https://api.ogaranya.com/v1/2347033141516/wallet/history';
                  // dd($jsonWalletData);
-                  $walletHistoryUrl = "https://api.staging.ogaranya.com/v1/2347033141516/wallet/history";
+                  $walletHistoryUrl =  $liveURL;
                   if($jsonWalletData) {
                            $curlopt = curl_init();
                            curl_setopt_array($curlopt, array(
@@ -154,8 +159,8 @@ class WalletController extends Controller
                            CURLOPT_POSTFIELDS =>$jsonWalletData,
                            CURLOPT_HTTPHEADER => array(
                              'Content-Type: application/json',
-                             'token: '.$testToken,
-                             'publickey:  '.$testPublicKey,
+                             'token: '.$liveToken,
+                             'publickey:  '.$livePublicKey,
                             )
                            ));
                         $response = curl_exec($curlopt);
@@ -336,7 +341,10 @@ class WalletController extends Controller
         $livePublicKey = DB::table('ogaranya_api_token')
         ->select('*')->pluck('live_publickey')->first();
        
-        $json_url = "https://api.staging.ogaranya.com/v1/2347033141516/wallet";
+        $testURl = "https://api.staging.ogaranya.com/v1/2347033141516/wallet";
+        $liveURL = 'https://api.ogaranya.com/v1/2347033141516/wallet';
+
+        $json_url = $liveURL ;
         $data = array(
           'firstname'     => $firstname,
           'surname'       => $surname,
@@ -356,8 +364,8 @@ class WalletController extends Controller
               CURLOPT_POSTFIELDS =>$json_data,
               CURLOPT_HTTPHEADER => array(
                 'Content-Type: application/json',
-                'token: '.$testToken,
-                'publickey:  '.$testPublicKey,
+                'token: '.$liveToken,
+                'publickey:  '.$livePublicKey,
                 )
               ));
               $response = curl_exec($curl);
@@ -590,7 +598,10 @@ class WalletController extends Controller
 
             $jsonWalletData = json_encode($walletdData);
            // dd($from);
-            $walletHistoryUrl = "https://api.staging.ogaranya.com/v1/2347033141516/wallet/history";
+           $testURl = "https://api.staging.ogaranya.com/v1/2347033141516/wallet/history";
+           $liveURL = 'https://api.ogaranya.com/v1/2347033141516/wallet/history';
+
+            $walletHistoryUrl = $liveURL ;
             if($jsonWalletData) {
                      $curlopt = curl_init();
                      curl_setopt_array($curlopt, array(
@@ -600,8 +611,8 @@ class WalletController extends Controller
                      CURLOPT_POSTFIELDS =>$jsonWalletData,
                      CURLOPT_HTTPHEADER => array(
                        'Content-Type: application/json',
-                       'token: '.$testToken,
-                       'publickey:  '.$testPublicKey,
+                       'token: '.$liveToken,
+                       'publickey:  '.$livePublicKey,
                       )
                      ));
                   $response = curl_exec($curlopt);
@@ -696,7 +707,11 @@ class WalletController extends Controller
               ->select('*')->pluck('live_publickey')->first();
 
               $jsonDebitData = json_encode($debitData);
-               $debit_url = "https://api.staging.ogaranya.com/v1/2347033141516/wallet/debit";
+
+              $testURl = "https://api.staging.ogaranya.com/v1/2347033141516/wallet/debit";
+              $liveURL = 'https://api.ogaranya.com/v1/2347033141516/wallet/debit';
+
+               $debit_url =  $liveURL;
               if($jsonDebitData) {
                        $curlopt = curl_init();
                        curl_setopt_array($curlopt, array(
@@ -706,8 +721,8 @@ class WalletController extends Controller
                        CURLOPT_POSTFIELDS =>$jsonDebitData,
                        CURLOPT_HTTPHEADER => array(
                          'Content-Type: application/json',
-                         'token: '.$testToken,
-                          'publickey:  '.$testPublicKey,
+                         'token: '.$liveToken,
+                          'publickey:  '.$livePublicKey,
                          )
                        ));
                     $response = curl_exec($curlopt);
@@ -923,7 +938,10 @@ class WalletController extends Controller
 
       $jsonDebitData = json_encode($debitData);
      // dd($jsonDebitData);
-       $debit_url = "https://api.staging.ogaranya.com/v1/2347033141516/wallet/debit";
+     $testURl = "https://api.staging.ogaranya.com/v1/2347033141516/wallet/debit";
+     $liveURL = 'https://api.ogaranya.com/v1/2347033141516/wallet/debit';
+
+       $debit_url = $liveURL ;
       if($jsonDebitData) {
                $curlopt = curl_init();
                curl_setopt_array($curlopt, array(
@@ -933,8 +951,8 @@ class WalletController extends Controller
                CURLOPT_POSTFIELDS =>$jsonDebitData,
                CURLOPT_HTTPHEADER => array(
                  'Content-Type: application/json',
-                    'token: '.$testToken,
-                    'publickey:  '.$testPublicKey,
+                    'token: '.$liveToken,
+                    'publickey:  '.$livePublicKey,
                  )
                ));
             $response = curl_exec($curlopt);
