@@ -326,13 +326,16 @@ class WalletController extends Controller
 
         // $checkOtp= Otp::where('code', $otp)->exists();
         //Ogaranya Wallet Account 
-        //staging: https://api.staging.ogaranya.com/v1/2347033141516/wallet
-        //'token: e4f3f028-c0b4-4c9b-b8ef-8be41a7613f6',
-        //'publickey: 62f2da03d13992642d5416b3b1977071bf3adfe99a93b8daea6194306b168b84901f49025f25a245f083b0d627c921f5642ff124047e4a143dfe4cc1dd526d1b',
-        
-        //production:  https://api.ogaranya.com/v1/2347033141516/wallet
-        // 'token: MDY0OTgzMTkxNjIzNGViZDA3YWIxZWMwZTFjYzY2Mzk1OTAwYjYwNTc2ZjY4NzBlOTBlMGQzMjk5YzJlZmUxZA==',
-        // 'publickey: 4f223ac9cff724d03833fb8fb9e1a0638dc5125696420cc33c71bcf2e35a0af08beb8cd85a0c0c2eca2670d0244ca70bb9dff6bfa081def75cdaab1034beb1fe',
+        $testToken = DB::table('ogaranya_api_token')
+        ->select('*')->pluck('test_token')->first();
+        $testPublicKey = DB::table('ogaranya_api_token')
+        ->select('*')->pluck('test_publickey')->first();
+
+        $liveToken = DB::table('ogaranya_api_token')
+        ->select('*')->pluck('live_token')->first();
+        $livePublicKey = DB::table('ogaranya_api_token')
+        ->select('*')->pluck('live_publickey')->first();
+       
         $json_url = "https://api.staging.ogaranya.com/v1/2347033141516/wallet";
         $data = array(
           'firstname'     => $firstname,
@@ -353,8 +356,8 @@ class WalletController extends Controller
               CURLOPT_POSTFIELDS =>$json_data,
               CURLOPT_HTTPHEADER => array(
                 'Content-Type: application/json',
-                'token: e4f3f028-c0b4-4c9b-b8ef-8be41a7613f6',
-                'publickey: 62f2da03d13992642d5416b3b1977071bf3adfe99a93b8daea6194306b168b84901f49025f25a245f083b0d627c921f5642ff124047e4a143dfe4cc1dd526d1b',
+                'token: '.$testToken,
+                'publickey:  '.$testPublicKey,
                 )
               ));
               $response = curl_exec($curl);
@@ -575,6 +578,15 @@ class WalletController extends Controller
             "from"             => $from,
             "to"               => $to,
             );
+            $testToken = DB::table('ogaranya_api_token')
+            ->select('*')->pluck('test_token')->first();
+            $testPublicKey = DB::table('ogaranya_api_token')
+            ->select('*')->pluck('test_publickey')->first();
+    
+            $liveToken = DB::table('ogaranya_api_token')
+            ->select('*')->pluck('live_token')->first();
+            $livePublicKey = DB::table('ogaranya_api_token')
+            ->select('*')->pluck('live_publickey')->first();
 
             $jsonWalletData = json_encode($walletdData);
            // dd($from);
@@ -588,9 +600,8 @@ class WalletController extends Controller
                      CURLOPT_POSTFIELDS =>$jsonWalletData,
                      CURLOPT_HTTPHEADER => array(
                        'Content-Type: application/json',
-                       'token: e4f3f028-c0b4-4c9b-b8ef-8be41a7613f6',
-                        'publickey: 62f2da03d13992642d5416b3b1977071bf3adfe99a93b8daea6194306b168b84901f49025f25a245f083b0d627c921f5642ff124047e4a143dfe4cc1dd526d1b',
-          
+                       'token: '.$testToken,
+                       'publickey:  '.$testPublicKey,
                       )
                      ));
                   $response = curl_exec($curlopt);
@@ -674,6 +685,16 @@ class WalletController extends Controller
               "amount"                => $amount,
               "payment_gateway_code"  => "122"
               );
+              $testToken = DB::table('ogaranya_api_token')
+              ->select('*')->pluck('test_token')->first();
+              $testPublicKey = DB::table('ogaranya_api_token')
+              ->select('*')->pluck('test_publickey')->first();
+      
+              $liveToken = DB::table('ogaranya_api_token')
+              ->select('*')->pluck('live_token')->first();
+              $livePublicKey = DB::table('ogaranya_api_token')
+              ->select('*')->pluck('live_publickey')->first();
+
               $jsonDebitData = json_encode($debitData);
                $debit_url = "https://api.staging.ogaranya.com/v1/2347033141516/wallet/debit";
               if($jsonDebitData) {
@@ -685,9 +706,8 @@ class WalletController extends Controller
                        CURLOPT_POSTFIELDS =>$jsonDebitData,
                        CURLOPT_HTTPHEADER => array(
                          'Content-Type: application/json',
-                         'token: e4f3f028-c0b4-4c9b-b8ef-8be41a7613f6',
-                          'publickey: 62f2da03d13992642d5416b3b1977071bf3adfe99a93b8daea6194306b168b84901f49025f25a245f083b0d627c921f5642ff124047e4a143dfe4cc1dd526d1b',
-            
+                         'token: '.$testToken,
+                          'publickey:  '.$testPublicKey,
                          )
                        ));
                     $response = curl_exec($curlopt);
@@ -891,6 +911,16 @@ class WalletController extends Controller
       "amount"                => $amount,
       "payment_gateway_code"  => "122"
       );
+      $testToken = DB::table('ogaranya_api_token')
+      ->select('*')->pluck('test_token')->first();
+      $testPublicKey = DB::table('ogaranya_api_token')
+      ->select('*')->pluck('test_publickey')->first();
+
+      $liveToken = DB::table('ogaranya_api_token')
+      ->select('*')->pluck('live_token')->first();
+      $livePublicKey = DB::table('ogaranya_api_token')
+      ->select('*')->pluck('live_publickey')->first();
+
       $jsonDebitData = json_encode($debitData);
      // dd($jsonDebitData);
        $debit_url = "https://api.staging.ogaranya.com/v1/2347033141516/wallet/debit";
@@ -903,9 +933,8 @@ class WalletController extends Controller
                CURLOPT_POSTFIELDS =>$jsonDebitData,
                CURLOPT_HTTPHEADER => array(
                  'Content-Type: application/json',
-                 'token: e4f3f028-c0b4-4c9b-b8ef-8be41a7613f6',
-                  'publickey: 62f2da03d13992642d5416b3b1977071bf3adfe99a93b8daea6194306b168b84901f49025f25a245f083b0d627c921f5642ff124047e4a143dfe4cc1dd526d1b',
-    
+                    'token: '.$testToken,
+                    'publickey:  '.$testPublicKey,
                  )
                ));
             $response = curl_exec($curlopt);
