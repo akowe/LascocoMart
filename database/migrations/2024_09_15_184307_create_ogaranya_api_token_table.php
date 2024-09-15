@@ -17,9 +17,11 @@ return new class extends Migration
             $table->id();
             $table->timestamps();
             $table->string('test_token')->nullable();
-            $table->string('live_token')->nullable();
             $table->string('test_publickey')->nullable();
+            $table->string('test_url')->nullable();
+            $table->string('live_token')->nullable();
             $table->string('live_publickey')->nullable();
+            $table->string('live_url')->nullable();
         });
     }
 

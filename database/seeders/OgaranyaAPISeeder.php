@@ -17,7 +17,7 @@ class OgaranyaAPISeeder extends Seeder
     {
         //
         OgaranyaAPI::create([
-           
+         
         ]);
     }
 }
