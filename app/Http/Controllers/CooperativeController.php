@@ -1124,7 +1124,7 @@ class CooperativeController extends Controller
             $jsonData = json_encode($data);
 
             $testURl = "https://api.staging.ogaranya.com/v1/2347033141516/wallet/info";
-            $liveURL = 'https://api.ogaranya.com/v1/2347033141516/wallet/info';
+            $liveURL = "https://api.ogaranya.com/v1/2347033141516/wallet/info";
 
              $url =    $liveURL ;
             if($jsonData) {
@@ -1178,12 +1178,17 @@ class CooperativeController extends Controller
             //  }
             
             //debit wallet  here
-            //9 payment service bank. code 122
+            //9 payment service bank. code 
+            $live_payment_gateway =  DB::table('ogaranya_api_token')
+            ->select('*')->pluck('live_payment_gateway')->first();
+
+            $test_payment_gateway = DB::table('ogaranya_api_token')
+            ->select('*')->pluck('test_payment_gateway')->first();
             $debitData = array(
                 "phone"                 => $phoneNumber,
                 "account_number"        => $WalletAccountNumber,
                 "amount"                => $grandtotal,
-                "payment_gateway_code"  => "122"
+                "payment_gateway_code"  => $live_payment_gateway
                 );
                 $jsonDebitData = json_encode($debitData);
 
@@ -1198,7 +1203,7 @@ class CooperativeController extends Controller
                 ->select('*')->pluck('live_publickey')->first();
 
                 $testURl = "https://api.staging.ogaranya.com/v1/2347033141516/wallet/debit";
-                $liveURL = 'https://api.ogaranya.com/v1/2347033141516/wallet/debit';
+                $liveURL = "https://api.ogaranya.com/v1/2347033141516/wallet/debit";
 
                  $debit_url =  $liveURL ;
                 if($jsonDebitData) {
