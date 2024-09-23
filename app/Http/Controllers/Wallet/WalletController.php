@@ -689,13 +689,18 @@ class WalletController extends Controller
             $amount        =  $request->amount;
             $totalAmount   = $amount - $delivery;
 
+            $live_payment_gateway =  DB::table('ogaranya_api_token')
+            ->select('*')->pluck('live_payment_gateway')->first();
 
+            $test_payment_gateway = DB::table('ogaranya_api_token')
+            ->select('*')->pluck('test_payment_gateway')->first();
             $debitData = array(
-              "phone"                 => $phoneNumber,
-              "account_number"        => $WalletAccountNumber,
-              "amount"                => $amount,
-              "payment_gateway_code"  => "122"
-              );
+                "phone"                 => $phoneNumber,
+                "account_number"        => $WalletAccountNumber,
+                "amount"                => $grandtotal,
+                "payment_gateway_code"  => $live_payment_gateway
+                );
+           
               $testToken = DB::table('ogaranya_api_token')
               ->select('*')->pluck('test_token')->first();
               $testPublicKey = DB::table('ogaranya_api_token')
@@ -920,12 +925,18 @@ class WalletController extends Controller
     $amount        = $request->amount;
     $totalAmount   = $amount - $delivery;
 
+    $live_payment_gateway =  DB::table('ogaranya_api_token')
+    ->select('*')->pluck('live_payment_gateway')->first();
+
+    $test_payment_gateway = DB::table('ogaranya_api_token')
+    ->select('*')->pluck('test_payment_gateway')->first();
     $debitData = array(
-      "phone"                 => $phoneNumber,
-      "account_number"        => $WalletAccountNumber,
-      "amount"                => $amount,
-      "payment_gateway_code"  => "122"
-      );
+        "phone"                 => $phoneNumber,
+        "account_number"        => $WalletAccountNumber,
+        "amount"                => $grandtotal,
+        "payment_gateway_code"  => $live_payment_gateway
+        );
+
       $testToken = DB::table('ogaranya_api_token')
       ->select('*')->pluck('test_token')->first();
       $testPublicKey = DB::table('ogaranya_api_token')
