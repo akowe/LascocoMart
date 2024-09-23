@@ -308,12 +308,12 @@
 
 
                                                       <td>
-                                                            @if(Str::contains($data['narration'], 'CREDIT'))
+                                                            @if(Str::contains($data['narration'], 'WALLET'))
                                                             {{$data['amount']}} <small> <span
-                                                                        class="badge bg-green-lt">Credit</span></small>
+                                                                        class="badge bg-danger-lt">Debit</span></small>
                                                             @else
                                                             {{$data['amount']}} <small><span
-                                                                        class="badge bg-danger-lt">Debit</span></small>
+                                                                        class="badge bg-success-lt">Credit</span></small>
                                                             @endif
                                                       </td>
 
