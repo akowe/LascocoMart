@@ -3503,6 +3503,7 @@
                                           <div class="modal-content">
                                                 <div class="modal-header">
                                                       <h5 class="modal-title">Add Fund To Wallet </h5>
+                                                      <h2 class="text-danger">In-partnership  with OGARANYA PAY wallet service</h2>
                                                       <button type="button" class="btn-close" data-bs-dismiss="modal"
                                                             aria-label="Close"></button>
                                                 </div>
