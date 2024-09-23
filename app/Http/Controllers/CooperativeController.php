@@ -39,6 +39,7 @@ use App\Notifications\AdminCancelOrder;
 use App\Notifications\NewProduct;
 use App\Notifications\NewSales;
 use App\Notifications\ApprovedOrder;
+use App\Models\ChooseBank;
 use Carbon\Carbon;
 use Carbon\CarbonPeriod;
 use Auth;
@@ -1005,7 +1006,7 @@ class CooperativeController extends Controller
         //->get('order_number')
         ->pluck('order_number')
         ->first();
-        
+
         $grandtotal = \DB::table('orders')->where('id', $order_id)->first()->grandtotal;
         // $credit = Voucher::join('users', 'users.id', '=', 'vouchers.user_id')
         // ->where('users.id', $id)
