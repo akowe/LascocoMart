@@ -441,7 +441,143 @@
       <!---container--->
 </div>
 <!---page-body--->
+<!--- show wallet account modal --->
+<div class="modal modal-blur fade" id="modal-showWalletAcount" tabindex="-1" role="dialog" aria-hidden="true">
+      <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                  <div class="modal-header">
+                  <h5 class="modal-title">In-partnership with <span class="text-danger">OGARANYA PAY</span>. Add Fund To Wallet </h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                  </div>
+                  <div class="modal-body">
 
+                        <div class="mb-3">
+                              <label class="form-label">Money transfer to this bank account will automatically top
+                                    up
+                                    your LascocoMart wallet.</label>
+                        </div>
+                        <div class="row">
+                              <div class="row align-items-center">
+
+                                    <div class="col">
+                                          <div class="font-weight-medium">
+
+                                                <h4>Account Name</h4>
+                                          </div>
+                                          <div class="text-secondary">
+                                                <h4>{{$WalletAccountName}}</h4>
+                                          </div>
+                                    </div>
+                                    <div class="col-auto">
+                                          <a href="" class="text-muted"
+                                                onclick="copyAccountName('{{$WalletAccountName}}')">
+                                                <svg xmlns="http://www.w3.org/2000/svg"
+                                                      class="icon icon-tabler icon-tabler-copy  " width="24" height="24"
+                                                      viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+                                                      fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                                      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                                      <path
+                                                            d="M7 7m0 2.667a2.667 2.667 0 0 1 2.667 -2.667h8.666a2.667 2.667 0 0 1 2.667 2.667v8.666a2.667 2.667 0 0 1 -2.667 2.667h-8.666a2.667 2.667 0 0 1 -2.667 -2.667z" />
+                                                      <path
+                                                            d="M4.012 16.737a2.005 2.005 0 0 1 -1.012 -1.737v-10c0 -1.1 .9 -2 2 -2h10c.75 0 1.158 .385 1.5 1" />
+                                                </svg>Copy</a>
+                                    </div>
+                              </div>
+                              <hr>
+                              <div class="row align-items-center">
+                                    <div class="col">
+                                          <div class="font-weight-medium">
+
+                                                <h4>Account Number</h4>
+                                          </div>
+                                          <div class="text-secondary">
+                                                <h4>{{$WalletAccountNumber}}</h4>
+                                          </div>
+                                    </div>
+                                    <div class="col-auto">
+                                          <a href="" class="text-muted"
+                                                onclick="copyAccountNumber('{{$WalletAccountNumber}}')">
+                                                <svg xmlns="http://www.w3.org/2000/svg"
+                                                      class="icon icon-tabler icon-tabler-copy  " width="24" height="24"
+                                                      viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+                                                      fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                                      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                                      <path
+                                                            d="M7 7m0 2.667a2.667 2.667 0 0 1 2.667 -2.667h8.666a2.667 2.667 0 0 1 2.667 2.667v8.666a2.667 2.667 0 0 1 -2.667 2.667h-8.666a2.667 2.667 0 0 1 -2.667 -2.667z" />
+                                                      <path
+                                                            d="M4.012 16.737a2.005 2.005 0 0 1 -1.012 -1.737v-10c0 -1.1 .9 -2 2 -2h10c.75 0 1.158 .385 1.5 1" />
+                                                </svg>Copy</a>
+                                    </div>
+                              </div>
+                              <hr>
+                              <div class="row align-items-center">
+                                    <div class="col">
+                                          <div class="font-weight-medium">
+
+                                                <h4>Bank Name</h4>
+                                          </div>
+                                          <div class="text-secondary">
+                                                <h4>{{$WalletBankName}}</h4>
+                                          </div>
+                                    </div>
+                                    <div class="col-auto">
+                                          <a href="" class="text-muted" onclick="copyBankName('{{$WalletBankName}}')">
+                                                <svg xmlns="http://www.w3.org/2000/svg"
+                                                      class="icon icon-tabler icon-tabler-copy  " width="24" height="24"
+                                                      viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+                                                      fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                                      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                                      <path
+                                                            d="M7 7m0 2.667a2.667 2.667 0 0 1 2.667 -2.667h8.666a2.667 2.667 0 0 1 2.667 2.667v8.666a2.667 2.667 0 0 1 -2.667 2.667h-8.666a2.667 2.667 0 0 1 -2.667 -2.667z" />
+                                                      <path
+                                                            d="M4.012 16.737a2.005 2.005 0 0 1 -1.012 -1.737v-10c0 -1.1 .9 -2 2 -2h10c.75 0 1.158 .385 1.5 1" />
+                                                </svg>Copy</a>
+                                    </div>
+                              </div>
+                        </div>
+                        <!--- row--->
+                        <!---save text for sharing -->
+                        <div class="row" style="display:none;">
+                              <textarea id="text" type="text">
+                                    Account Name:
+                                    {{$WalletAccountName}}
+                                    
+                                    Account Number:
+                                    {{$WalletAccountNumber}}
+
+                                    Bank Name:
+                                    {{$WalletBankName}}
+                              </textarea>
+
+                        </div>
+                        <!---end save text for sharing -->
+
+                        <div class="modal-footer">
+
+                              <a href="#" class="btn btn-link link-secondary" data-bs-dismiss="modal">
+                                    Cancel
+                              </a>
+                              <button type="button" id="btnSave" class="btn btn-danger ms-auto">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-send"
+                                          width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5"
+                                          stroke="currentColor" fill="none" stroke-linecap="round"
+                                          stroke-linejoin="round">
+                                          <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                          <path d="M10 14l11 -11" />
+                                          <path
+                                                d="M21 3l-6.5 18a.55 .55 0 0 1 -1 0l-3.5 -7l-7 -3.5a.55 .55 0 0 1 0 -1l18 -6.5" />
+                                    </svg>
+                                    Share account details
+                              </button>
+                        </div>
+                        </form>
+
+                  </div>
+
+            </div>
+      </div>
+</div>
+<!--- end show wallet account modal --->
 <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
 <script>
 document.getElementById('pagination').onchange = function() {
