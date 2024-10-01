@@ -24,6 +24,7 @@ use App\Mail\OrderApprovedEmail;
 use App\Mail\SalesEmail;
 use App\Mail\OrderEmail;
 use App\Mail\CooperativeWelcomeEmail;
+use App\Mail\FmcgWelcomeEmail;
 use App\Notifications\AdminCancelOrder;
 use App\Notifications\NewProduct;
 use Carbon\Carbon;
