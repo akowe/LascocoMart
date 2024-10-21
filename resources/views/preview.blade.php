@@ -382,8 +382,7 @@
                                                 enctype="multipart/form-data">
                                                 <!-- <select name="category" id="input" class="input-select ">
                                                       <option value="">All Categories</option>
-                                                      @foreach (\App\Models\Categories::select('cat_name')->get() as
-                                                      $category)
+                                                      @foreach (\App\Models\Categories::select('cat_name')->get() as $category)
                                                       <option value="{{ $category->cat_name }}">
                                                             <a
                                                                   href="{{route('category')}}?category={{ $category->cat_name }}">{{ $category['cat_name'] }}</a>
@@ -634,8 +633,7 @@
                         <!-- NAV -->
                         <ul class="main-nav nav navbar-nav" style="font-size:14px;">
                               <li class="active"><a href="{{ url('/')}}">Home</a></li>
-                              @foreach (\App\Models\Categories::select('cat_name')->limit(8)->get() as
-                              $id => $category)
+                              @foreach (\App\Models\Categories::select('cat_name')->limit(8)->get() as $id => $category)
 
 
                               <li class="myClass" data-option-id="{{ $category->cat_name }}">
