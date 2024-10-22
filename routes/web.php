@@ -434,7 +434,7 @@ Route::controller(CooperativeLoan::class)->group(function () {
 //Member Loan
 Route::controller(MemberLoan::class)->group(function () {
     Route::get('member-request-loan', 'requestLoan')->name('member-request-loan');
-    Route::get('member-loan-history', 'loanHistory');
+    Route::get('member-loan-history', 'loanHistory')->name('member-loan-history');
     Route::get('calculate-interest/{amount}/{duration}', 'calculateInterest')->name('calculate-interest');  
 });
 //Wallet
