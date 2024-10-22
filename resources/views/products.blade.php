@@ -50,12 +50,12 @@
                         <!-- Wrapper for slides -->
                         <div class="carousel-inner" style="background:#15161D;">
                               <div class="item active">
-                                    <img src="/images/advert-2.png" alt="Los Angeles">
+                                    <img src="/images/loan-banner.jpg" alt="Loan">
                                     <div class="text-right">
                                           <p></p>
                                           <a class="primary-btn cta-btn"
-                                                href="{{route('category')}}?category=Home%20&%20Kitchen%20Appliances">Shop
-                                                now</a>
+                                                href="{{route('category')}}?category=Home%20&%20Kitchen%20Appliances">Proceed
+                                               </a>
                                     </div>
 
                               </div>
