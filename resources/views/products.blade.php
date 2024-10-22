@@ -49,30 +49,35 @@
 
                         <!-- Wrapper for slides -->
                         <div class="carousel-inner" style="background:#15161D;">
+                              
                               <div class="item active">
                                     <img src="/images/loan-banner.jpg" alt="Loan">
-                                    <div class="text-right">
-                                          <p></p>
-                                          <a class="primary-btn cta-btn"
-                                                href="{{route('category')}}?category=Home%20&%20Kitchen%20Appliances">Proceed
-                                               </a>
-                                    </div>
-
-                              </div>
-
-                              <div class="item">
-                                    <img src="/images/advert-2.png" alt="Chicago">
                                     <div class="text-left">
                                           <p></p>
+                                          @auth
+                                          @if(Auth::user()->role_name == 'cooperative')
+                                          <a class="primary-btn cta-btn" href="{{ route('cooperative-loan') }}">Proceed
+                                          </a>
+                                          @endif
+
+                                          @if(Auth::user()->role_name == 'member')
                                           <a class="primary-btn cta-btn"
-                                                href="{{route('category')}}?category=Home%20&%20Kitchen%20Appliances">Shop
-                                                now</a>
+                                                href="{{ route('member-loan-history') }}">Proceed</a>
+                                          @endif
+                                          @else
+                                          <a class="primary-btn cta-btn"
+                                          href="{{ route('member-loan-history') }}">Proceed</a>
+                                          @endauth
+                                     
                                     </div>
+
                               </div>
 
+       
+
                               <div class="item">
-                                    <img src="/images/advert-2.png" alt="New York">
-                                    <div class="text-right">
+                                    <img src="/images/advert-2.png" alt="">
+                                    <div class="text-left">
                                           <p></p>
                                           <a class="primary-btn cta-btn"
                                                 href="{{route('category')}}?category=Home%20&%20Kitchen%20Appliances">Shop
@@ -158,7 +163,7 @@
                               <h4 class="product-price"> ₦{{ number_format($product->price )}}
                                     <del class="product-old-price">{{number_format($product->old_price)  }}</del>
                               </h4>
-                             
+
                               <span class="vendor" style="font-size:12px;">VENDOR: <a
                                           href="{{ route('vendor-product', $product->coopname) }}" title="view store"
                                           class=" text-capitalize text-danger "> {{$product->coopname}}</a>
