@@ -402,6 +402,12 @@
                               </div>
                         </div>
                   </div>
+
+                  <span id="monthError" style="display:none;"><a href="{{ url('account-settings') }}" class="btn btn-ghost-danger active ms-auto">Click here
+                  to set your loan duration and interest rate</a></span>
+
+              
+
                   <!-- Alert stop --->
                   <strong class="text-danger">Any order that is approve can not be "cancel"</strong>
                   <div class="col-12">
@@ -528,19 +534,22 @@
                                                                         <input type="hidden" id="order_id"
                                                                               value="{{$order->id }}"
                                                                               class="form-control" disabled>
-                                                                        <input type="text" id="amount"
+                                                                        <input type="hidden" id="amount"
                                                                               value="{{$order->grandtotal}}"
                                                                               class="form-control" disabled>
-                                                                         <input type="text" id="loanTenure" value="{{$getAdminLoanDuration}}">
+                                                                        <input type="hidden" id="loanTenure"
+                                                                              value="{{$getAdminLoanDuration}}">
+                                                                              <input type="hidden" id="ratetype" value="{{$loanTypeID}}">
 
                                                                         <!-- <a class="dropdown-item"
                                                                               href="request-product-loan/{{ $order->id }}">
                                                                               Approve
                                                                         </a> -->
 
-                                                                        <button type="button"  class="dropdown-item"
-                                                                        onclick="cal_interest()" style="display:block;"
-                                                                        id="preview">Approve</button>
+                                                                        <button type="button" class="dropdown-item"
+                                                                              onclick="cal_interest()"
+                                                                              style="display:block;"
+                                                                              id="preview">Approve</button>
 
                                                                         <a class="dropdown-item"
                                                                               href="{{ url('cancel-new-order/'.$order->id) }}">
@@ -798,13 +807,12 @@ function cal_interest() {
       }
 
       if (duration == null || duration == "" || duration == 0) {
-            document.getElementById('monthError').style.color = 'red';
-            document.getElementById('monthError').innerHTML = 'duration can not empty';
+            document.getElementById('monthError').style.display = 'block';
             return false;
 
       } else {
             document.getElementById('preview').style.display = 'block';
-            document.getElementById('monthError').innerHTML = ' ';
+            document.getElementById('monthError').style.display = 'none';
             var url = "{{ URL('calculate-product-interest/') }}" + "/" + id + "/" + order + "/" + duration;
             location.href = url;
       }
