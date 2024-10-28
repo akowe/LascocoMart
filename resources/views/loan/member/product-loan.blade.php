@@ -163,13 +163,8 @@
                                                       @enderror
                                                 </div>
 
-                                          </div>
-                                          <!---card-row--->
-
-                                          <p></p>
-
-                                          <div class="row g-3">
                                                 <div class="col-md">
+                                                <p></p>
                                                       <div class="form-label">Loan Type </div>
                                                       @if($loanTypeName)
                                                       <input type="text" name="ratetype" class="form-control"
@@ -210,12 +205,20 @@
                                                       @enderror
                                                 </div>
 
+                                          </div>
+                                          <!---card-row--->
+
+                                          <p></p>
+
+                                          <div class="row g-3">
+                                          </div>
+                                          <br>
+                                          <div class="row g-3">
                                                 <div class="col-md">
-                                                      <div class="form-label required"> Duration <small>(in
-                                                                  months)</small>
-                                                      </div>
                                                       @if($getAdminLoanDuration = 'null')
-                                                      <span> set your loan duration and interest rate</span>
+                                                      <span> <a href="{{ url('account-settings') }}"
+                                                                  class="btn btn-ghost-danger active ms-auto">Click here
+                                                                  to set your loan duration and interest rate</a></span>
                                                       @else
                                                       <div class="card-footer bg-transparent mt-auto">
                                                             <div class="btn-list justify-content-end">
@@ -235,7 +238,6 @@
                                                             <span id="monthError"></span>
                                                       </div>
                                                 </div>
-
                                           </div>
                                           <!---card-row--->
 
