@@ -137,7 +137,6 @@ class HomeController extends Controller
             ->where('cooperative_code', $code)
             ->pluck('rate_type')->first();
 
-
             $minimumDuration = DB::table('loan_settings')
             ->select(['min_duration'])
             ->where('user_id', $id)
@@ -169,6 +168,12 @@ class HomeController extends Controller
             ->where('cooperative_code', $code)
             ->select('*')
             ->pluck('start_repayment')->first();
+
+          
+              if(empty($cooperativeMaxLoan && $interest  )){
+                Session::flash('profile', ' You are yet to complete your Loan settings!'); 
+                Session::flash('alert-class', 'alert-success');   
+              }
             
             \LogActivity::addToLog('Profile');
             return view('profile', compact('users', 
