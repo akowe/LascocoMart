@@ -560,11 +560,6 @@
                                                                         <input type="hidden" id="ratetype"
                                                                               value="{{$loanTypeID}}">
 
-                                                                        <!-- <a class="dropdown-item"
-                                                                              href="request-product-loan/{{ $order->id }}">
-                                                                              Approve
-                                                                        </a> -->
-
                                                                         <button type="button" class="dropdown-item"
                                                                               onclick="cal_interest()"
                                                                               style="display:block;"
