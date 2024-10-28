@@ -98,7 +98,7 @@ class LoanController extends Controller
             // }
             // else{ 
                 if($request->annual_interest < 1){
-                    return redirect('member-request-loan')->with('loan', 'Interest on cash loan can not be "0". Contact admin'); 
+                    return redirect('member-request-loan')->with('loan', 'Interest on normal loan can not be "0". Contact admin'); 
                 }
                 $loan = new Loan;
                 $loan->member_id            = $id;
@@ -183,7 +183,7 @@ class LoanController extends Controller
            // else{ 
             if($request->annual_interest < 1){
                 $setInterest = url('/account-settings');
-                return redirect('cooperative-create-loan')->with('loan', 'Interest on cash loan can not be "0" . Click here set interest '.$setInterest); 
+                return redirect('cooperative-create-loan')->with('loan', 'Interest on normal loan can not be "0" . Click here set interest '.$setInterest); 
             }
 
                 $loan = new Loan;
@@ -202,9 +202,9 @@ class LoanController extends Controller
                     $loanRepayment->loan_id             = $loan->id;
                     $loanRepayment->member_id           = $request->memberID;
                     $loanRepayment->cooperative_code    = $code;
-                    $loanRepayment->loan_type        = $request->ratetype;
+                    $loanRepayment->loan_type           = $request->ratetype;
                     $loanRepayment->monthly_principal   = $request->monthly_principal;
-                    $loanRepayment->monthly_interest     = $request->monthly_interest;
+                    $loanRepayment->monthly_interest    = $request->monthly_interest;
                     $loanRepayment->monthly_due         = $request->monthly_due;
                     $loanRepayment->save();
                   
