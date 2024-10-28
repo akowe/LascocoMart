@@ -270,7 +270,7 @@
                                           <p></p>
                                     </div>
                                     @if($principal)
-                                    <form action="{{ route('send-to-admin',$getOrderID)}}" method="get">
+                                    <form action="{{route ('admin-approve-order') }}" method="post">
                                           @csrf
                                           <input type="hidden" name="id" value="{{$getOrderID}}">
                                           <input type="hidden" name="loanTypeID" value="{{$loanTypeID}}">
