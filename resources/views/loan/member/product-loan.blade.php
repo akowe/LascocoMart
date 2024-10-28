@@ -206,7 +206,7 @@
                               </div>
 
                               <div class="card-body">
-                                    <h3 class="card-title"><b>Monthly Repayment</b></h3>
+                                    <h3 class="card-title"><b>Member  Monthly Repayment</b></h3>
                                     <div class="loan-datagrid">
                                           @if($rateType == 'flat rate')
                                           @php
@@ -285,7 +285,7 @@
                                                                   is: {{$maxTenure}} month(s)</b></span>
                                                       <button type="submit" name="submit"
                                                             class="btn btn-ghost-danger active ms-auto" disabled>
-                                                            Request Loan
+                                                          Confirm Approve Order
                                                       </button>
                                                 </div>
                                                 @else
