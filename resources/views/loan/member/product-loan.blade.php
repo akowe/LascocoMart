@@ -215,7 +215,7 @@
                                           <br>
                                           <div class="row g-3">
                                                 <div class="col-md">
-                                                      @if($getAdminLoanDuration = 'null')
+                                                      @if($getAdminLoanDuration == null)
                                                       <span> <a href="{{ url('account-settings') }}"
                                                                   class="btn btn-ghost-danger active ms-auto">Click here
                                                                   to set your loan duration and interest rate</a></span>
