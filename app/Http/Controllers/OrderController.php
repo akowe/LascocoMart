@@ -149,6 +149,10 @@ public function requestProductLoan(Request $request, $orderId){
     $loanTypeName = LoanType::select('name')
       ->where('cooperative_code', $code)
       ->where('name', 'product')->pluck('name')->first();
+
+      $getMemberID = Order::where('id', $orderId)->pluck('user_id')->first();
+
+      $getMemberName  = User::where('id', $getMemberID)->pluck('fname')->first();
  
    // $productLoanInterest = DB::table('loan_type')
     // ->select('percentage_rate')
@@ -178,7 +182,8 @@ public function requestProductLoan(Request $request, $orderId){
 
           return view('loan.member.product-loan', compact('chooseLoanType', 'loanTypeID',
         'loanTypeName', 'principal', 'maxTenure', 'percentage', 'annualInterest', 'totalDue',
-          'rateType','duration',  'getOrderTotal', 'getOrderID', 'productLoanInterest', 'orderId'));  
+          'rateType','duration',  'getOrderTotal', 'getOrderID', 'productLoanInterest', 
+          'orderId', 'getMemberName'));  
 }
 
 
