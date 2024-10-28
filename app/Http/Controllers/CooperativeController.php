@@ -77,7 +77,7 @@ class CooperativeController extends Controller
          $cashLoantypes = DB::table('loan_type')
          ->select(['loan_type.name'])
          ->where('admin_id', $id)
-         ->where('name', 'cash')
+         ->where('name', 'normal')
          ->where('cooperative_code', $code)
          ->where('deleted_at', '=', null)
          ->pluck('name')->first();
@@ -97,7 +97,7 @@ class CooperativeController extends Controller
          $addLoan  = new LoanType;
          $addLoan->admin_id          = $id;
          $addLoan->cooperative_code  = $code;
-         $addLoan->name              = 'cash';
+         $addLoan->name              = 'normal';
          $addLoan->percentage_rate   = '0';
          $addLoan->rate_type         = 'flat rate';
          $addLoan->min_duration      = '1';
@@ -1155,7 +1155,7 @@ class CooperativeController extends Controller
 
          if($percentageRate < 1){
              $setInterest = url('/account-settings');
-             return redirect('cooperative-create-loan')->with('loan', 'Interest on cash loan can not be "0" . Click here set interest '.$setInterest); 
+             return redirect('cooperative-create-loan')->with('loan', 'Interest on normal loan can not be "0" . Click here set interest '.$setInterest); 
          }
 
          $WalletAccountNumber =  DB::table('wallet')
