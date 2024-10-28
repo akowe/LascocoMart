@@ -188,14 +188,14 @@ public function requestProductLoan(Request $request, $orderId){
 }
 
 
-public function calculateProductLoanInterest(Request $request, $id, $order, $duration){
+public function calculateProductLoanInterest(Request $request, $id, $orderId, $duration){
   if(Auth::user()){
       $code = Auth::user()->code;
       $chooseLoanType = LoanType::select('*')
       ->where('cooperative_code', $code)->get();
       $loanTypeID = $id;
 
-      $getOrderID = $order;
+      $getOrderID = $orderId;
 
       // $getOrderID = DB::table('orders')->select('id')
       // ->where('grandtotal', $amount)
@@ -205,7 +205,7 @@ public function calculateProductLoanInterest(Request $request, $id, $order, $dur
       $getAdminLoanDuration = LoanSetting::where('cooperative_code', $code)->pluck('max_duration')->first();
 
       $getOrderTotal = DB::table('orders')->select('grandtotal')
-      ->where('id', $order)
+      ->where('id', $orderId)
       ->pluck('grandtotal')->first();
 
       $getLoanTypeName = LoanType::select('name')
@@ -248,7 +248,7 @@ public function calculateProductLoanInterest(Request $request, $id, $order, $dur
       return view('loan.member.product-loan', compact('chooseLoanType',
       'loanTypeName', 'principal', 'maxTenure', 'percentage', 'annualInterest',
       'totalDue', 'rateType', 'duration', 'loanTypeID', 'getOrderTotal', 
-      'getOrderID', 'productLoanInterest', 'getMemberName',  'getAdminLoanDuration'));
+      'getOrderID', 'productLoanInterest', 'getMemberName',  'getAdminLoanDuration', 'orderId'));
   }
   else{ return Redirect::to('/login');} 
 }
