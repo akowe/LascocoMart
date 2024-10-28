@@ -214,7 +214,7 @@
                                                       <div class="form-label required"> Duration <small>(in
                                                                   months)</small>
                                                       </div>
-                                                      @if(empty($getAdminLoanDuration))
+                                                      @if($getAdminLoanDuration == null)
                                                       <span> set your loan duration and interest rate</span>
                                                       @else
                                                       <div class="card-footer bg-transparent mt-auto">
