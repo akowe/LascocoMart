@@ -21,7 +21,7 @@
                                     <a href="#" class="btn d-none ">
                                     </a>
                               </span>
-                              <a href="{{ url('member-loan-history') }}"
+                              <a href="{{ url('invoice/{{ $order->order_number }}') }}"
                                     class="btn btn-danger d-none d-sm-inline-block">
                                     <!-- Download SVG icon from http://tabler-icons.io/i/plus -->
                                     <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24"
@@ -38,7 +38,7 @@
                                           <path d="M19.5 14.5m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" />
                                     </svg>
 
-                                    Loan History
+                                   View Order
                               </a>
                               <a href="{{ url('member-loan-history') }}" class="btn btn-danger d-sm-none btn-icon">
                                     <!-- Download SVG icon from http://tabler-icons.io/i/plus -->
