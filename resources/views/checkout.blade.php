@@ -108,7 +108,7 @@
                                     <div><strong></strong></div>
                               </div>
                               @php $total = 0 @endphp
-                              @php $delivery = 3000 @endphp
+                              @php $delivery = 4000 @endphp
                               @if(session('cart'))
                               @foreach(session('cart') as $prod => $details)
                               @php $total += $details['price'] * $details['quantity'] @endphp
