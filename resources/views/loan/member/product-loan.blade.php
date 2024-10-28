@@ -21,7 +21,7 @@
                                     <a href="#" class="btn d-none ">
                                     </a>
                               </span>
-                              <a href="{{ url('invoice/{{ $order->order_number }}') }}"
+                              <a href="{{ url('invoice/{{ $order_number }}') }}"
                                     class="btn btn-danger d-none d-sm-inline-block">
                                     <!-- Download SVG icon from http://tabler-icons.io/i/plus -->
                                     <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24"
