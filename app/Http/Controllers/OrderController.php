@@ -152,9 +152,9 @@ public function requestProductLoan(Request $request, $orderId){
 
       $getMemberID = Order::where('id', $orderId)->pluck('user_id')->first();
       $getMemberName  = User::where('id', $getMemberID)->pluck('fname')->first();
-      $getAdminLoanDuration = LoanSetting::where('cooperative_code', $code)->pluck('max_duration');
+      $getAdminLoanDuration = LoanSetting::where('cooperative_code', $code)->pluck('max_duration')->first();
  
-      //dd($getAdminLoanDuration);
+     // dd($getAdminLoanDuration);
    // $productLoanInterest = DB::table('loan_type')
     // ->select('percentage_rate')
     // ->where('name', 'product')
