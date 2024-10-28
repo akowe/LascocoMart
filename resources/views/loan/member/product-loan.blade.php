@@ -235,7 +235,7 @@
                                                       {{number_format($totalMonthlyDue)}}</div>
                                           </div>
                                           @endif
-                                          @if($rateType == 'simple interest')
+                                          @if($rateType == 'reducing balance')
                                           @php
                                           $annualInterest= 0;
                                           $monthlyPrincipal= 0;
