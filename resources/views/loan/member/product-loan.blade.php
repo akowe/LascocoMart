@@ -116,149 +116,41 @@
                               </div>
                         </div>
                   </div>
-                  <div class="col-md-5 col-lg-5">
+
+
+                  <div class="col-md-12 col-lg-12">
+            
                         <div class="card">
-                              <div class="card-body">
-                                    <div class="card-header">
-                                          <h3 class="card-title"> </h3>
-                                    </div>
-                                    <form id="">
-                                          <div class="row">
-                                                <div class="col-md">
-                                                      <p></p>
-                                                      <div class="form-label">{{$getMemberName}} Order Total Amount
-                                                      </div>
-                                                      <input type="hidden" id="order_id" value="{{$getOrderID}}"
-                                                            class="form-control" disabled>
-                                                      <input type="text" id="amount" value="{{$getOrderTotal}}"
-                                                            class="form-control" disabled>
-                                                      <span id="amountError"></span>
+                        @if($getAdminLoanDuration == null)
+                        <span> <a href="{{ url('account-settings') }}" class="btn btn-ghost-danger active ms-auto">Click
+                                    here
+                                    to set your loan duration and interest rate</a></span>
+                        @else
 
-                                                      @error('amount')
-                                                      <div class="alert alert-danger alert-dismissible" role="alert">
-                                                            <div class="d-flex">
-                                                                  <div>
-                                                                        <!-- Download SVG icon from http://tabler-icons.io/i/alert-circle -->
-                                                                        <svg xmlns="http://www.w3.org/2000/svg"
-                                                                              class="icon alert-icon" width="24"
-                                                                              height="24" viewBox="0 0 24 24"
-                                                                              stroke-width="2" stroke="currentColor"
-                                                                              fill="none" stroke-linecap="round"
-                                                                              stroke-linejoin="round">
-                                                                              <path stroke="none" d="M0 0h24v24H0z"
-                                                                                    fill="none" />
-                                                                              <path
-                                                                                    d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" />
-                                                                              <path d="M12 8v4" />
-                                                                              <path d="M12 16h.01" />
-                                                                        </svg>
-                                                                  </div>
-                                                                  <div>
-                                                                        {{ $message }}
-                                                                  </div>
-                                                            </div>
-                                                            <a class="btn-close" data-bs-dismiss="alert"
-                                                                  aria-label="close"></a>
-                                                      </div>
-                                                      @enderror
-                                                </div>
-
-                                                <div class="col-md">
-                                                <p></p>
-                                                      <div class="form-label">Loan Type </div>
-                                                      @if($loanTypeName)
-                                                      <input type="text" name="ratetype" class="form-control"
-                                                            value="{{$loanTypeName}}" disabled>
-                                                      @else
-                                                      <input type="text" name="ratetype" class="form-control"
-                                                            value="{{$chooseLoanType}}" disabled>
-                                                      @endif
-                                                      <input type="hidden" id="ratetype" value="{{$loanTypeID}}">
-
-                                                      <span id="loanError"></span>
-                                                      @error('loantype')
-                                                      <div class="alert alert-danger alert-dismissible" role="alert">
-                                                            <div class="d-flex">
-                                                                  <div>
-                                                                        <!-- Download SVG icon from http://tabler-icons.io/i/alert-circle -->
-                                                                        <svg xmlns="http://www.w3.org/2000/svg"
-                                                                              class="icon alert-icon" width="24"
-                                                                              height="24" viewBox="0 0 24 24"
-                                                                              stroke-width="2" stroke="currentColor"
-                                                                              fill="none" stroke-linecap="round"
-                                                                              stroke-linejoin="round">
-                                                                              <path stroke="none" d="M0 0h24v24H0z"
-                                                                                    fill="none" />
-                                                                              <path
-                                                                                    d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" />
-                                                                              <path d="M12 8v4" />
-                                                                              <path d="M12 16h.01" />
-                                                                        </svg>
-                                                                  </div>
-                                                                  <div>
-                                                                        {{ $message }}
-                                                                  </div>
-                                                            </div>
-                                                            <a class="btn-close" data-bs-dismiss="alert"
-                                                                  aria-label="close"></a>
-                                                      </div>
-                                                      @enderror
-                                                </div>
-
-                                          </div>
-                                          <!---card-row--->
-
-                                          <p></p>
-
-                                          <div class="row g-3">
-                                          </div>
-                                          <br>
-                                          <div class="row g-3">
-                                                <div class="col-md">
-                                                      @if($getAdminLoanDuration == null)
-                                                      <span> <a href="{{ url('account-settings') }}"
-                                                                  class="btn btn-ghost-danger active ms-auto">Click here
-                                                                  to set your loan duration and interest rate</a></span>
-                                                      @else
-                                                      
-                                                      <input type="text" id="loanTenure" value="{{$getAdminLoanDuration}}">
-                                                      <input type="text" id="order_id" value="{{$orderId}}">
-                                                      <div class="card-footer bg-transparent mt-auto">
-                                                            <div class="btn-list justify-content-end">
-                                                                  <span id="previewError"></span>
-                                                                  <span id="urlError"></span>
-                                                                  <button type="button" name="submit"
+                        <input type="hidden" id="loanTenure" value="{{$getAdminLoanDuration}}">
+                        <input type="hidden" id="order_id" value="{{$orderId}}">
+                        <div class="card-footer bg-transparent mt-auto">
+                              <div class="btn-list justify-content-end">
+                                    <span id="previewError"></span>
+                                    <span id="urlError"></span>
+                                    <!-- <button type="button" name="submit"
                                                                         class="btn btn-ghost-danger active ms-auto"
                                                                         onclick="cal_interest()" style="display:block;"
                                                                         id="preview">
 
                                                                         Click To View Monthly Repayment
-                                                                  </button>
-                                                            </div>
-                                                      </div>
-                                                      @endif
-                                                      <div>
-                                                            <span id="monthError"></span>
-                                                      </div>
-                                                </div>
-                                          </div>
-                                          <!---card-row--->
-
-                                          <p></p>
-                                          <!-- send button here -->
-
-                                    </form>
+                                                                  </button> -->
                               </div>
                         </div>
-                  </div>
-
-                  <div class="col-md-7 col-lg-7">
-                        <div class="card">
+                        @endif
+                       
+                        <input type="hidden" id="order_id" value="{{$getOrderID}}" class="form-control" disabled>
+                        <input type="hidden" id="amount" value="{{$getOrderTotal}}" class="form-control" disabled>
                               <div class="navbar">
-                                    <h3 class="navbar-brand" style="margin-left:20px; font-size:15px"> Loan Type:&nbsp;
-                                          <span class="text-danger text-capitalize">{{ $loanTypeName }}</span>
+                                    <h3 class="navbar-brand" style="margin-left:20px; font-size:15px"> {{$getMemberName}} Order  Amount ₦{{number_format($getOrderTotal)}}.  
                                     </h3>
-                                    <h3 class="navbar-brand" style=" font-size:15px">Duration:&nbsp; <span
+                                    <h3 class="navbar-brand" style=" font-size:15px"> Loan Type:&nbsp;
+                                    <span class="text-danger text-capitalize">{{ $loanTypeName }}</span>. Duration:&nbsp; <span
                                                 class="text-danger"> {{ $duration }}
                                                 month (s)</span>&nbsp; &nbsp; </h3>
                               </div>
@@ -403,7 +295,7 @@
                                                 <div class="btn-list justify-content-end">
                                                       <button type="submit" name="submit"
                                                             class="btn btn-ghost-danger active ms-auto">
-                                                           Confirm Approve Order
+                                                            Confirm Approve Order
                                                       </button>
                                                 </div>
                                                 @endif
