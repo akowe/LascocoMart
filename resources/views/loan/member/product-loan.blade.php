@@ -70,7 +70,7 @@
                   <div class="container-xl">
                         <div class="row">
                               <div class="col-12">
-                              @if(session('order'))
+                                    @if(session('order'))
                                     <div class="alert alert-important alert-success alert-dismissible" role="alert">
                                           <div class="d-flex">
                                                 <div>
@@ -126,9 +126,12 @@
                                           <div class="row">
                                                 <div class="col-md">
                                                       <p></p>
-                                                      <div class="form-label">{{$getMemberName}} Order Total Amount </div>
-                                                      <input type="hidden" id ="order_id" value="{{$getOrderID}}" class="form-control" disabled>
-                                                      <input type="text" id ="amount" value="{{$getOrderTotal}}" class="form-control" disabled>
+                                                      <div class="form-label">{{$getMemberName}} Order Total Amount
+                                                      </div>
+                                                      <input type="hidden" id="order_id" value="{{$getOrderID}}"
+                                                            class="form-control" disabled>
+                                                      <input type="text" id="amount" value="{{$getOrderTotal}}"
+                                                            class="form-control" disabled>
                                                       <span id="amountError"></span>
 
                                                       @error('amount')
@@ -164,21 +167,19 @@
                                           <!---card-row--->
 
                                           <p></p>
-                                          @if($productLoanInterest == '0')
-                                          <span class="text-danger">Contact your admin to set product interest</span>
-                                          @else 
+
                                           <div class="row g-3">
                                                 <div class="col-md">
                                                       <div class="form-label">Loan Type </div>
                                                       @if($loanTypeName)
-                                                      <input type="text" name="ratetype"  class="form-control"
-                                                       value="{{$loanTypeName}}" disabled>
-                                                       @else
-                                                      <input type="text" name="ratetype"  class="form-control"
-                                                       value="{{$chooseLoanType}}" disabled>
-                                                       @endif 
-                                                <input type="hidden" id="ratetype" value="{{$loanTypeID}}">
-                                                   
+                                                      <input type="text" name="ratetype" class="form-control"
+                                                            value="{{$loanTypeName}}" disabled>
+                                                      @else
+                                                      <input type="text" name="ratetype" class="form-control"
+                                                            value="{{$chooseLoanType}}" disabled>
+                                                      @endif
+                                                      <input type="hidden" id="ratetype" value="{{$loanTypeID}}">
+
                                                       <span id="loanError"></span>
                                                       @error('loantype')
                                                       <div class="alert alert-danger alert-dismissible" role="alert">
@@ -210,17 +211,27 @@
                                                 </div>
 
                                                 <div class="col-md">
-                                                      <div class="form-label required"> Duration <small>(in months)</small>
+                                                      <div class="form-label required"> Duration <small>(in
+                                                                  months)</small>
                                                       </div>
-                                                      <div class="value-button" id="decrease"
-                                                            onclick="decreaseLoanTenure()" value="decrease Value">-
-                                                      </div>
-                                                      <input type="number" name="duration" value="{{$duration}}"
-                                                            id="loanTenure" required>
-                                                      <div class="value-button" id="increase"
-                                                            onclick="increaseLoanTenure()" value="Increase Value">+
-                                                      </div>
+                                                      @if(empty($getAdminLoanDuration))
+                                                      <div class="card-footer bg-transparent mt-auto">
+                                                            <div class="btn-list justify-content-end">
+                                                                  <span id="previewError"></span>
+                                                                  <span id="urlError"></span>
+                                                                  <button type="button" name="submit"
+                                                                        class="btn btn-ghost-danger active ms-auto"
+                                                                        onclick="cal_interest()" style="display:block;"
+                                                                        id="preview">
 
+                                                                        Click To View Monthly Repayment
+                                                                  </button>
+                                                            </div>
+                                                      </div>
+                                                      @else
+                                                      @endif
+                                                      <input type="hidden" class="form-control" name="duration"
+                                                            value="{{$getAdminLoanDuration}}" id="loanTenure" required>
                                                       <div>
                                                             <span id="monthError"></span>
                                                       </div>
@@ -228,21 +239,10 @@
 
                                           </div>
                                           <!---card-row--->
-                                          @endif 
+
                                           <p></p>
                                           <!-- send button here -->
-                                          <div class="card-footer bg-transparent mt-auto">
-                                                <div class="btn-list justify-content-end">
-                                                      <span id="previewError"></span>
-                                                      <span id="urlError"></span>
-                                                      <button type="button" name="submit"
-                                                            class="btn btn-ghost-danger active ms-auto"
-                                                            onclick="cal_interest()" style="display:block;" id="preview">
 
-                                                            Click To View Monthly Repayment
-                                                      </button>
-                                                </div>
-                                          </div>
                                     </form>
                               </div>
                         </div>
@@ -254,7 +254,8 @@
                                     <h3 class="navbar-brand" style="margin-left:20px; font-size:15px"> Loan Type:&nbsp;
                                           <span class="text-danger text-capitalize">{{ $loanTypeName }}</span>
                                     </h3>
-                                    <h3 class="navbar-brand" style=" font-size:15px">Duration:&nbsp; <span class="text-danger"> {{ $duration }}
+                                    <h3 class="navbar-brand" style=" font-size:15px">Duration:&nbsp; <span
+                                                class="text-danger"> {{ $duration }}
                                                 month (s)</span>&nbsp; &nbsp; </h3>
                               </div>
 
@@ -372,7 +373,7 @@
                                     <div class="form-group">
                                           <p></p>
                                     </div>
-                                    @if($principal) 
+                                    @if($principal)
                                     <form action="{{ route('send-to-admin',$getOrderID)}}" method="get">
                                           @csrf
                                           <input type="hidden" name="id" value="{{$getOrderID}}">
@@ -392,7 +393,7 @@
                                                       </button>
                                                 </div>
                                                 @else
-                                            
+
                                                 <p></p>
 
                                                 <div class="btn-list justify-content-end">
@@ -423,8 +424,8 @@
             if (amount == null || amount == "" || amount == 0) {
                   document.getElementById('amountError').style.color = 'red';
                   document.getElementById('amountError').innerHTML = 'amount can not be empty';
-              
-                  
+
+
             } else {
                   document.getElementById('amountError').innerHTML = '';
             }
