@@ -4,52 +4,54 @@
 <!-- Page header -->
 <div class="page-header d-print-none">
       <div class="container-xl">
-                <!-- Mobile only -->
-                <div class="row g-2 align-items-center">
-                  <div class="col d-sm-block d-md-none">
-                       <!-- Page pre-title -->
-                       <div class="page-pretitle">
-                              Member Orders
-                        </div>
-                        <h2 class="page-title">
-                        <span class="">Cooperative&nbsp;</span>ID: {{Auth::user()->code}}&nbsp;
-
-                        <a href="" alt="Copy" title="Copy" class="text-danger"
-                              onclick="copyToClipboard('{{Auth::user()->code}}')"><svg
-                                    xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-copy  "
-                                    width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
-                                    fill="none" stroke-linecap="round" stroke-linejoin="round">
-                                    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                                    <path
-                                          d="M7 7m0 2.667a2.667 2.667 0 0 1 2.667 -2.667h8.666a2.667 2.667 0 0 1 2.667 2.667v8.666a2.667 2.667 0 0 1 -2.667 2.667h-8.666a2.667 2.667 0 0 1 -2.667 -2.667z" />
-                                    <path
-                                          d="M4.012 16.737a2.005 2.005 0 0 1 -1.012 -1.737v-10c0 -1.1 .9 -2 2 -2h10c.75 0 1.158 .385 1.5 1" />
-                              </svg></a>
-                        </h2>
-                  </div>
-                  <p></p>
-            </div>
-   <!-- end  Mobile only -->
+            <!-- Mobile only -->
             <div class="row g-2 align-items-center">
-            <div class="col d-none  d-md-block">
+                  <div class="col d-sm-block d-md-none">
                         <!-- Page pre-title -->
                         <div class="page-pretitle">
                               Member Orders
                         </div>
                         <h2 class="page-title">
-                        <span class="">Cooperative&nbsp;</span>ID: {{Auth::user()->code}}&nbsp;
+                              <span class="">Cooperative&nbsp;</span>ID: {{Auth::user()->code}}&nbsp;
 
-                        <a href="" alt="Copy" title="Copy" class="text-danger"
-                              onclick="copyToClipboard('{{Auth::user()->code}}')"><svg
-                                    xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-copy  "
-                                    width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
-                                    fill="none" stroke-linecap="round" stroke-linejoin="round">
-                                    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                                    <path
-                                          d="M7 7m0 2.667a2.667 2.667 0 0 1 2.667 -2.667h8.666a2.667 2.667 0 0 1 2.667 2.667v8.666a2.667 2.667 0 0 1 -2.667 2.667h-8.666a2.667 2.667 0 0 1 -2.667 -2.667z" />
-                                    <path
-                                          d="M4.012 16.737a2.005 2.005 0 0 1 -1.012 -1.737v-10c0 -1.1 .9 -2 2 -2h10c.75 0 1.158 .385 1.5 1" />
-                              </svg></a>
+                              <a href="" alt="Copy" title="Copy" class="text-danger"
+                                    onclick="copyToClipboard('{{Auth::user()->code}}')"><svg
+                                          xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-copy  "
+                                          width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5"
+                                          stroke="currentColor" fill="none" stroke-linecap="round"
+                                          stroke-linejoin="round">
+                                          <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                          <path
+                                                d="M7 7m0 2.667a2.667 2.667 0 0 1 2.667 -2.667h8.666a2.667 2.667 0 0 1 2.667 2.667v8.666a2.667 2.667 0 0 1 -2.667 2.667h-8.666a2.667 2.667 0 0 1 -2.667 -2.667z" />
+                                          <path
+                                                d="M4.012 16.737a2.005 2.005 0 0 1 -1.012 -1.737v-10c0 -1.1 .9 -2 2 -2h10c.75 0 1.158 .385 1.5 1" />
+                                    </svg></a>
+                        </h2>
+                  </div>
+                  <p></p>
+            </div>
+            <!-- end  Mobile only -->
+            <div class="row g-2 align-items-center">
+                  <div class="col d-none  d-md-block">
+                        <!-- Page pre-title -->
+                        <div class="page-pretitle">
+                              Member Orders
+                        </div>
+                        <h2 class="page-title">
+                              <span class="">Cooperative&nbsp;</span>ID: {{Auth::user()->code}}&nbsp;
+
+                              <a href="" alt="Copy" title="Copy" class="text-danger"
+                                    onclick="copyToClipboard('{{Auth::user()->code}}')"><svg
+                                          xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-copy  "
+                                          width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5"
+                                          stroke="currentColor" fill="none" stroke-linecap="round"
+                                          stroke-linejoin="round">
+                                          <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                          <path
+                                                d="M7 7m0 2.667a2.667 2.667 0 0 1 2.667 -2.667h8.666a2.667 2.667 0 0 1 2.667 2.667v8.666a2.667 2.667 0 0 1 -2.667 2.667h-8.666a2.667 2.667 0 0 1 -2.667 -2.667z" />
+                                          <path
+                                                d="M4.012 16.737a2.005 2.005 0 0 1 -1.012 -1.737v-10c0 -1.1 .9 -2 2 -2h10c.75 0 1.158 .385 1.5 1" />
+                                    </svg></a>
                         </h2>
                   </div>
                   <!-- Page title actions -->
@@ -89,31 +91,33 @@
                   <div class="col-auto ms-auto d-print-none">
                         <div class="btn-list">
                               <span class="d-block ">
-                                  @if(empty($accountBalance))
+                                    @if(empty($accountBalance))
                                     <div class="input-group " id="show_hide_wallet">
                                           <span class="input-group-text">
                                                 Wallet
                                           </span>
-                                          <input type="password" value="₦ 0" class="btn text-secondary" style="width:200px;" >
+                                          <input type="password" value="₦ 0" class="btn text-secondary"
+                                                style="width:200px;">
                                           <span class="input-group-text">
                                                 <a href="" class="text-secondary">
                                                       <i class="fa fa-eye-slash"></i>
                                                 </a>
                                           </span>
                                     </div>
-                                    @else 
+                                    @else
                                     <div class="input-group " id="show_hide_wallet">
                                           <span class="input-group-text">
                                                 Wallet
                                           </span>
-                                          <input type="password" value="₦ {{number_format($accountBalance)}}" class="btn text-secondary" style="width:200px;" >
+                                          <input type="password" value="₦ {{number_format($accountBalance)}}"
+                                                class="btn text-secondary" style="width:200px;">
                                           <span class="input-group-text">
                                                 <a href="" class="text-secondary">
                                                       <i class="fa fa-eye-slash"></i>
                                                 </a>
                                           </span>
                                     </div>
-                                    @endif 
+                                    @endif
 
                               </span>
                               <a href="#" class="btn btn-danger d-none d-sm-inline-block" data-bs-toggle="modal"
@@ -128,7 +132,7 @@
                                     </svg>
                                     Fund Wallet
                               </a>
-                              <a href="#" class="btn btn-danger d-sm-none btn-icon"  data-bs-toggle="modal"
+                              <a href="#" class="btn btn-danger d-sm-none btn-icon" data-bs-toggle="modal"
                                     data-bs-target="#modal-showWalletAcount">
                                     <!-- Download SVG icon from http://tabler-icons.io/i/plus -->
                                     <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24"
@@ -278,7 +282,7 @@
                                           <a class="btn-close" data-bs-dismiss="alert" aria-label="close"></a>
                                     </div>
                                     @endif
-                                  
+
                                     @if(session('profile'))
                                     <div class="alert alert-warning alert-dismissible" role="alert">
                                           <div class="d-flex">
@@ -433,7 +437,8 @@
                                                             <div class="input-group mb-2">
                                                                   <input type="text" class="form-control"
                                                                         placeholder="Search for…" name="search">
-                                                                  <button type ="submit" class="btn" type="button">Go!</button>
+                                                                  <button type="submit" class="btn"
+                                                                        type="button">Go!</button>
                                                             </div>
                                                       </form>
                                                 </div>
@@ -519,11 +524,19 @@
                                                                               href="approve-order/{{ $order->id }}">
                                                                               Approve
                                                                         </a> -->
-                                                                        
+
+                                                                        <input type="hidden" id="order_id"
+                                                                              value="{{$order->id }}"
+                                                                              class="form-control" disabled>
+                                                                        <input type="text" id="amount"
+                                                                              value="{{$order->grandtotal}}"
+                                                                              class="form-control" disabled>
+                                                                         <input type="text" id="loanTenure" value="{{$getAdminLoanDuration}}">
+
                                                                         <a class="dropdown-item"
                                                                               href="request-product-loan/{{ $order->id }}">
                                                                               Approve
-                                                                        </a> 
+                                                                        </a>
 
                                                                         <a class="dropdown-item"
                                                                               href="{{ url('cancel-new-order/'.$order->id) }}">
@@ -606,7 +619,8 @@
       <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
                   <div class="modal-header">
-                  <h5 class="modal-title">In-partnership with <span class="text-danger">OGARANYA PAY</span>. Add Fund To Wallet </h5>
+                        <h5 class="modal-title">In-partnership with <span class="text-danger">OGARANYA PAY</span>. Add
+                              Fund To Wallet </h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                   </div>
                   <div class="modal-body">
@@ -751,6 +765,46 @@ function myFunction() {
 
       var show = document.getElementById('show');
       document.getElementById('show').innerHTML = nf.format(credit);
+}
+</script>
+
+<script>
+function cal_interest() {
+      let id = document.getElementById('ratetype').value;
+      let amount = document.getElementById('amount').value;
+      let duration = document.getElementById('loanTenure').value;
+      let order = document.getElementById('order_id').value;
+
+      if (amount == null || amount == "" || amount == 0) {
+            document.getElementById('amountError').style.color = 'red';
+            document.getElementById('amountError').innerHTML = 'amount can not be empty';
+
+
+      } else {
+            document.getElementById('amountError').innerHTML = '';
+      }
+
+      if (id == null || id == "" || id == 0) {
+            document.getElementById('loanError').style.color = 'red';
+            document.getElementById('loanError').innerHTML = 'choose  a loan type';
+            return false;
+
+      } else {
+            document.getElementById('loanError').innerHTML = '';
+      }
+
+      if (duration == null || duration == "" || duration == 0) {
+            document.getElementById('monthError').style.color = 'red';
+            document.getElementById('monthError').innerHTML = 'duration can not empty';
+            return false;
+
+      } else {
+            document.getElementById('preview').style.display = 'block';
+            document.getElementById('monthError').innerHTML = ' ';
+            var url = "{{ URL('calculate-product-interest/') }}" + "/" + id + "/" + order + "/" + duration;
+            location.href = url;
+      }
+
 }
 </script>
 
