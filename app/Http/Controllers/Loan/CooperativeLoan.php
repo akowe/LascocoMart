@@ -167,7 +167,7 @@ class CooperativeLoan extends Controller
             $cashLoantypes = DB::table('loan_type')
             ->select(['loan_type.name'])
             ->where('admin_id', $id)
-            ->where('name', 'cash')
+            ->where('name', 'normal')
             ->where('cooperative_code', $code)
             ->where('deleted_at', '=', null)
             ->pluck('name')->first();
@@ -221,7 +221,7 @@ class CooperativeLoan extends Controller
             $addLoan  = new LoanType;
             $addLoan->admin_id          = $id;
             $addLoan->cooperative_code  = $code;
-            $addLoan->name              = 'cash';
+            $addLoan->name              = 'normal';
             $addLoan->percentage_rate   = '0';
             $addLoan->rate_type         = 'flat rate';
             $addLoan->min_duration      = '1';
@@ -618,16 +618,16 @@ class CooperativeLoan extends Controller
             $code = Auth::user()->code;
             $memberName = User::all()->where('code', $code)->except(Auth::id()); 
             $chooseLoanType = LoanType::select('name', 'id')
-            ->where('name', 'cash')
+            ->where('name', 'normal')
             ->where('cooperative_code', $code)->get();
 
             $chooseLoanTypeName = LoanType::select('name')
-            ->where('name', 'cash')
+            ->where('name', 'normal')
             ->where('cooperative_code', $code)->pluck('name')->first();
 
 
             $chooseLoanTypeID = LoanType::select('id')
-            ->where('name', 'cash')
+            ->where('name', 'normal')
             ->where('cooperative_code', $code)->pluck('id')->first();
 
             $members='';
@@ -661,24 +661,24 @@ class CooperativeLoan extends Controller
             $members = substr($getmMembers, 1, -1);
 
             $chooseLoanType = LoanType::select('name', 'id')
-            ->where('name', 'cash')
+            ->where('name', 'normal')
             ->where('cooperative_code', $code)->get();
 
             $chooseLoanTypeName = LoanType::select('name')
-            ->where('name', 'cash')
+            ->where('name', 'normal')
             ->where('cooperative_code', $code)->pluck('name')->first();
 
 
             $chooseLoanTypeID = LoanType::select('id')
-            ->where('name', 'cash')
+            ->where('name', 'normal')
             ->where('cooperative_code', $code)->pluck('id')->first();
            
             $loanTypeID = LoanType::select('name')
-            ->where('name', 'cash')
+            ->where('name', 'normal')
             ->where('cooperative_code', $code)->pluck('name')->first();
 
             $getLoanTypeName = LoanType::select('name')
-            ->where('name', 'cash')
+            ->where('name', 'normal')
             ->where('cooperative_code', $code)->get();
             $loanTypeName =Arr::pluck($getLoanTypeName, 'name');
             $loanType = implode(" ",$loanTypeName); 
