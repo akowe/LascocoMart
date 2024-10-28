@@ -403,7 +403,7 @@
                                                 <div class="btn-list justify-content-end">
                                                       <button type="submit" name="submit"
                                                             class="btn btn-ghost-danger active ms-auto">
-                                                            Send Request
+                                                           Confirm Approve Order
                                                       </button>
                                                 </div>
                                                 @endif
