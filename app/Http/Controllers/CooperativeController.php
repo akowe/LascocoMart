@@ -562,6 +562,8 @@ class CooperativeController extends Controller
        ->where('cooperative_code', $code)
        ->pluck('phone')->first();
 
+       $getAdminLoanDuration = LoanSetting::where('cooperative_code', $code)->pluck('max_duration')->first();
+
        $data = array(
           "phone"            => $phoneNumber,
           "account_number"   => $WalletAccountNumber,
@@ -635,7 +637,7 @@ class CooperativeController extends Controller
                     'sumApproveOrder',
                     'WalletAccountNumber', 
                     'WalletAccountName',
-                    'WalletBankName', 'accountBalance'))->withDetails ( $pagination );     
+                    'WalletBankName', 'accountBalance', 'getAdminLoanDuration'))->withDetails ( $pagination );     
                     } 
                     else{
                         redirect()->back()->with('status', 'No record found'); 
@@ -676,7 +678,7 @@ class CooperativeController extends Controller
                     'sumApproveOrder',
                     'WalletAccountNumber', 
                     'WalletAccountName',
-                    'WalletBankName'))->withDetails ( $pagination );     
+                    'WalletBankName', 'getAdminLoanDuration'))->withDetails ( $pagination );     
                     } 
                     else{
                         redirect()->back()->with('status', 'No record found'); 
@@ -717,7 +719,7 @@ class CooperativeController extends Controller
                     'sumApproveOrder',
                     'WalletAccountNumber', 
                     'WalletAccountName',
-                    'WalletBankName'))->withDetails ( $pagination );     
+                    'WalletBankName', 'getAdminLoanDuration'))->withDetails ( $pagination );     
                     } 
                     else{
                         redirect()->back()->with('status', 'No record found'); 
@@ -757,7 +759,7 @@ class CooperativeController extends Controller
             'sumApproveOrder',
             'WalletAccountNumber', 'accountBalance',
             'WalletAccountName',
-            'WalletBankName'))->withDetails ( $pagination );     
+            'WalletBankName', 'getAdminLoanDuration'))->withDetails ( $pagination );     
              } 
              else{
                  redirect()->back()->with('status', 'No record found'); 
@@ -771,7 +773,7 @@ class CooperativeController extends Controller
         'sumApproveOrder',
         'WalletAccountNumber', 'accountBalance',
         'WalletAccountName',
-        'WalletBankName'));
+        'WalletBankName', 'getAdminLoanDuration'));
     }
 
     public function cancelMemberNewOrder($id)
