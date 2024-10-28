@@ -215,6 +215,8 @@
                                                                   months)</small>
                                                       </div>
                                                       @if(empty($getAdminLoanDuration))
+                                                      <span> set your loan duration and interest rate</span>
+                                                      @else
                                                       <div class="card-footer bg-transparent mt-auto">
                                                             <div class="btn-list justify-content-end">
                                                                   <span id="previewError"></span>
@@ -228,10 +230,7 @@
                                                                   </button>
                                                             </div>
                                                       </div>
-                                                      @else
                                                       @endif
-                                                      <input type="hidden" class="form-control" name="duration"
-                                                            value="{{$getAdminLoanDuration}}" id="loanTenure" required>
                                                       <div>
                                                             <span id="monthError"></span>
                                                       </div>
