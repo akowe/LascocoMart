@@ -63,7 +63,7 @@ class OrderController extends Controller
             . $characters[rand(0, strlen($characters) - 1)];
         // shuffle pin
         $order_number = str_shuffle($pin);
-        $order_status  = 'pending'; 
+        $order_status  = 'awaits approval'; 
         $pay_status  = 'pending';
         $ship_address  = $_POST['ship_address'];
         $ship_city     = $_POST['ship_city'];
@@ -126,9 +126,10 @@ class OrderController extends Controller
        
         $request->session()->forget('cart');
                    
-             \LogActivity::addToLog('New Order');
-      return redirect('request-product-loan/'.$order->id)->with('order', 'You are requesting a product loan. How long do you want to pay back');
-      
+        \LogActivity::addToLog('New Order');
+      //return redirect('request-product-loan/'.$order->id)->with('order', 'You are requesting a product loan. How long do you want to pay back');
+      return redirect()->back()->with('status', 'Your order has been sent to your cooperative admin for approval');
+     
     }//isset  
 
 }
