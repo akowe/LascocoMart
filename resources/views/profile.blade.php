@@ -15,32 +15,31 @@
 <!-- Alert start --->
 <div class="container-xl">
       <div class="row ">
-      <div class="col-12">
-                              @if($interest =='0')
-                                    <div class="alert alert-important  alert-azure alert-dismissible" role="alert">
-                                          <div class="d-flex">
-                                                <div>
-                                                      <!-- Download SVG icon from http://tabler-icons.io/i/check -->
-                                                      <svg xmlns="http://www.w3.org/2000/svg" class="icon alert-icon"
-                                                            width="24" height="24" viewBox="0 0 24 24" stroke-width="2"
-                                                            stroke="currentColor" fill="none" stroke-linecap="round"
-                                                            stroke-linejoin="round">
-                                                            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                                                            <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" />
-                                                            <path d="M12 9h.01" />
-                                                            <path d="M11 12h1v4h1" />
-                                                      </svg>
+            <div class="col-12">
+                  @if($interest =='0')
+                  <div class="alert alert-important  alert-azure alert-dismissible" role="alert">
+                        <div class="d-flex">
+                              <div>
+                                    <!-- Download SVG icon from http://tabler-icons.io/i/check -->
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="icon alert-icon" width="24"
+                                          height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"
+                                          fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                          <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                          <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" />
+                                          <path d="M12 9h.01" />
+                                          <path d="M11 12h1v4h1" />
+                                    </svg>
 
-                                                </div>
-                                                <div><strong
-                                                            class="text-dark">Untill you add your interest rate on loan , </strong> before member (s) can request for cash / product loan </div>
-                                          </div>
-                                          <a class="btn-close" data-bs-dismiss="alert" aria-label="close"></a>
-                                    </div>
-
-                                    @else
-                                    @endif
                               </div>
+                              <div><strong class="text-dark">Untill you add your interest rate on loan , </strong>
+                                    before member (s) can request for cash / product loan </div>
+                        </div>
+                        <a class="btn-close" data-bs-dismiss="alert" aria-label="close"></a>
+                  </div>
+
+                  @else
+                  @endif
+            </div>
             <div class="col-12">
                   <p></p>
                   @if(session('profile'))
@@ -817,14 +816,8 @@
                                           <div class="tab-pane" id="tabs-loan-settings">
                                                 <h4> </h4>
                                                 <div class="pb-3">
-            <p><small class="text-muted"><strong class="text-danger">Flat/Fixed Rate</strong>: Admin
-                                    get's fixed
-                                    annual interest regardless of the loan duration. <strong class="text-danger ">Simple
-                                          Rate</strong>: The higher the loan duration, the more interest
-                                    admin get's.
-                              </small></p>
-                  <p class="text-danger"></p>
-            </div>
+                                                     
+                                                </div>
                                                 <form method="post" action="loan-settings" name="submit"
                                                       enctype="multipart/form-data">
                                                       @csrf
@@ -882,56 +875,55 @@
                                                             </div>
                                                       </div> -->
                                                       <p></p>
-                              <div class="row g-3">
-                                    <div class="col-md">
-                                          <div class="form-label">Minimum Loan
-                                                Duration (in months)</div>
-                                          <div class="value-button" id="decrease" onclick="decreaseMin()"
-                                                value="decrease Value">-</div>
-                                          <input type="number" name="min_duration" value="{{$minimumDuration}}" id="min">
 
-                                          <div class="value-button" id="increase" onclick="increaseMin()"
-                                                value="Increase Value">+</div>
-                                    </div>
-
-
-                                    <div class="col-md">
-                                          <div class="form-label required">Maximum
-                                                Loan Duration (in months)</div>
-                                          <div class="value-button" id="decrease" onclick="decreaseMax()"
-                                                value="decrease Value">-</div>
-                                          <input type="number" name="max_duration" value="{{$maximumDuration}}" id="max">
-                                          @error('maximum_duration')
-                                          <div class="alert alert-danger alert-dismissible" role="alert">
-                                                <div class="d-flex">
-                                                      <div>
-                                                            <!-- Download SVG icon from http://tabler-icons.io/i/alert-circle -->
-                                                            <svg xmlns="http://www.w3.org/2000/svg"
-                                                                  class="icon alert-icon" width="24" height="24"
-                                                                  viewBox="0 0 24 24" stroke-width="2"
-                                                                  stroke="currentColor" fill="none"
-                                                                  stroke-linecap="round" stroke-linejoin="round">
-                                                                  <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                                                                  <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" />
-                                                                  <path d="M12 8v4" />
-                                                                  <path d="M12 16h.01" />
-                                                            </svg>
-                                                      </div>
-                                                      <div>
-                                                            {{ $message }}
-                                                      </div>
-                                                </div>
-                                                <a class="btn-close" data-bs-dismiss="alert" aria-label="close"></a>
-                                          </div>
-                                          @enderror
-                                          <div class="value-button" id="increase" onclick="increaseMax()"
-                                                value="Increase Value">+</div>
-                                    </div>
-                              </div>
                                                       <!--loan row-->
                                                       <p></p>
                                                       <div class="row g-3">
-                                                      <div class="col-md">
+                                                            <div class="col-md">
+                                                                  <div class="form-label required">
+                                                                        Loan Duration (in months)</div>
+                                                                  <div class="value-button" id="decrease"
+                                                                        onclick="decreaseMax()" value="decrease Value">-
+                                                                  </div>
+                                                                  <input type="number" name="max_duration"
+                                                                        value="{{$maximumDuration}}" id="max" style="width:60%;">
+                                                                  @error('maximum_duration')
+                                                                  <div class="alert alert-danger alert-dismissible"
+                                                                        role="alert">
+                                                                        <div class="d-flex">
+                                                                              <div>
+                                                                                    <!-- Download SVG icon from http://tabler-icons.io/i/alert-circle -->
+                                                                                    <svg xmlns="http://www.w3.org/2000/svg"
+                                                                                          class="icon alert-icon"
+                                                                                          width="24" height="24"
+                                                                                          viewBox="0 0 24 24"
+                                                                                          stroke-width="2"
+                                                                                          stroke="currentColor"
+                                                                                          fill="none"
+                                                                                          stroke-linecap="round"
+                                                                                          stroke-linejoin="round">
+                                                                                          <path stroke="none"
+                                                                                                d="M0 0h24v24H0z"
+                                                                                                fill="none" />
+                                                                                          <path
+                                                                                                d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" />
+                                                                                          <path d="M12 8v4" />
+                                                                                          <path d="M12 16h.01" />
+                                                                                    </svg>
+                                                                              </div>
+                                                                              <div>
+                                                                                    {{ $message }}
+                                                                              </div>
+                                                                        </div>
+                                                                        <a class="btn-close" data-bs-dismiss="alert"
+                                                                              aria-label="close"></a>
+                                                                  </div>
+                                                                  @enderror
+                                                                  <div class="value-button" id="increase"
+                                                                        onclick="increaseMax()" value="Increase Value">+
+                                                                  </div>
+                                                            </div>
+                                                            <div class="col-md">
                                                                   <div class="mb-3">
                                                                         <div class="form-label required">
                                                                               Interest Rate
@@ -942,8 +934,8 @@
                                                                               onclick="decreaseRate()"
                                                                               value="decrease Value">-
                                                                         </div>
-                                                                        <input type="text" name="interest" value="{{$interest}}"
-                                                                              id="rate">
+                                                                        <input type="text" name="interest"
+                                                                              value="{{$interest}}" id="rate"  style="width:60%;">
                                                                         <div class="value-button" id="increase"
                                                                               onclick="increaseRate()"
                                                                               value="Increase Value">+
@@ -988,16 +980,18 @@
                                                             <div class="col-md">
                                                                   <div class="form-label required">Rate type
                                                                   </div>
-                                                                  <select name="rate_type" id="" class="form-control text-capitalize">
-                                                                       @if(empty($rateType))
+                                                                  <select name="rate_type" id=""
+                                                                        class="form-control text-capitalize">
+                                                                        @if(empty($rateType))
                                                                         <option value="">Choose</option>
                                                                         @else
-                                                                  <option value="{{$rateType}}">{{$rateType}}</option>
-                                                                       @endif 
+                                                                        <option value="{{$rateType}}">{{$rateType}}
+                                                                        </option>
+                                                                        @endif
                                                                         <option value="flat rate">Flat /
                                                                               Fixed Rate</option>
                                                                         <option value="simple interest">
-                                                                              Simple Interest Rate</option>
+                                                                        Reducing balance</option>
                                                                   </select>
                                                                   @error('rate_type')
                                                                   <div class="alert alert-danger alert-dismissible"
@@ -1033,10 +1027,10 @@
                                                                   @enderror
                                                             </div>
 
-                                                         
+
                                                       </div>
 
-
+<br>
                                                       <div class="row ">
                                                             <div class="col-md">
                                                                   <div class="mb-3">
