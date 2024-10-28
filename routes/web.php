@@ -338,7 +338,7 @@ Route::controller(FundRequestController::class)->group(function () {
 });
 //Cooperative payment for member approved order
 Route::controller(BankTransferController::class)->group(function () {
-    Route::get('bank-payment', 'bankPayment')->name('bank-payment');
+    Route::get('bank-payment/{order_id}', 'bankPayment')->name('bank-payment');
     Route::post('bank-transfer', 'bankTransfer')->name('bank-transfer');
     Route::get('payment-bank-tranfer/{reference}/{order_id}/{order_amount}', 'bankTransferPayment'); 
 });

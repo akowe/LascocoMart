@@ -120,22 +120,21 @@
                                           </div>
                                           <p></p>
                                           <div class="form-group">
-                                                <label for="amount"><strong>Total amount for all approved order</strong></label>
+                                                <h4> {{$memberName}} Total Order Amount: {{number_format($orderAmount)}}</h4>
                                                 <p></p>
-                                                <input type="text" class="form-control" id="amount" name="amount"
-                                                      readonly value="{{$all_orders->sum('grandtotal')}}" />
+                                                <input type="hidden" class="form-control" id="amount" name="amount"
+                                                      readonly value="{{$orderAmount}}" />
 
                                           </div>
                                           <div class="form-group">
                                                 <input type="hidden" class="form-control" id="order_id" name="id[][id]"
-                                                      value="{{ $orders->pluck('id') }}" />
+                                                      value="{{$order_id}}" />
 
                                           </div>
                                           <p></p>
                                           <div class="form-submit">
                                                 <button type="button" class=" btn btn-ghost-danger active" name="submit"
-                                                      onclick=" payWithPaystack() "> Pay
-                                                      Now </button>
+                                                      onclick=" payWithPaystack() "> Click Here To Pay {{number_format($orderAmount)}},  With Bank Transfer or Debit Card</button>
                                           </div>
                                     </form>
                               </div>

@@ -31,24 +31,22 @@
                                           <path d="M15 17h5" />
                                           <path d="M17.5 10m-2.5 0a2.5 3 0 1 0 5 0a2.5 3 0 1 0 -5 0" />
                                     </svg>
-                              </span>: {{$order->order_number}} 
+                              </span>: {{$order->order_number}}
                         </h2>
                   </div>
                   <!-- Page title actions -->
                   <div class="col-auto ms-auto d-print-none">
                         <div class="btn-list">
-                        <span class="d-block">
+                              <span class="d-block">
                                     <form action="{{route ('admin-approve-order') }}" method="post" name="submit">
-                                    @csrf
-                                    {{csrf_field()}}
+                                          @csrf
+                                          {{csrf_field()}}
                                           <input type="hidden" name="order_id" value="{{$order->id}}">
-                                          <button type="submit" name="submit" class="btn "
-                                                title="Cancel">
+                                          <button type="submit" name="submit" class="btn " title="Cancel">
                                                 Approve Now</button>
                                     </form>
                               </span>
-                              <a href="{{ url('admin-member-order') }}"
-                                    class="btn btn-danger d-none d-sm-inline-block">
+                              <a href="{{ url('admin-member-order') }}" class="btn btn-danger d-none d-sm-inline-block">
                                     <!-- Download SVG icon from http://tabler-icons.io/i/plus -->
                                     <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-eye"
                                           width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5"
@@ -129,8 +127,15 @@
             </div>
       </div>
       <!-- Alert stop --->
+      <div class="container-xl">
+      <div class="row">
+            <div class="col-12">
+                  <a href="{{ route('bank-payment') }}" class="btn btn-danger btn-xs">
+                        &nbsp;Pay Now</a>
+            </div>
+      </div>
 
- 
+      </div>
 </div>
 <script>
 function myFunction() {

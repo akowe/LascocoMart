@@ -48,24 +48,38 @@ class BankTransferController extends Controller
         $this->middleware(['auth','verified']);
     }
 
-    public function bankPayment(Request $request){
+    public function bankPayment(Request $request, $order_id){
         session_start();
         $user_id= Auth::user()->id;
         $code = Auth::user()->code;
 
         $select_bank = \DB::table('banks')->orderBy('name')->get('*');
-        $all_orders = User::join('orders', 'orders.user_id', '=', 'users.id')
-        ->where('orders.status', 'approved') 
-        ->where('users.code', $code) 
-        ->get('orders.*');  
+        // $all_orders = User::join('orders', 'orders.user_id', '=', 'users.id')
+        // ->where('orders.status', 'approved') 
+        // ->where('users.code', $code) 
+        // ->get('orders.*');  
 
-        $orders = User::join('orders', 'orders.user_id', '=', 'users.id')
-        ->where('orders.status', 'approved') 
-        ->where('users.code', $code) 
-        ->get(['orders.id']);  
-       // dd($all_orders);
+        // $orders = User::join('orders', 'orders.user_id', '=', 'users.id')
+        // ->where('orders.status', 'approved') 
+        // ->where('users.code', $code) 
+        // ->get(['orders.id']);  
+
+        $order_number = Order::where('id', $order_id)
+        ->pluck('order_number')
+        ->first();
+
+        $orderAmount = Order::where('id', $order_id)
+        ->pluck('grandtotal')
+        ->first();
+
+        $memberName = Order::join('users', 'users.id', 'orders.user_id')
+        ->where('orders.id', $order_id)
+        ->pluck('users.fname')
+        ->first();
+       // dd($all_orders); 
       
-        return view('cooperative.bank-payment', compact('select_bank', 'all_orders', 'orders'));
+        return view('cooperative.bank-payment', compact('select_bank', 'order_number', 
+        'orderAmount', 'memberName', 'order_id'));
     }
 
 public function bankTransferPayment(Request $request, $reference, $order_id, $order_amount){
