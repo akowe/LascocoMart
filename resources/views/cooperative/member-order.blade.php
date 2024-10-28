@@ -533,10 +533,14 @@
                                                                               class="form-control" disabled>
                                                                          <input type="text" id="loanTenure" value="{{$getAdminLoanDuration}}">
 
-                                                                        <a class="dropdown-item"
+                                                                        <!-- <a class="dropdown-item"
                                                                               href="request-product-loan/{{ $order->id }}">
                                                                               Approve
-                                                                        </a>
+                                                                        </a> -->
+
+                                                                        <button type="button"  class="dropdown-item"
+                                                                        onclick="cal_interest()" style="display:block;"
+                                                                        id="preview">Approve</button>
 
                                                                         <a class="dropdown-item"
                                                                               href="{{ url('cancel-new-order/'.$order->id) }}">
