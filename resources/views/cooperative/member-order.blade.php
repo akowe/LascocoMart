@@ -515,10 +515,15 @@
                                                                         @elseif($order->status =='paid')
                                                                         @else
                                                                         @csrf
-                                                                        <a class="dropdown-item"
+                                                                        <!-- <a class="dropdown-item"
                                                                               href="approve-order/{{ $order->id }}">
                                                                               Approve
-                                                                        </a>
+                                                                        </a> -->
+                                                                        
+                                                                        <a class="dropdown-item"
+                                                                              href="request-product-loan/{{ $order->id }}">
+                                                                              Approve
+                                                                        </a> 
 
                                                                         <a class="dropdown-item"
                                                                               href="{{ url('cancel-new-order/'.$order->id) }}">
