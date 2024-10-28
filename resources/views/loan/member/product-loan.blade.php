@@ -272,7 +272,7 @@
                                     @if($principal)
                                     <form action="{{route ('admin-approve-order') }}" method="post">
                                           @csrf
-                                          <input type="hidden" name="id" value="{{$getOrderID}}">
+                                          <input type="hidden" name="order_id" value="{{$getOrderID}}">
                                           <input type="hidden" name="loanTypeID" value="{{$loanTypeID}}">
                                           <input type="hidden" name="duration" value="{{ $duration }}">
 
