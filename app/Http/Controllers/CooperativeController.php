@@ -1231,6 +1231,8 @@ class CooperativeController extends Controller
                 }
                  if($result['status'] == 'error'){
                     Session::flash('error',  ' Oops! something went wrong'); 
+                
+                    return redirect('approve-order/'.$order_id)->with('status', 'Insufficient wallet balance Pay with Paystach');
                 }
         
         //if admin has credit $getCredit approve order
