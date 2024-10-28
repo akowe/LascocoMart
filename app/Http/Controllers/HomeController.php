@@ -170,7 +170,7 @@ class HomeController extends Controller
             ->pluck('start_repayment')->first();
 
           
-              if(empty($cooperativeMaxLoan && $interest  )){
+              if(empty($maximumDuration)){
                 Session::flash('profile', ' You are yet to complete your Loan settings!'); 
                 Session::flash('alert-class', 'alert-success');   
               }
