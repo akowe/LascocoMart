@@ -220,7 +220,9 @@
                                                                   class="btn btn-ghost-danger active ms-auto">Click here
                                                                   to set your loan duration and interest rate</a></span>
                                                       @else
+                                                      
                                                       <input type="text" id="loanTenure" value="{{$getAdminLoanDuration}}">
+                                                      <input type="text" id="order_id" value="{{$orderId}}">
                                                       <div class="card-footer bg-transparent mt-auto">
                                                             <div class="btn-list justify-content-end">
                                                                   <span id="previewError"></span>
