@@ -200,6 +200,9 @@ public function calculateProductLoanInterest(Request $request, $id, $order, $dur
       // $getOrderID = DB::table('orders')->select('id')
       // ->where('grandtotal', $amount)
       // ->pluck('id')->first();
+      $getMemberID = Order::where('id', $orderId)->pluck('user_id')->first();
+      $getMemberName  = User::where('id', $getMemberID)->pluck('fname')->first();
+      $getAdminLoanDuration = LoanSetting::where('cooperative_code', $code)->pluck('max_duration')->first();
 
       $getOrderTotal = DB::table('orders')->select('grandtotal')
       ->where('id', $order)
@@ -215,24 +218,6 @@ public function calculateProductLoanInterest(Request $request, $id, $order, $dur
       ->where('id', $id)
       ->where('cooperative_code', $code)
       ->where('name', 'product')->pluck('name')->first();
-
-      // $getRateType = LoanType::select('rate_type')
-      // ->where('id', $id)
-      // ->where('cooperative_code', $code)->get();
-      // $loanRateType =Arr::pluck($getRateType, 'rate_type');
-      // $rateType = implode(" ",$loanRateType); 
-   
-      // $getPercentage = LoanType::select('percentage_rate')
-      // ->where('id', $id)
-      // ->where('cooperative_code', $code)->get();
-      // $loanPercentage =Arr::pluck($getPercentage, 'percentage_rate');
-      // $percentageRate = implode(" ",$loanPercentage); 
-
-      // $getTenure = LoanType::select('max_duration')
-      // ->where('id', $id)
-      // ->where('cooperative_code', $code)->get();
-      // $loanTenure =Arr::pluck($getTenure, 'max_duration');
-      // $maxTenure = implode(" ",$loanTenure); 
 
       $percentageRate = DB::table('loan_settings')
          ->select('percentage_rate')
@@ -262,7 +247,8 @@ public function calculateProductLoanInterest(Request $request, $id, $order, $dur
       
       return view('loan.member.product-loan', compact('chooseLoanType',
       'loanTypeName', 'principal', 'maxTenure', 'percentage', 'annualInterest',
-      'totalDue', 'rateType', 'duration', 'loanTypeID', 'getOrderTotal', 'getOrderID', 'productLoanInterest'));
+      'totalDue', 'rateType', 'duration', 'loanTypeID', 'getOrderTotal', 
+      'getOrderID', 'productLoanInterest', 'getMemberName',  'getAdminLoanDuration'));
   }
   else{ return Redirect::to('/login');} 
 }
