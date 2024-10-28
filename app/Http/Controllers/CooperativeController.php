@@ -1086,22 +1086,18 @@ class CooperativeController extends Controller
         $order_id = $request->order_id;
         $order = Order::find($order_id);
         $order_number = Order::where('id', $order_id)
-        //->get('order_number')
         ->pluck('order_number')
         ->first();
 
+        $updateOrder = Order::find($order_id);
+        $updateOrder->status            = 'awaits approval';
+        $updateOrder->cooperative_code  = $code;
+        $updateOrder->loan_type_id      = $request->loanTypeID;
+        $updateOrder->duration          = $request->duration;
+        $updateOrder->update();
+
         $grandtotal = \DB::table('orders')->where('id', $order_id)->first()->grandtotal;
-        // $credit = Voucher::join('users', 'users.id', '=', 'vouchers.user_id')
-        // ->where('users.id', $id)
-        // ->get('credit'); 
-        // $plugCredit = Arr::pluck($credit, 'credit');
-        // $getCredit = implode('', $plugCredit);
-
-        // $paymentDays = User::where('id', $id)->get('payment_days');
-        // $pluckPaymentDays = Arr::pluck($paymentDays, 'payment_days');
-        // $payment = implode('', $pluckPaymentDays);
-         // check admin wallet
-
+        // check admin wallet
          // CHECK ADIM LOAN SETINGS
          $product_loan_type = Order::join('loan_type', 'loan_type.id', 'orders.loan_type_id')
          ->where('orders.id', $order_id)
@@ -1135,7 +1131,7 @@ class CooperativeController extends Controller
             $totalMonthlyDue = $monthlyPrincipal + $monthlyInterest ;
          }
 
-         if($rateType == 'simple interest'){
+         if($rateType == 'reducing balance'){
             $annualInterest = $percentage * (int)$product_loan_duration;
             $totalDue = $principal + $annualInterest;//for flat rate interest type
             $monthlyPrincipal = $principal / (int)$product_loan_duration;
