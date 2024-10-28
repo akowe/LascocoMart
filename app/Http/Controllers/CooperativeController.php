@@ -90,7 +90,7 @@ class CooperativeController extends Controller
          $addLoan->percentage_rate   = '0';
          $addLoan->rate_type         = 'flat rate';
          $addLoan->min_duration      = '1';
-         $addLoan->max_duration      = '1';
+         $addLoan->max_duration      = '';
          $addLoan->save();
         }
         if(empty($cashLoantypes)){
@@ -101,7 +101,7 @@ class CooperativeController extends Controller
          $addLoan->percentage_rate   = '0';
          $addLoan->rate_type         = 'flat rate';
          $addLoan->min_duration      = '1';
-         $addLoan->max_duration      = '1';
+         $addLoan->max_duration      = '';
          $addLoan->save();
         }
         
