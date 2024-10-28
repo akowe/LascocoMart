@@ -788,23 +788,7 @@ function cal_interest() {
       let duration = document.getElementById('loanTenure').value;
       let order = document.getElementById('order_id').value;
 
-      if (amount == null || amount == "" || amount == 0) {
-            document.getElementById('amountError').style.color = 'red';
-            document.getElementById('amountError').innerHTML = 'amount can not be empty';
-
-
-      } else {
-            document.getElementById('amountError').innerHTML = '';
-      }
-
-      if (id == null || id == "" || id == 0) {
-            document.getElementById('loanError').style.color = 'red';
-            document.getElementById('loanError').innerHTML = 'choose  a loan type';
-            return false;
-
-      } else {
-            document.getElementById('loanError').innerHTML = '';
-      }
+    
 
       if (duration == null || duration == "" || duration == 0) {
             document.getElementById('monthError').style.display = 'block';
