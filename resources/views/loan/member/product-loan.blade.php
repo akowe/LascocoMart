@@ -126,7 +126,7 @@
                                           <div class="row">
                                                 <div class="col-md">
                                                       <p></p>
-                                                      <div class="form-label">Your Order Total Amount </div>
+                                                      <div class="form-label">{{$getMemberName}} Order Total Amount </div>
                                                       <input type="hidden" id ="order_id" value="{{$getOrderID}}" class="form-control" disabled>
                                                       <input type="text" id ="amount" value="{{$getOrderTotal}}" class="form-control" disabled>
                                                       <span id="amountError"></span>
