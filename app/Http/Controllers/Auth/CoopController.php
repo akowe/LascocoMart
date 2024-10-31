@@ -65,7 +65,8 @@ class CoopController extends Controller
             'address'     => 'required|max:225',
             'cooptype'    => 'required|max:225',
             'file'        => 'required|mimes:jpg,jpeg,png|max:300',
-            'captcha'     => 'required|captcha',
+            'g-recaptcha-response' => ['required', new Recaptcha],
+            //'captcha'     => 'required|captcha',
             ],
             ['captcha.captcha'  =>'Wrong code.'],);
             // dd("You are here :) .");
@@ -137,7 +138,8 @@ class CoopController extends Controller
            $request->validate([
             'email'       =>'required|unique:users|regex:/^([a-z0-9\+_\-]+)(\.[a-z0-9\+_\-]+)*@([a-z0-9\-]+\.)+[a-z]{2,6}$/ix',
             'fullname'    => 'required|string|max:255',
-            'captcha'     => 'required|captcha',
+            'g-recaptcha-response' => ['required', new Recaptcha],
+            //'captcha'     => 'required|captcha',
           ],
           ['captcha.captcha'  =>'Wrong code.'],);
           $user = new User();
