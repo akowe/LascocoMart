@@ -201,6 +201,9 @@ Route::controller(CooperativeController::class)->group(function () {
     Route::post('remove-admin-product',  'removeProduct')->name('remove-admin-product');
     Route::get('approve-order/{id}',  'approveMemberOrderPage')->name('approve-order');
     Route::post('admin-approve-order',  'approveOrder')->name('admin-approve-order');
+    Route::get('show-certificate/{id}',  'showCertificate')->name('show-certificate');
+    
+    
 });
 //Members
 Route::controller(MembersController::class)->group(function () {
