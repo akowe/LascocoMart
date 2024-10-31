@@ -426,6 +426,15 @@ class CooperativeController extends Controller
         }
         else { return Redirect::to('/login');}
     }
+
+    public function showCertificate(Request $request){
+        $code = Auth::user()->code; 
+        $id = Auth::user()->id; //
+        $cert = User::where('id', $id)->get('cooperative_cert');
+        
+        return view('showimages.displaydog',compact('cert'));
+        
+    }
     
 
     public function adminOrderHistory(Request $request){
