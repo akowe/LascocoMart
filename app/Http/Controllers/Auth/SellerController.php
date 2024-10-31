@@ -17,6 +17,7 @@ use Intervention\Image\ImageManagerStatic as Image;
 use App\Models\Voucher;
 use App\Models\Wallet;
 use App\Models\LogActivity ;
+use  App\Rules\Recaptcha;
 use Session;
 
 
@@ -54,7 +55,8 @@ class SellerController extends Controller
             'password'  => 'required|string|min:6|confirmed', 
             'code'      => 'string', 
             'seller'    => 'required|string|max:255', 
-            'captcha'   => 'required|captcha',
+            'g-recaptcha-response' => ['required', new Recaptcha],
+           // 'captcha'   => 'required|captcha',
           ],
           ['captcha.captcha'  =>'Wrong code.'],);
  
