@@ -832,12 +832,17 @@ public function showCooperativeCertificate(Request $request, $cooperative){
   $code =  User::where('id',   $cooperative)
   ->get('code')->pluck('code')->first();
   $id = Auth::user()->id; //
-  $cert = DB::table('users')->where('role', '2')
+  $cert = User::where('role', '2')
   ->where('deleted_at',   NULL)
   ->where('code',   $code)
-  ->select(['users.cooperative_cert']);
+  ->pluck('cooperative_cert')->first();
+
+  $coopName = User::where('role', '2')
+  ->where('deleted_at',   NULL)
+  ->where('code',   $code)
+  ->pluck('coopname')->first();
   
-  return view('company.show-certificate',compact('cert'));
+  return view('company.show-certificate',compact('cert', 'coopName'));
   
 }
 
