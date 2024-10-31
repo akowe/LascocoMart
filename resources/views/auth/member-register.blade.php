@@ -166,7 +166,6 @@
 
                                                  <!-- Google Recaptcha Widget-->
                                                  <div class="row mb-3">
-                                                      <p></p>
                                                       <label for="" class="col-md-4 col-form-label text-md-end"></label>
                                                       <div class="col-md-6 " style="font-size:14px;">
                                                             <div class="g-recaptcha mt-4"
