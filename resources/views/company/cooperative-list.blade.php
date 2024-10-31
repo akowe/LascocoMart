@@ -287,6 +287,9 @@
                                                                               </a>
                                                                               <br>
                                                                               <a href="user_edit/{{$details->id}}" class="dropdown-item "> Edit</a>
+
+                                                                              <br>
+                                                                              <a href="certificate/{{$details->id}}" class="dropdown-item "> Certificate</a>
                                                                         </div>
                                                                   </div>
                                                             </div>
