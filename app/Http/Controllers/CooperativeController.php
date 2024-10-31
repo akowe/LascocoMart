@@ -432,7 +432,7 @@ class CooperativeController extends Controller
         $id = Auth::user()->id; //
         $cert = User::where('id', $id)->get('cooperative_cert');
         
-        return view('showimages.displaydog',compact('cert'));
+        return view('cooperative.show-certificate',compact('cert'));
         
     }
     
