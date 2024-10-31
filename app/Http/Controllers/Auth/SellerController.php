@@ -55,10 +55,9 @@ class SellerController extends Controller
             'password'  => 'required|string|min:6|confirmed', 
             'code'      => 'string', 
             'seller'    => 'required|string|max:255', 
-            'g-recaptcha-response' => ['required', new Recaptcha],
+            'g-recaptcha-response' => 'required',
            // 'captcha'   => 'required|captcha',
-          ],
-          ['captcha.captcha'  =>'Wrong code.'],);
+          ]);
  
            $role = '3';
            $role_name = 'merchant';
