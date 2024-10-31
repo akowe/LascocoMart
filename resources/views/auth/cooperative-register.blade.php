@@ -105,11 +105,12 @@
 
                                                 <div class="row mb-3">
                                                       <label for="name"
-                                                            class="col-md-4 col-form-label text-md-end">Admin Fullname <i class="text-danger">*</i></label>
+                                                            class="col-md-4 col-form-label text-md-end">Admin Fullname
+                                                            <i class="text-danger">*</i></label>
 
                                                       <div class="col-md-6 form-group">
-                                                            <input id="fname" type="text" name="fullname" value="" required
-                                                                  class="form-control">
+                                                            <input id="fname" type="text" name="fullname" value=""
+                                                                  required class="form-control">
 
                                                             @error('fullname')
                                                             <span class="invalid-feedback" role="alert">
@@ -213,7 +214,7 @@
                                                       </div>
                                                 </div>
 
-                                                <div
+                                                <!-- <div
                                                       class="form-group row {{ $errors->has('captcha') ? ' has-error' : '' }}">
                                                       <label for="password" class="col-md-4 control-label"></label>
                                                       <div class="col-md-6">
@@ -237,36 +238,39 @@
                                                                   name="captcha">
                                                       </div>
 
-                                                </div>
-                                               
+                                                </div> -->
 
-                                                </div>
-                                                <div class="form-group text-center">
-                                                      <br>
-                                                      <button type="submit" class="btn btn-danger btn-block">Create
-                                                            Account</button>
-                                                </div>
-                                          </form>
+                                                <!-- Google Recaptcha Widget-->
+                                                <div class="g-recaptcha mt-4"
+                                                      data-sitekey={{config('services.recaptcha.key')}}></div>
 
                                     </div>
-
+                                    <div class="form-group text-center">
+                                          <br>
+                                          <button type="submit" class="btn btn-danger btn-block">Create
+                                                Account</button>
+                                    </div>
+                                    </form>
 
                               </div>
+
+
                         </div>
-                        <!--card-->
-                        <div class="text-center">
-
-                              @if (Route::has('login'))
-
-                              Already have an account? <a class="" href="{{ route('login') }}">{{ __('Login') }}
-                                    &nbsp;</a>
-
-                              @endif
-                              <br><br>
-                        </div>
-
                   </div>
+                  <!--card-->
+                  <div class="text-center">
+
+                        @if (Route::has('login'))
+
+                        Already have an account? <a class="" href="{{ route('login') }}">{{ __('Login') }}
+                              &nbsp;</a>
+
+                        @endif
+                        <br><br>
+                  </div>
+
             </div>
+      </div>
       </div>
 
 
