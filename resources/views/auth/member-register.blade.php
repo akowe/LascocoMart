@@ -15,7 +15,7 @@
       <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
 
-
+      <script async src="https://www.google.com/recaptcha/api.js"></script>
       <!-- Scripts -->
       <script src="{{ asset('js/app.js') }}" defer></script>
 
@@ -138,7 +138,7 @@
                                                             </div>
                                                       </div>
                                                 </div>
-                                                <div
+                                                <!-- <div
                                                       class="form-group row {{ $errors->has('captcha') ? ' has-error' : '' }}">
                                                       <label for="password" class="col-md-4 control-label"></label>
                                                       <div class="col-md-6">
@@ -162,6 +162,17 @@
                                                                   name="captcha">
                                                       </div>
 
+                                                </div> -->
+
+                                                 <!-- Google Recaptcha Widget-->
+                                                 <div class="row mb-3">
+                                                      <p></p>
+                                                      <label for="" class="col-md-4 col-form-label text-md-end"></label>
+                                                      <div class="col-md-6 " style="font-size:14px;">
+                                                            <div class="g-recaptcha mt-4"
+                                                                  data-sitekey={{config('services.recaptcha.key')}}>
+                                                            </div>
+                                                      </div>
                                                 </div>
                                              
                                                 <div class="form-group text-center">
