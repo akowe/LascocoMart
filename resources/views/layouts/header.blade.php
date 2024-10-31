@@ -19,7 +19,7 @@
 
       <!-- Google font -->
       <link href="https://fonts.googleapis.com/css?family=Montserrat:400,500,700" rel="stylesheet">
-
+      <script async src="https://www.google.com/recaptcha/api.js"></script>
       <!-- Bootstrap -->
       <!-- <link type="text/css" rel="stylesheet" href="css/bootstrap4.min.css" /> -->
       <link type="text/css" rel="stylesheet" href="css/bootstrap.min.css" />
