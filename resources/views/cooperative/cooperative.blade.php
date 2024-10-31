@@ -569,8 +569,7 @@
                                           </div>
                                     </div>
                                     <div class="card">
-                                          <!-- <a href="{{ route('bank-payment') }}" class="btn btn-danger btn-xs">
-                                                &nbsp;Pay Now</a> -->
+                                      
                                     </div>
                               </div>
 
