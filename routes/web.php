@@ -173,7 +173,7 @@ Route::controller(SuperAdminController::class)->group(function () {
     Route::get('all-cooperative-members/{id}',  'allCooperativeMembers')->name('all-cooperative-members');
     Route::get('vendor-store/{id}',  'eachVendorProduct')->name('vendor-store');
     Route::get('fmcg-store/{id}',  'eachFMCGProduct')->name('fmcg-store');
-
+    Route::get('show-certificate/{id}',  'showCooperativeCertificate')->name('show-certificate');
   
 });
 //Cooperatives
@@ -201,8 +201,7 @@ Route::controller(CooperativeController::class)->group(function () {
     Route::post('remove-admin-product',  'removeProduct')->name('remove-admin-product');
     Route::get('approve-order/{id}',  'approveMemberOrderPage')->name('approve-order');
     Route::post('admin-approve-order',  'approveOrder')->name('admin-approve-order');
-    Route::get('show-certificate/{id}',  'showCertificate')->name('show-certificate');
-    
+  
     
 });
 //Members
