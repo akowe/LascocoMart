@@ -61,7 +61,7 @@
                                     <input type="checkbox" id="shiping-address">
                                     <label for="shiping-address">
                                           <span></span>
-                                          Ship to a diffrent address?
+                                         <h5 class="text-danger"> Ship to a diffrent address?</h5>
                                     </label>
                                     <div class="caption">
                                           <div class="form-group">
@@ -108,7 +108,7 @@
                                     <div><strong></strong></div>
                               </div>
                               @php $total = 0 @endphp
-                              @php $delivery = 4000 @endphp
+                              @php $delivery = 3000 @endphp
                               @if(session('cart'))
                               @foreach(session('cart') as $prod => $details)
                               @php $total += $details['price'] * $details['quantity'] @endphp
