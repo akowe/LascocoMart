@@ -935,7 +935,7 @@
                                                                               onclick="decreaseRate()"
                                                                               value="decrease Value">-
                                                                         </div>
-                                                                        <input type="number" name="interest"
+                                                                        <input type="text" name="interest"
                                                                               value="{{$interest}}" id="rate"
                                                                               style="width:60%;">
                                                                         <div class="value-button" id="increase"
