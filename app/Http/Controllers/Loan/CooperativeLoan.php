@@ -268,7 +268,7 @@ class CooperativeLoan extends Controller
             $id = Auth::user()->id; //
             $this->validate($request, [ 
                 'repayment'         => 'required|integer|max:255',
-                'interest'          => 'required|integer|max:255',
+                'interest'          => 'required|integer|digits_between:1,2|max:255',
                 'rate_type'         => 'required|string|max:255',
                 'max_duration'      => 'required|integer|max:255',
                  ]);       
