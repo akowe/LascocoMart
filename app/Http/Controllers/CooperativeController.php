@@ -1672,7 +1672,7 @@ class CooperativeController extends Controller
     }
     
     
-      public function coopstore(Request $request)
+      public function cooperativeStoreProduct(Request $request)
         {   
         $user_id = Auth::user()->id; // get the seller id
         $user_role = Auth::user()->role;
@@ -1765,7 +1765,7 @@ class CooperativeController extends Controller
            $product->img1       = $img1_path;
            $product->img2       = $img2_path;
            $product->img3       = $img3_path;
-        //    $product->img4       = $img4_path;
+            $product->img4       = $img4_path;
            $product->seller_id  = $user_id;
            $product->seller_role  = $user_role;
            $product->prod_status = 'pending';
