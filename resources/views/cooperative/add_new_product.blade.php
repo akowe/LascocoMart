@@ -119,7 +119,7 @@
                                     <!-- alert stops--->
                                     <h4><i>All field mark <i class="text-danger">*</i> are required</i></h4>
                                     <form class="card" enctype="multipart/form-data"
-                                          action="{{ url('coopupload-image') }}" method="POST">
+                                          action="{{ url('admin-add-new-product') }}" method="POST">
                                           @csrf
                                           <div class="card-body">
                                                 <div class="row row-cards">
