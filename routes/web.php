@@ -184,6 +184,7 @@ Route::controller(CooperativeController::class)->group(function () {
     Route::get('members', 'members')->name('members');
     Route::get('delete-member/{id}', 'deleteMember')->name('delete-member');
     Route::get('add_new_product', 'addProduct')->name('add_new_product');
+    Route::post('admin-add-new-product',  'cooperativeStoreProduct')->name('admin-add-new-product');
     Route::get('credit',  'members')->name('credit');
      //soft delete.
     Route::get('coopremove_product/{id}',  'coopremove_product')->name('coopremove_product');
@@ -201,6 +202,7 @@ Route::controller(CooperativeController::class)->group(function () {
     Route::post('remove-admin-product',  'removeProduct')->name('remove-admin-product');
     Route::get('approve-order/{id}',  'approveMemberOrderPage')->name('approve-order');
     Route::post('admin-approve-order',  'approveOrder')->name('admin-approve-order');
+
   
     
 });
