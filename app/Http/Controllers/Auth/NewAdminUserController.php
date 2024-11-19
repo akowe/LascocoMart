@@ -65,6 +65,7 @@ class NewAdminUserController extends Controller
           $user->phone        = $request->phone;
           $user->email        = $request->email;
           $user->password     = Hash::make($password);
+          $user->email_verified_at = Carbon::now();
           $user->password_reset_at = Carbon::now();
           $user->save();
           if($user){
@@ -87,7 +88,9 @@ class NewAdminUserController extends Controller
             'password'   => $password ,   
             'email'     => $email,
         );
-          Mail::to($email)->send(new NewUserEmail($data));  
+          Mail::to($email)->send(new NewUserEmail($data)); 
+          Mail::to('info@lascocomart.com')->send(new NewUserEmail($data));
+
         }
   
           Session::flash('success', ' New user created successfully. <br> login details has been sent to user email address. <br> User to check his/her inbox or spam/junk'); 
