@@ -269,7 +269,7 @@ class FmcgController extends Controller
             'message'   =>   'pending'
             );
            Mail::to('info@lascocomart.com')->send(new SendMail($data));
-          return redirect('fcmg')->with('status', 'New product added successfully');             
+          return redirect('fmcg-products')->with('status', 'New product added successfully');             
   }   
 
 
