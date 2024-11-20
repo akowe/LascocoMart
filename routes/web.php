@@ -152,6 +152,9 @@ Route::controller(SuperAdminController::class)->group(function () {
     Route::put('about_update/{id}', 'about_update')->name('about_update');
     Route::get('about_edit/{id}',  'about_edit')->name('about_edit');
     Route::get('about_us',  'about')->name('about_us');
+    //product percentage settings
+  
+    Route::post('/update-vendor-product-settings',  'vendorProductSeeting')->name('update-vendor-product-settings');
     //privacy page s
     Route::get('privacy', 'privacy')->name('privacy');
     Route::get('privacy_edit/{id}',  'privacy_edit')->name('privacy_edit');
