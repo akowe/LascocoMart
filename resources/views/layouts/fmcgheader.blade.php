@@ -272,12 +272,19 @@
 
                                           <!-- Cart -->
                                           <div class="dropdown">
-                                                <a class="dropdown-toggle" data-toggle="dropdown" aria-expanded="true"
+                                          <a href="{{ route('fmcgcart') }}"
                                                       style="cursor: pointer;">
                                                       <i class="fa fa-shopping-cart"></i>
                                                       <span>Cart</span>
                                                       <div class="qty">{{ count((array) session('fmcgcart')) }}</div>
                                                 </a>
+
+                                                <!-- <a href="{{ route('fmcgcart') }}"  class="dropdown-toggle" data-toggle="dropdown" aria-expanded="true"
+                                                      style="cursor: pointer;">
+                                                      <i class="fa fa-shopping-cart"></i>
+                                                      <span>Cart</span>
+                                                      <div class="qty">{{ count((array) session('fmcgcart')) }}</div>
+                                                </a> -->
                                                 @php $total = 0 @endphp
                                                 @php $items = 0 @endphp
                                                 @php $item = 1 @endphp
