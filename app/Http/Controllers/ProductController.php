@@ -57,7 +57,6 @@ class ProductController extends Controller
         $seller = Arr::pluck($products, 'seller_id');
         $get_seller_id = implode(" ",$seller);
 
-     
         //get sellers details
         $email          = User::where('id', $get_seller_id)->get('email');
         $seller_details = User::where('id', $get_seller_id)->get();
@@ -67,8 +66,6 @@ class ProductController extends Controller
 
         //send email notification of low stock
         foreach($products   as $key => $prod){
-        
-       
             $date = Carbon::now();
             if($prod->quantity < 1){
                 Product::where('id', $prod->id)
@@ -78,16 +75,14 @@ class ProductController extends Controller
                 'name'      => $name,
                 'prod_name' => $prod->prod_name,
                 'quantity'  => $prod->quantity,  
-                'message'   => 'Your product'  
-                                            
+                'message'   => 'Your product'                                      
             );
             Mail::to($email)->send(new LowStockEmail($data));
             $quantity='0';
             Product::whereDate( 'date', '<=', now()->subDays(7))
             ->where('quantity', $quantity)
             ->update(['prod_status' => 'remove']);
-            }
-           
+            }  
         }  
         if(Auth::user()){
             $vendorName =  DB::table('users')
@@ -110,7 +105,6 @@ class ProductController extends Controller
            ->orderBy('users.coopname', 'desc')
             ->inRandomOrder()
              ->get('products.*');
-           
             
              \LogActivity::addToLog('Product page');
              return view('products', compact('products', 'wishlist', 'wish'));
