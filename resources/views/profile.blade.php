@@ -2906,7 +2906,7 @@
                                                                               value="decrease Value">-
                                                                         </div>
                                                                         <input type="number" name="vendor_pecentage"
-                                                                              value="" id="rate"
+                                                                              value="{{}}" id="rate"
                                                                               style="width:60%;">
                                                                         <div class="value-button" id="increase"
                                                                               onclick="increaseRate()"
