@@ -185,7 +185,7 @@
                                                 <input type="hidden" name="ship_phone" placeholder="Mobile Number"
                                                       id="get_ship_phone">
 
-                                                <button class="btn btn-secondary btn-sm" type="submit"
+                                                <button class="btn btn-secondary btn-sm  btn-block" type="submit"
                                                       value="">
                                                       <i class="fa fa-google-wallet"
                                                       aria-hidden="true"></i>  Pay With Wallet ( {{number_format( $totalAmount) }} ) </button>
@@ -209,7 +209,7 @@
                                                 <input type="hidden" name="reference"
                                                       value="{{ Paystack::genTranxRef() }}">
 
-                                                <button class="btn btn-success btn-sm " type="submit"
+                                                <button class="btn btn-success btn-sm  btn-block" type="submit"
                                                       value="Pay Now!">
                                                       Pay Now  ( {{ number_format($totalAmount ) }} ) </button>
                                           </form>
