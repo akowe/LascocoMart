@@ -226,9 +226,9 @@ class FmcgProductController extends Controller
                 "seller_id" => $product->seller_id,
             ];
         }
-        session()->put('fmcgcart', $cart);
+        session()->put('fmcgcart', $cart); 
         \LogActivity::addToLog('New fmcgCart');
-        return redirect()->back()->with('success', 'Product added to cart successfully!');
+            return redirect()->route('fmcgcart')->with('success', 'Product added to cart successfully!');
     }
 
      
