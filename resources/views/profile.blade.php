@@ -2891,7 +2891,7 @@
                                           <div class="tab-pane" id="tabs-product-settings">
                                                 <h4>Product </h4>
 
-                                                <form method="post" action="/update-product-settings" name="submit"
+                                                <form method="post" action="/update-vendor-product-settings" name="submit"
                                                       enctype="multipart/form-data">
                                                       @csrf
                                                       <div class="row g-3">

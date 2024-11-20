@@ -1169,7 +1169,7 @@ public function vendorProductSeeting(Request $request){
 $settings =   Settings::where('coopname', 'superadmin')
               ->where('user_id',   Auth::user()->id)
               ->update(['vendor_product_percentage' => $request->vendor_pecentage,  'fmcg_product_percentage'  => $request->fmcg_pecentage ]);
-if($user){
+if($settings){
   \LogActivity::addToLog('Set product percentage'); 
   return redirect()->back()->with("success","You have   successfully set product percentage");
 }else{
