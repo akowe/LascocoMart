@@ -231,6 +231,28 @@ class FmcgProductController extends Controller
         return redirect()->back()->with('success', 'Product added to cart successfully!');
     }
 
+     
+    public function fmcgAddToCartPreviewPage($id){
+        $product = FcmgProduct::findOrFail($id);
+        $cart = session()->get('fmcgcart', []);
+  
+        if(isset($cart[$id])) {
+            $cart[$id]['quantity']++;
+        } else { 
+            $cart[$id] = [
+                "prod_name" => $product->prod_name,
+                "quantity" => 1,
+                "price" => $product->price,
+                "image" => $product->image,
+                "id" => $product->id,
+                "seller_id" => $product->seller_id,
+            ];
+        }
+        session()->put('fmcgcart', $cart);
+        \LogActivity::addToLog('New fmcgCart');
+        return redirect()->back()->with('success', 'Product added to cart successfully!');
+    }
+
     public function fmcgcheckout(Request $request){
         if( Auth::user()){
            $firstTimeLoggedIn = Auth::user()->last_login;
