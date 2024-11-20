@@ -56,7 +56,7 @@
                         <div class="product ">
                               @if($product->quantity < 1) <div
                                     style="padding-left:25px; padding-right:25px; padding-top:25px;">
-                                    <a href="{{ route('preview', $product->prod_name )}}" class="product-img">
+                                    <a href="{{ route('fmcg-preview', $product->prod_name )}}" class="product-img">
                                           <img src="{{ asset($product->image) }}" class="cursor" style="height:11em;">
                                           <div id="sold-out">
                                                 <div id="sold-out-text">OUT OF STOCK</div>
@@ -73,7 +73,7 @@
 
                         @else
                         <div style="padding-left:25px; padding-right:25px; padding-top:25px;">
-                              <a href="{{ route('preview', $product->prod_name )}}" class="product-img">
+                              <a href="{{ route('fmcg-preview', $product->prod_name )}}" class="product-img">
                                     <img src="{{ asset($product->image) }}" class="cursor" style="height:11em;">
                               </a>
                         </div>
@@ -98,7 +98,7 @@
 
                               <div class="product-btns">
                                     <button class="quick-view">
-                                          <a href="{{ route('preview', $product->prod_name) }}" title="view">
+                                          <a href="{{ route('fmcg-preview', $product->prod_name) }}" title="view">
                                                 <i class="fa fa-eye"></i>
                                           </a>
                                     </button>

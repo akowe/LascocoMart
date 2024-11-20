@@ -259,6 +259,7 @@ Route::controller(FmcgProductController::class)->group(function () {
     Route::match(['get', 'post'],'fmcgcheckout',  'fmcgcheckout'); 
     Route::get('/fmcg_category/', 'fmcgCategory')->name('fmcg_category');
     Route::get('fmcgs_products', 'fmcgsProducts')->name('fmcgs_products');
+    Route::get('fmcg-preview/{prod_name}', 'preview')->name('fmcg-preview');
 });
 
 //General Product landing page

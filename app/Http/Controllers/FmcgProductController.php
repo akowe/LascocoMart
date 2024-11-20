@@ -354,5 +354,33 @@ public function return_policy(Request $request){
         return view('terms_and_condition', compact('about'));
   }
 
+  public function preview(Request $request, $prod_name)
+{
+   $products = FcmgProduct::where('prod_name', $prod_name)->get('*');
+    $review = FcmgProduct::where('prod_name', $prod_name)->get('id');
+    $prod_id = Arr::pluck($review, 'id');  
+    $id = implode(" ",$prod_id);
+    
+    $reviews = Review::Join('users', 'users.id', '=', 'reviews.user_id')
+     ->where('product_id', $id)->get('*');
+
+     if(Auth::user()){
+        $id = Auth::user()->id;
+        $wishlist = Wishlist::where('user_id', $id)->get('product_id');
+        $getWish = Arr::pluck($wishlist, 'product_id');
+        $saveItem = implode(',', $getWish);
+        $wish = FcmgProduct::join('wishlist', 'wishlist.product_id', '=', 'fmcg_products.id')
+        ->where('wishlist.user_id', $id)
+         ->get('fmcg_products.*');
+         \LogActivity::addToLog('Product page');
+         return view('preview', compact('products', 'wishlist', 'wish', 'reviews'));
+     }
+     else{
+        \LogActivity::addToLog('Preview product');
+        return view('preview', compact('products', 'reviews'));
+     }
+    
+}
+
  
 }//class
