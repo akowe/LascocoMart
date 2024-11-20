@@ -176,7 +176,7 @@
                                           <form method="POST" action="{{ route('fmcg-cash-payment') }}"
                                                 accept-charset="UTF-8" class="form-horizontal" role="form">
                                                 @csrf
-                                                <input type="text" name="amount" value="{{ $totalAmount }}">
+                                                <input type="hidden" name="amount" value="{{ $totalAmount }}">
                                                 <input type="hidden" name="delivery" value="{{$delivery}}">
                                                 <input type="hidden" name="ship_address" placeholder="Delivery Address"
                                                       id="get_ship_address">
@@ -185,10 +185,10 @@
                                                 <input type="hidden" name="ship_phone" placeholder="Mobile Number"
                                                       id="get_ship_phone">
 
-                                                <button class="btn btn-secondary btn-lg btn-block" type="submit"
+                                                <button class="btn btn-secondary btn-sm" type="submit"
                                                       value="">
-                                                      Pay With Wallet <i class="fa fa-google-wallet"
-                                                            aria-hidden="true"></i> </button>
+                                                      <i class="fa fa-google-wallet"
+                                                      aria-hidden="true"></i>  Pay With Wallet ( {{number_format( $totalAmount) }} ) </button>
                                           </form>
                                     </div>
                                     <div class="col-sm-6">
@@ -209,9 +209,9 @@
                                                 <input type="hidden" name="reference"
                                                       value="{{ Paystack::genTranxRef() }}">
 
-                                                <button class="btn btn-success btn-lg btn-block" type="submit"
+                                                <button class="btn btn-success btn-sm " type="submit"
                                                       value="Pay Now!">
-                                                      Pay Now <i class="fa fa-money fa-lg"></i> </button>
+                                                      Pay Now  ( {{ number_format($totalAmount ) }} ) </button>
                                           </form>
                                     </div>
                               </div>
