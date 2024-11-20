@@ -212,6 +212,12 @@
                                                 Details</a>
                                           @endif
 
+                                          @if(Auth::user()->role_name == 'superadmin')
+                                          <a href="#tabs-product-settings" data-bs-toggle="tab"
+                                                class="list-group-item list-group-item-action d-flex align-items-center">
+                                                Product Settings</a>
+                                          @endif
+
                                           <a href="#tabs-change-password" data-bs-toggle="tab"
                                                 class="list-group-item list-group-item-action d-flex align-items-center">Change
                                                 Password</a>
@@ -985,10 +991,10 @@
 
                                                       <br>
                                                       <div class="row ">
-                                                      <div class="col-md">
+                                                            <div class="col-md">
                                                                   <div class="form-label required">Rate type
                                                                   </div>
-                                                                <p>&nbsp;</p>
+                                                                  <p>&nbsp;</p>
                                                                   <select name="rate_type" id=""
                                                                         class="form-control text-capitalize">
                                                                         @if(empty($rateType))
@@ -1000,7 +1006,7 @@
                                                                         <option value="flat rate">Flat /
                                                                               Fixed Rate</option>
                                                                         <option value="simple interest">
-                                                                        Reducing balance</option>
+                                                                              Reducing balance</option>
                                                                   </select>
                                                                   @error('rate_type')
                                                                   <div class="alert alert-danger alert-dismissible"
@@ -2881,8 +2887,151 @@
                                           </div>
                                           <!----account tab end ---->
 
-                                          <!----bank tab start ---->
-                                          <!----bank tab end ---->
+                                          <!----product  settings tab start ---->
+                                          <div class="tab-pane" id="tabs-product-settings">
+                                                <h4>Product </h4>
+
+                                                <form method="post" action="/update-product-settings" name="submit"
+                                                      enctype="multipart/form-data">
+                                                      @csrf
+                                                      <div class="row g-3">
+                                                            <div class="col-md">
+                                                                  <div class="mb-3">
+                                                                        <div class="form-label required">Vendor Product
+                                                                              Percentage (%)
+                                                                        </div>
+                                                                  
+                                                                         <div class="value-button" id="decrease"
+                                                                              onclick="decreaseRate()"
+                                                                              value="decrease Value">-
+                                                                        </div>
+                                                                        <input type="number" name="vendor_pecentage"
+                                                                              value="" id="rate"
+                                                                              style="width:60%;">
+                                                                        <div class="value-button" id="increase"
+                                                                              onclick="increaseRate()"
+                                                                              value="Increase Value">+
+                                                                        </div>
+
+                                                                  </div>
+
+                                                                  @error('vendor_pecentage')
+                                                                  <div class="alert alert-danger alert-dismissible"
+                                                                        role="alert">
+                                                                        <div class="d-flex">
+                                                                              <div>
+                                                                                    <!-- Download SVG icon from http://tabler-icons.io/i/alert-circle -->
+                                                                                    <svg xmlns="http://www.w3.org/2000/svg"
+                                                                                          class="icon alert-icon"
+                                                                                          width="24" height="24"
+                                                                                          viewBox="0 0 24 24"
+                                                                                          stroke-width="2"
+                                                                                          stroke="currentColor"
+                                                                                          fill="none"
+                                                                                          stroke-linecap="round"
+                                                                                          stroke-linejoin="round">
+                                                                                          <path stroke="none"
+                                                                                                d="M0 0h24v24H0z"
+                                                                                                fill="none" />
+                                                                                          <path
+                                                                                                d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" />
+                                                                                          <path d="M12 8v4" />
+                                                                                          <path d="M12 16h.01" />
+                                                                                    </svg>
+                                                                              </div>
+                                                                              <div>
+                                                                                    {{ $message }}
+                                                                              </div>
+                                                                        </div>
+                                                                        <a class="btn-close" data-bs-dismiss="alert"
+                                                                              aria-label="close"></a>
+                                                                  </div>
+                                                                  @enderror
+                                                            </div>
+
+                                                            <div class="col-md">
+                                                                  <div class="form-label required">FMCG Product
+                                                                        Percentage (%)</div>
+
+                                                                        <div class="value-button" id="decrease"
+                                                                              onclick="decreaseValue()"
+                                                                              value="decrease Value">-</div>
+                                                                        <input type="number" name="fmcg_pecentage" value=""
+                                                                              id="number">
+                                                                        <div class="value-button" id="increase"
+                                                                              onclick="increaseValue()"
+                                                                              value="Increase Value">+</div>
+
+                                                                  <!--- end validation error --->
+                                                                  @error('fmcg_pecentage')
+                                                                  <div class="alert alert-danger alert-dismissible"
+                                                                        role="alert">
+                                                                        <div class="d-flex">
+                                                                              <div>
+                                                                                    <!-- Download SVG icon from http://tabler-icons.io/i/alert-circle -->
+                                                                                    <svg xmlns="http://www.w3.org/2000/svg"
+                                                                                          class="icon alert-icon"
+                                                                                          width="24" height="24"
+                                                                                          viewBox="0 0 24 24"
+                                                                                          stroke-width="2"
+                                                                                          stroke="currentColor"
+                                                                                          fill="none"
+                                                                                          stroke-linecap="round"
+                                                                                          stroke-linejoin="round">
+                                                                                          <path stroke="none"
+                                                                                                d="M0 0h24v24H0z"
+                                                                                                fill="none" />
+                                                                                          <path
+                                                                                                d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" />
+                                                                                          <path d="M12 8v4" />
+                                                                                          <path d="M12 16h.01" />
+                                                                                    </svg>
+                                                                              </div>
+                                                                              <div>
+                                                                                    {{ $message }}
+                                                                              </div>
+                                                                        </div>
+                                                                        <a class="btn-close" data-bs-dismiss="alert"
+                                                                              aria-label="close"></a>
+                                                                  </div>
+                                                                  @enderror
+                                                            </div>
+
+                                                            <!-- send button here -->
+                                                            <div class="card-footer bg-transparent mt-auto">
+                                                                  <div class="btn-list justify-content-end">
+                                                                        <button type="submit" name="submit"
+                                                                            
+                                                                              class="btn btn-ghost-danger active ms-auto">
+                                                                              <svg xmlns="http://www.w3.org/2000/svg"
+                                                                                    class="icon icon-tabler icon-tabler-device-floppy"
+                                                                                    width="24" height="24"
+                                                                                    viewBox="0 0 24 24"
+                                                                                    stroke-width="1.5"
+                                                                                    stroke="currentColor" fill="none"
+                                                                                    stroke-linecap="round"
+                                                                                    stroke-linejoin="round">
+                                                                                    <path stroke="none"
+                                                                                          d="M0 0h24v24H0z"
+                                                                                          fill="none" />
+                                                                                    <path
+                                                                                          d="M6 4h10l4 4v10a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2" />
+                                                                                    <path
+                                                                                          d="M12 14m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
+                                                                                    <path d="M14 4l0 4l-6 0l0 -4" />
+                                                                              </svg>
+                                                                              Save
+                                                                        </button>
+
+
+                                                                       
+                                                                  </div>
+                                                            </div>
+                                                      </div>
+                                                      <!--row-->
+                                                </form>
+                                          </div>
+                                          <!----product seettings tab end ---->
                                           <!----Loan settings tab start ---->
                                           <!----loan settings tab end ---->
                                     </div>
