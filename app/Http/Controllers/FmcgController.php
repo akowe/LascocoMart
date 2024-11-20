@@ -242,7 +242,7 @@ class FmcgController extends Controller
             $img4_path = "/images/products/" . $img4Name; 
           }else {$img4_path = "";}
 
-          $company_percentage = $request->price *  7 / 100;// coopmart percentage
+          $company_percentage = $request->price *  2.5 / 100;// coopmart percentage
           $price = $request->price  + $company_percentage;
 
          $fcmgproduct = new FcmgProduct;
