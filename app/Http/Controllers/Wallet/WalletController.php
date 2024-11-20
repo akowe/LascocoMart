@@ -690,32 +690,7 @@ class WalletController extends Controller
             $grandtotal   = $amount + $delivery;
 
             //check  wallet account balance
-            $WalletAccountNumber =  DB::table('wallet')
-            ->select(['wallet_account_number'])
-            ->where('user_id', $id)
-            ->where('cooperative_code', $code)
-            ->pluck('wallet_account_number')->first();
-            if(empty($WalletAccountNumber)){
-               Session::flash('no-wallet', ' You do not have a wallet. Click here to create one.'); 
-           }
-            $WalletAccountName = DB::table('wallet')
-            ->select(['fullname'])
-            ->where('user_id', $id)
-            ->where('cooperative_code', $code)
-            ->pluck('fullname')->first(); 
-   
-            $WalletBankName = DB::table('wallet')
-            ->select(['bank_name'])
-            ->where('user_id', $id)
-            ->where('cooperative_code', $code)
-            ->pluck('bank_name')->first(); 
-   
-            $phoneNumber = DB::table('wallet')
-            ->select(['phone'])
-            ->where('user_id', $id)
-            ->where('cooperative_code', $code)
-            ->pluck('phone')->first();
-   
+        
             $data = array(
                "phone"            => $phoneNumber,
                "account_number"   => $WalletAccountNumber,
@@ -863,6 +838,7 @@ class WalletController extends Controller
                     } 
          
                     $data = [];
+        
                         foreach ($cart as $item) {
                                 $data['items'] = [
                                 [
@@ -999,20 +975,13 @@ class WalletController extends Controller
     $note          = $request->input('note');
     $delivery      = $request->input('delivery');
     $amount        = $request->amount;
-    $totalAmount   = $amount - $delivery;
+    $grandtotal   = $amount + $delivery;
 
-    $live_payment_gateway =  DB::table('ogaranya_api_token')
-    ->select('*')->pluck('live_payment_gateway')->first();
-
-    $test_payment_gateway = DB::table('ogaranya_api_token')
-    ->select('*')->pluck('test_payment_gateway')->first();
-    $debitData = array(
-        "phone"                 => $phoneNumber,
-        "account_number"        => $WalletAccountNumber,
-        "amount"                => $grandtotal,
-        "payment_gateway_code"  => $live_payment_gateway
-        );
-
+    //check  wallet account balance
+    $data = array(
+      "phone"            => $phoneNumber,
+      "account_number"   => $WalletAccountNumber,
+      );
       $testToken = DB::table('ogaranya_api_token')
       ->select('*')->pluck('test_token')->first();
       $testPublicKey = DB::table('ogaranya_api_token')
@@ -1023,160 +992,225 @@ class WalletController extends Controller
       $livePublicKey = DB::table('ogaranya_api_token')
       ->select('*')->pluck('live_publickey')->first();
 
-      $jsonDebitData = json_encode($debitData);
-     // dd($jsonDebitData);
-     $testURl = "https://api.staging.ogaranya.com/v1/2347033141516/wallet/debit";
-     $liveURL = 'https://api.ogaranya.com/v1/2347033141516/wallet/debit';
+      $jsonData = json_encode($data);
 
-       $debit_url = $liveURL ;
-      if($jsonDebitData) {
-               $curlopt = curl_init();
-               curl_setopt_array($curlopt, array(
-               CURLOPT_URL => $debit_url,
+      $testURl = "https://api.staging.ogaranya.com/v1/2347033141516/wallet/info";
+      $liveURL = "https://api.ogaranya.com/v1/2347033141516/wallet/info";
+
+       $url =    $liveURL ;
+      if($jsonData) {
+               $curl = curl_init();
+               curl_setopt_array($curl, array(
+               CURLOPT_URL => $url,
                CURLOPT_RETURNTRANSFER => true,
                CURLOPT_CUSTOMREQUEST => 'POST',
-               CURLOPT_POSTFIELDS =>$jsonDebitData,
+               CURLOPT_POSTFIELDS =>$jsonData,
                CURLOPT_HTTPHEADER => array(
                  'Content-Type: application/json',
-                    'token: '.$liveToken,
-                    'publickey:  '.$livePublicKey,
+                 'token: '.$liveToken,
+                  'publickey:  '.$livePublicKey,
                  )
                ));
-            $response = curl_exec($curlopt);
-            $error = curl_error($curlopt);
-            curl_close($curlopt);
-            $detail =  json_decode($response, true);
-            //dd($detail);
+            $res = curl_exec($curl);
+            $error = curl_error($curl);
+            curl_close($curl);
+            $result =  json_decode($res, true);
+           // dd($result);
           }
-           if($detail['status'] == 'success'){
-            $walletOrderID = $detail['data']['order_id'];
-            $walletPaymentReference = $detail['data']['payment_reference'];
+           if($result['status'] == 'success'){
+            $accountBalance = $result['data']['available_balance'];
           }
-           if($detail['status'] == 'error'){
+           if($result['status'] == 'error'){
               Session::flash('error',  ' Oops! something went wrong'); 
-          }
-      if(!empty($walletPaymentReference)){
-        $order = new Order();
-        $order->user_id         = Auth::user()->id;
-        $order->total           = $totalAmount;
-        $order->delivery_fee    = $delivery; 
-        $order->grandtotal      = $amount;
-        $order->order_number    = $order_number;
-        $order->status          = $order_status;
-        $order->pay_status      = $pay_status;
-        $order->pay_type        = $pay_type ;
-        $order->transaction_type = 'wallet';
-        $order->save();
-
-        $shipDetails = new ShippingDetail();
-        $shipDetails->shipping_id   = $order->id;
-        $shipDetails->ship_address  = $ship_address;
-        $shipDetails->ship_city     = $ship_city;
-        $shipDetails->ship_phone    = $ship_phone;
-        $shipDetails->note          = $note;
-        $shipDetails->save(); 
-
-        $debitWalletTransaction  = new WalletHistory;
-        $debitWalletTransaction->wallet_account_number      = $WalletAccountNumber;
-        $debitWalletTransaction->payment_order_id           = $walletOrderID;
-        $debitWalletTransaction->order_id                   = $order->id;
-        $debitWalletTransaction->payment_reference          = $walletPaymentReference;
-        $debitWalletTransaction->amount                     = $amount;
-        $debitWalletTransaction->type                       = 'debit';
-        $debitWalletTransaction->save();  
-          //wallet last active account
-          $activeWallet = Wallet::where('user_id', $id)->get('last_transaction_date');
-          if (empty($activeWallet)) {
-              $storeTransactionDate = 
-              Wallet::where('user_id', $id)->update([
-              'last_transaction_date'     => Carbon::now(),
-              ]);
-          }
-          elseif (!empty($activeWallet)) {
-          $storeTransactionDate = 
-          Wallet::where('user_id', $id)->update([
-          'last_transaction_date'     => Carbon::now(),
-          ]);
-          } 
-        
-        $data = [];
-
-        foreach ($cart as $item) {
-                $data['items'] = [
-                [
-                    'prod_name' => $item['prod_name'],
-                    'price' => $item['price'],
-                    'quantity' => $item['quantity'],
-                    'seller_id'=> $item['seller_id'], 
-                    $seller_id = $item['seller_id'], 
-                    $price = $item['price'],
-                    $product_id = $item['id'],
-                    $quantity = $item['quantity'],
-                    ]
-                ];
-            $company_percentage = 0;
-            $company_percentage +=  $price * 5/ 100;
-            $total_sales = 0;
-            $total_sales += $price - $company_percentage;
-
-            $orderItem = new OrderItem();
-            $orderItem->order_id        = $order->id;
-            $orderItem->product_id      = $item['id'];
-            $orderItem->seller_id       = $item['seller_id'];
-            $orderItem->order_quantity  = $item['quantity'];
-            $orderItem->amount          = $item['price'] * $item['quantity'];
-            $orderItem->unit_cost       = $item['price'];
-            $orderItem->save();
-            
-            $get_seller_price = FcmgProduct::where('id', $product_id)->get('seller_price');
-            $seller_price = Arr::pluck($get_seller_price, 'seller_price');
-            $selling_price = implode('', $seller_price);
-
-            $seller =  User::where('id', $seller_id)
-            ->get('id');
-              $sellerEmail =  User::where('id', $seller_id)
-            ->get('email');
-            //notify seller
-            $notification = new NewCardPayment($order_number);
-            Notification::send($seller, $notification); 
-
-            $stock = \DB::table('fmcg_products')->where('id', $product_id)->first()->quantity;
           
-              if($stock > $quantity){
-                  \DB::table('fmcg_products')->where('id', $product_id)->decrement('quantity',$quantity);
-                 }
-                 $name =  \DB::table('users')->where('id', $order->user_id)->get('fname') ; 
-                 $username = Arr::pluck($name, 'fname'); // 
-                 $get_name = implode(" ",$username);
+              return redirect('bank-payment/'.$order_id)->with('status', 'Insufficient wallet balance Pay with Paystach');
+          }
+    
+    if($accountBalance > $grandtotal ){
+      $live_payment_gateway =  DB::table('ogaranya_api_token')
+      ->select('*')->pluck('live_payment_gateway')->first();
+
+      $test_payment_gateway = DB::table('ogaranya_api_token')
+      ->select('*')->pluck('test_payment_gateway')->first();
+      $debitData = array(
+          "phone"                 => $phoneNumber,
+          "account_number"        => $WalletAccountNumber,
+          "amount"                => $grandtotal,
+          "payment_gateway_code"  => $live_payment_gateway
+          );
+
+        $testToken = DB::table('ogaranya_api_token')
+        ->select('*')->pluck('test_token')->first();
+        $testPublicKey = DB::table('ogaranya_api_token')
+        ->select('*')->pluck('test_publickey')->first();
+
+        $liveToken = DB::table('ogaranya_api_token')
+        ->select('*')->pluck('live_token')->first();
+        $livePublicKey = DB::table('ogaranya_api_token')
+        ->select('*')->pluck('live_publickey')->first();
+
+        $jsonDebitData = json_encode($debitData);
+      // dd($jsonDebitData);
+      $testURl = "https://api.staging.ogaranya.com/v1/2347033141516/wallet/debit";
+      $liveURL = 'https://api.ogaranya.com/v1/2347033141516/wallet/debit';
+
+      $debit_url = $liveURL ;
+      if($jsonDebitData) {
+            $curlopt = curl_init();
+            curl_setopt_array($curlopt, array(
+            CURLOPT_URL => $debit_url,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_CUSTOMREQUEST => 'POST',
+            CURLOPT_POSTFIELDS =>$jsonDebitData,
+            CURLOPT_HTTPHEADER => array(
+              'Content-Type: application/json',
+                  'token: '.$liveToken,
+                  'publickey:  '.$livePublicKey,
+              )
+            ));
+          $response = curl_exec($curlopt);
+          $error = curl_error($curlopt);
+          curl_close($curlopt);
+          $detail =  json_decode($response, true);
+          //dd($detail);
+        }
+        if($detail['status'] == 'success'){
+          $walletOrderID = $detail['data']['order_id'];
+          $walletPaymentReference = $detail['data']['payment_reference'];
+        }
+        if($detail['status'] == 'error'){
+            Session::flash('error',  ' Oops! something went wrong'); 
+        }
+      if(!empty($walletPaymentReference)){
+      $order = new Order();
+      $order->user_id         = Auth::user()->id;
+      $order->total           = $totalAmount;
+      $order->delivery_fee    = $delivery; 
+      $order->grandtotal      = $amount;
+      $order->order_number    = $order_number;
+      $order->status          = $order_status;
+      $order->pay_status      = $pay_status;
+      $order->pay_type        = $pay_type ;
+      $order->transaction_type = 'wallet';
+      $order->save();
+
+      $shipDetails = new ShippingDetail();
+      $shipDetails->shipping_id   = $order->id;
+      $shipDetails->ship_address  = $ship_address;
+      $shipDetails->ship_city     = $ship_city;
+      $shipDetails->ship_phone    = $ship_phone;
+      $shipDetails->note          = $note;
+      $shipDetails->save(); 
+
+      $debitWalletTransaction  = new WalletHistory;
+      $debitWalletTransaction->wallet_account_number      = $WalletAccountNumber;
+      $debitWalletTransaction->payment_order_id           = $walletOrderID;
+      $debitWalletTransaction->order_id                   = $order->id;
+      $debitWalletTransaction->payment_reference          = $walletPaymentReference;
+      $debitWalletTransaction->amount                     = $amount;
+      $debitWalletTransaction->type                       = 'debit';
+      $debitWalletTransaction->save();  
+        //wallet last active account
+        $activeWallet = Wallet::where('user_id', $id)->get('last_transaction_date');
+        if (empty($activeWallet)) {
+            $storeTransactionDate = 
+            Wallet::where('user_id', $id)->update([
+            'last_transaction_date'     => Carbon::now(),
+            ]);
+        }
+        elseif (!empty($activeWallet)) {
+        $storeTransactionDate = 
+        Wallet::where('user_id', $id)->update([
+        'last_transaction_date'     => Carbon::now(),
+        ]);
+        } 
       
-                $email =  \DB::table('users')->where('id', $order->user_id)->get('email') ; 
-                 $useremail = Arr::pluck($email, 'email'); // 
-                 $get_email = implode(" ",$useremail);
-      
-               // send email notification to member
-                  $data = array(
-                  'name'         => $get_name,
-                  'order_number' => $order_number,  
-                  'amount'       => $totalAmount,       
-                      );
-       
-                  Mail::to($get_email)->send(new ConfirmOrderEmail($data)); 
-                    Mail::to($sellerEmail)->send(new SalesEmail($data));
-                  Mail::to('info@lascocomart.com')->send(new OrderEmail($data));  
-            }//foreach order item
+      $data = [];
 
-    }
-      //in-app payment notification
-      $superadmin = User::where('role_name', '=', 'superadmin')->get();
-      $get_superadmin_id =Arr::pluck($superadmin, 'id');
-      $superadmin_id = implode('', $get_superadmin_id);
+      foreach ($cart as $item) {
+              $data['items'] = [
+              [
+                  'prod_name' => $item['prod_name'],
+                  'price' => $item['price'],
+                  'quantity' => $item['quantity'],
+                  'seller_id'=> $item['seller_id'], 
+                  $seller_id = $item['seller_id'], 
+                  $price = $item['price'],
+                  $product_id = $item['id'],
+                  $quantity = $item['quantity'],
+                  ]
+              ];
+          $company_percentage = 0;
+          $company_percentage +=  $price * 5/ 100;
+          $total_sales = 0;
+          $total_sales += $price - $company_percentage;
 
-      $notification = new NewCardPayment($order_number);
-      Notification::send($superadmin, $notification);
+          $orderItem = new OrderItem();
+          $orderItem->order_id        = $order->id;
+          $orderItem->product_id      = $item['id'];
+          $orderItem->seller_id       = $item['seller_id'];
+          $orderItem->order_quantity  = $item['quantity'];
+          $orderItem->amount          = $item['price'] * $item['quantity'];
+          $orderItem->unit_cost       = $item['price'];
+          $orderItem->save();
+          
+          $get_seller_price = FcmgProduct::where('id', $product_id)->get('seller_price');
+          $seller_price = Arr::pluck($get_seller_price, 'seller_price');
+          $selling_price = implode('', $seller_price);
 
-      //remove item from cart
-      $request->session()->forget('fmcgcart');
+          $seller =  User::where('id', $seller_id)
+          ->get('id');
+            $sellerEmail =  User::where('id', $seller_id)
+          ->get('email');
+          //notify seller
+          $notification = new NewCardPayment($order_number);
+          Notification::send($seller, $notification); 
+
+          $stock = \DB::table('fmcg_products')->where('id', $product_id)->first()->quantity;
+        
+            if($stock > $quantity){
+                \DB::table('fmcg_products')->where('id', $product_id)->decrement('quantity',$quantity);
+              }
+              $name =  \DB::table('users')->where('id', $order->user_id)->get('fname') ; 
+              $username = Arr::pluck($name, 'fname'); // 
+              $get_name = implode(" ",$username);
+    
+              $email =  \DB::table('users')->where('id', $order->user_id)->get('email') ; 
+              $useremail = Arr::pluck($email, 'email'); // 
+              $get_email = implode(" ",$useremail);
+    
+            // send email notification to member
+                $data = array(
+                'name'         => $get_name,
+                'order_number' => $order_number,  
+                'amount'       => $totalAmount,       
+                    );
+    
+                Mail::to($get_email)->send(new ConfirmOrderEmail($data)); 
+                  Mail::to($sellerEmail)->send(new SalesEmail($data));
+                Mail::to('info@lascocomart.com')->send(new OrderEmail($data));  
+          }//foreach order item
+      }    
+        //in-app payment notification
+        $superadmin = User::where('role_name', '=', 'superadmin')->get();
+        $get_superadmin_id =Arr::pluck($superadmin, 'id');
+        $superadmin_id = implode('', $get_superadmin_id);
+  
+        $notification = new NewCardPayment($order_number);
+        Notification::send($superadmin, $notification);
+  
+        //remove item from cart
+        $request->session()->forget('fmcgcart');
+        return redirect('fmcgcheckout')->with('success', 'Your FMCG  Order was successfull');
+
+    }// end check wallet balance
+     else{
+      return redirect('fmcgcheckout')->with('success', 'Insufficient Wallet Balance');
+    
+     }
       \LogActivity::addToLog('Cash Payment');
-      return redirect('fmcgcheckout')->with('success', 'Your Order was successfull');
+       return redirect('fmcgcheckout');
     }
+
+
 }//class
