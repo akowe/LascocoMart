@@ -1169,7 +1169,22 @@ public function vendorProductSeeting(Request $request){
 $settings =   Settings::where('coopname', 'superadmin')
               ->where('user_id',   Auth::user()->id)
               ->update(['vendor_product_percentage' => $request->vendor_pecentage,  'fmcg_product_percentage'  => $request->fmcg_pecentage ]);
+
 if($settings){
+  $getSellerPrice =  Product::where('deleted_at',  null)->get('seller_price');
+  $getFMCGPrice =  FcmgProduct::where('deleted_at',  null)->get('seller_price')->toArray();
+
+  //$ff = json_decode($getSellerPrice );
+  // $sellerPrice = $request->vendor_pecentage ;
+  // //dd($ff);
+  // foreach( $getSellerPrice  as $vPrice){
+  //  $vendorPrice =   $vPrice * (int)$sellerPrice /  100;
+  //  Product::where('deleted_at',  null)
+  //  ->update(['seller_price' => $vendorPrice ]);
+  // }
+  
+
+ 
   \LogActivity::addToLog('Set product percentage'); 
   return redirect()->back()->with("success","You have   successfully set product percentage");
 }else{
