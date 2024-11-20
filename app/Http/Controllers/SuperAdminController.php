@@ -1157,4 +1157,15 @@ public function setPassword(Request $request) {
         return redirect()->back()->with("success","Password Not Set!");
     } 
 } 
+
+public function vendorProductSeeting(Request $request){
+  $validatedData = $request->validate([
+    'vendor_pecentage'        =>'required|integer|digits_between:1,2|max:255',
+    'new-fmcg_pecentage'      =>'required|integer|digits_between:1,2|max:255',
+]); 
+
+//set product percentage
+
+
+}
 }//class
