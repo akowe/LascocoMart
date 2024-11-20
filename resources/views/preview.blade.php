@@ -406,12 +406,19 @@
 
                                           <!-- Cart -->
                                           <div class="dropdown">
-                                                <a class="dropdown-toggle" data-toggle="dropdown" aria-expanded="true"
-                                                      style="cursor: pointer;">
+
+                                                <a href="{{ route('cart') }}" style="cursor: pointer;">
                                                       <i class="fa fa-shopping-cart"></i>
                                                       <span>Cart</span>
                                                       <div class="qty">{{ count((array) session('cart')) }}</div>
                                                 </a>
+
+                                                <!-- <a class="dropdown-toggle" data-toggle="dropdown" aria-expanded="true"
+                                                      style="cursor: pointer;">
+                                                      <i class="fa fa-shopping-cart"></i>
+                                                      <span>Cart</span>
+                                                      <div class="qty">{{ count((array) session('cart')) }}</div>
+                                                </a> -->
                                                 @php $total = 0 @endphp
                                                 @php $items = 0 @endphp
                                                 @php $item = 1 @endphp
@@ -800,9 +807,9 @@
                                           <div class="col-md-4 col-sm-6 col-xs-12 form-group">
 
                                                 <p>
-                                                      <br>
+                                                      <!-- <br>
                                                       <label> Qty </label> <input type="number" name="" value="1"
-                                                            class="form-control">
+                                                            class="form-control"> -->
                                                 </p>
                                           </div>
                                           <!-- end col -->
