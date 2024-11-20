@@ -146,6 +146,7 @@ Route::controller(SuperAdminController::class)->group(function () {
     Route::get('user_edit/{id}', 'user_edit')->name('user_edit');
     Route::get('transactions',  'transactions')->name('transactions');
     Route::post('/approved',  'approved')->name('approved');
+    Route::post('/approve-fmcg-product',  'approveFMCGProduct')->name('approve-fmcg-product');
     Route::post('allocate_fund',  'allocateFund')->name('allocate_fund');
     Route::get('order-history',  'orderHistory')->name('order-history');
     Route::get('funds-allocated', 'fundsAllocated')->name('funds-allocated');

@@ -594,6 +594,29 @@ public function editFmcgProduct(Request $request, $id){
              return redirect()->back()->with('success', 'Product approved successful!..');
 }
 
+
+public function approveFMCGProduct(Request $request)
+{
+      if(null !== $_POST['submit']){
+          $id  = $request->input('id');
+          \DB::table('fmcg_products')
+              ->where('id', $id)
+              ->update(['prod_status' => 'approve']);
+
+        //send notification to vendor
+          $seller_id = User::findOrFail($request->seller_id);
+          $product_name = FcmgProduct::where('id', $id)
+          ->get()->pluck('prod_name')->first();
+          $vendorNotification = new ProductApproved($product_name);
+          Notification::send($seller_id, $vendorNotification); 
+
+          Session::flash('approve', ' Product approved successful!.'); 
+          Session::flash('alert-class', 'alert-success'); 
+      }
+          \LogActivity::addToLog('Approve product');
+           return redirect()->back()->with('success', 'Product approved successful!..');
+}
+
 public function allVendors(Request $request){
   $adminActiveUser =  User::where('role', '3')
   ->where('last_login', '>', new DateTime('last day of previous month'))

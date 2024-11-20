@@ -245,9 +245,9 @@
                                                                                     class="dropdown-item text-success">
                                                                                     <i class="fa fa-check"></i>
                                                                               </a></p>
-                                                                        @else
+                                                                        @else 
                                                                         <p>
-                                                                        <form method="POST" action="/approved"
+                                                                        <form method="POST" action="/approve-fmcg-product"
                                                                               accept-charset="UTF-8"
                                                                               class="dropdown-item " role="form"
                                                                               style="display:block;">

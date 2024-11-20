@@ -266,7 +266,7 @@
                                                                              <span class="text-success"> <i class="fa fa-check"></i></span>
 
                                                                               @else
-                                                                              <form method="POST" action="/approved"
+                                                                              <form method="POST" action="/approve-fmcg-product"
                                                                                     accept-charset="UTF-8"
                                                                                     class="form-horizontal" role="form"
                                                                                     style="display:block;">
