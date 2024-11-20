@@ -373,11 +373,11 @@ public function return_policy(Request $request){
         ->where('wishlist.user_id', $id)
          ->get('fmcg_products.*');
          \LogActivity::addToLog('Product page');
-         return view('preview', compact('products', 'wishlist', 'wish', 'reviews'));
+         return view('fmcg-product-preview', compact('products', 'wishlist', 'wish', 'reviews'));
      }
      else{
-        \LogActivity::addToLog('Preview product');
-        return view('preview', compact('products', 'reviews'));
+        \LogActivity::addToLog('FMCG Preview product');
+        return view('fmcg-product-preview', compact('products', 'reviews'));
      }
     
 }
