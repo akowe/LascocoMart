@@ -13,6 +13,7 @@ use App\Models\SMS;
 use App\Models\Profile;
 use App\Models\Voucher;
 use App\Models\ChooseBank;
+use App\Models\Settings;
 use App\Models\LogActivity as LogActivityModel;
 
 use Auth;
@@ -168,6 +169,14 @@ class HomeController extends Controller
             ->where('cooperative_code', $code)
             ->select('*')
             ->pluck('start_repayment')->first();
+            //only   superadmin view this
+            $vendorProductPercentage = Settings::where('coopname', 'superadmin')
+            ->where('user_id', Auth::user()->id)
+            ->pluck('vendor_product_percentage')->first();
+
+            $fmcgProductPercentage = Settings::where('coopname', 'superadmin')
+            ->where('user_id', Auth::user()->id)
+            ->pluck('fmcg_product_percentage')->first();
 
           
               if(empty($maximumDuration)){
@@ -181,7 +190,7 @@ class HomeController extends Controller
             'cooperativeProessFee',
             'cooperativeMaxLoan', 'cooperativeApprovalLevel', 
             'cooperativeLoanRepayment', 'interest', 'rateType', 'minimumDuration',
-            'maximumDuration'
+            'maximumDuration', 'vendorProductPercentage', 'fmcgProductPercentage'
             ));
         }
         else{

@@ -2906,7 +2906,7 @@
                                                                               value="decrease Value">-
                                                                         </div>
                                                                         <input type="number" name="vendor_pecentage"
-                                                                              value="{{}}" id="rate"
+                                                                              value="{{$vendorProductPercentage}}" id="rate"
                                                                               style="width:60%;">
                                                                         <div class="value-button" id="increase"
                                                                               onclick="increaseRate()"
@@ -2956,7 +2956,7 @@
                                                                         <div class="value-button" id="decrease"
                                                                               onclick="decreaseValue()"
                                                                               value="decrease Value">-</div>
-                                                                        <input type="number" name="fmcg_pecentage" value=""
+                                                                        <input type="number" name="fmcg_pecentage" value="{{$fmcgProductPercentage}}"
                                                                               id="number">
                                                                         <div class="value-button" id="increase"
                                                                               onclick="increaseValue()"
