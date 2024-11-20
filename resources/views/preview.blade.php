@@ -767,8 +767,6 @@
 
                               </div>
 
-
-
                               @endforeach
 
                               <div class="col-md-12">
@@ -786,8 +784,6 @@
                               @if($product->quantity < 1) <del class="product-price">
                                     ₦{{ number_format($product->price) }}
                                     </del>
-
-
                                     <br><br>
 
                                     <div class="add-to-cart">
@@ -796,11 +792,9 @@
                                                 <i class="fa fa-shopping-cart"></i> Sold Out !</button>
                                     </div>
                                     @else
-
                                     <h4 class="product-price">₦{{ number_format($product->price) }} <small><del
                                                       class="product-old-price">
                                                       ₦{{number_format($product->old_price)  }}</del></small></h4>
-
 
                                     <div class="row">
                                           <!-- end col -->
