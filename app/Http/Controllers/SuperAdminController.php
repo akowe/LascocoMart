@@ -44,6 +44,7 @@ use App\Models\LoanRepayment;
 use App\Models\LoanSetting;
 use App\Models\DueLoans;
 use App\Models\LoanPaymentTransaction;
+use App\Models\Settings;
 
 
 use Carbon\Carbon;
@@ -1161,11 +1162,18 @@ public function setPassword(Request $request) {
 public function vendorProductSeeting(Request $request){
   $validatedData = $request->validate([
     'vendor_pecentage'        =>'required|integer|digits_between:1,2|max:255',
-    'new-fmcg_pecentage'      =>'required|integer|digits_between:1,2|max:255',
+    'fmcg_pecentage'        =>'required|integer|digits_between:1,2|max:255',
 ]); 
 
 //set product percentage
-
-
+$settings =   Settings::where('coopname', 'superadmin')
+              ->where('user_id',   Auth::user()->id)
+              ->update(['vendor_product_percentage' => $request->vendor_pecentage,  'fmcg_product_percentage'  => $request->fmcg_pecentage ]);
+if($user){
+  \LogActivity::addToLog('Set product percentage'); 
+  return redirect()->back()->with("success","You have   successfully set product percentage");
+}else{
+  return redirect()->back()->with("success","Something went wrong");
+  }     
 }
 }//class
