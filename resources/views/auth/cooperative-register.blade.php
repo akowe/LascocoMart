@@ -172,10 +172,18 @@
                                                       <div class="col-md-6 ">
                                                             <span class="small text-primary">minimum length: 6</span>
                                                             <div class="form-group">
+                                                            <div class="input-group input-group-flat">
                                                                   <input id="password" type="password"
                                                                         class="@error('password') is-invalid @enderror input-field form-control "
                                                                         name="password" required
-                                                                        autocomplete="new-password">
+                                                                        autocomplete="new-password"   onkeyup="check_password()">
+                                                                  
+                                                                  <span class="input-group-text">
+                                                                        <a href="" class="text-secondary">
+                                                                              <i class="fa fa-eye-slash"></i>
+                                                                        </a>
+                                                                  </span>
+                                                            </div>
                                                             </div>
 
                                                             @error('password')
@@ -194,10 +202,15 @@
 
                                                       <div class="col-md-6 ">
                                                             <div class="form-group">
+                                                                   <div class="input-group input-group-flat">
                                                                   <input id="password-confirm" type="password"
                                                                         class="form-control"
                                                                         name="password_confirmation" required
-                                                                        autocomplete="new-password">
+                                                                        autocomplete="new-password"
+                                                                        onkeyup="validate_password()">
+                                                                  <span class="input-group-text" id="wrong_pass_alert">
+                                                                  </span>
+                                                                  </div>
                                                             </div>
 
                                                       </div>
@@ -242,7 +255,7 @@
 
                                                 <!-- Google Recaptcha Widget-->
                                                 <div class="row mb-3">
-                                                    
+
                                                 </div>
                                     </div>
                                     <div class="form-group text-center">
@@ -302,6 +315,60 @@
                   }
             });
       });
+      </script>
+
+
+      <script>
+      $(document).ready(function() {
+            $("#show_hide_password a").on('click', function(event) {
+                  event.preventDefault();
+                  if ($('#show_hide_password input').attr("type") == "text") {
+                        $('#show_hide_password input').attr('type', 'password');
+                        $('#show_hide_password i').addClass("fa-eye-slash");
+                        $('#show_hide_password i').removeClass("fa-eye");
+                  } else if ($('#show_hide_password input').attr("type") == "password") {
+                        $('#show_hide_password input').attr('type', 'text');
+                        $('#show_hide_password i').removeClass("fa-eye-slash");
+                        $('#show_hide_password i').addClass("fa-eye");
+                  }
+            });
+      });
+      </script>
+
+      <script>
+      function validate_password() {
+
+            let pass = document.getElementById('password').value;
+            let confirm_pass = document.getElementById('password-confirm').value;
+            if (confirm_pass != pass) {
+                  document.getElementById('wrong_pass_alert').style.color = 'red';
+                  document.getElementById('password-confirm').style.border = '1px solid red';
+                  document.getElementById('wrong_pass_alert').innerHTML =
+                        '<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-x" width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M18 6l-12 12" /><path d="M6 6l12 12" /></svg>';
+
+            } else if (confirm_pass = pass) {
+                  document.getElementById('wrong_pass_alert').style.color = 'green';
+                  document.getElementById('password-confirm').style.border = '1px solid green';
+                  document.getElementById('wrong_pass_alert').innerHTML =
+                        '<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-check" width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M5 12l5 5l10 -10" /></svg>';
+
+            } else {
+                  document.getElementById('wrong_pass_alert').innerHTML = ' ';
+            }
+      }
+
+      function check_password() {
+            let pass = document.getElementById('password').value;
+            let confirm_pass = document.getElementById('password-confirm').value;
+
+            if (pass.length < 8) {
+                  document.getElementById('check_password').style.color = 'red';
+                  document.getElementById('check_password').innerHTML = '☒ password  must be atleast 8 ';
+
+            } else {
+                  document.getElementById('check_password').innerHTML = ' ';
+            }
+      }
       </script>
 </body>
 
