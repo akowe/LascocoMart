@@ -66,8 +66,7 @@ class CoopController extends Controller
             'address'     => 'required|max:225',
             'cooptype'    => 'required|max:225',
             'file'        => 'required|mimes:jpg,jpeg,png|max:300',
-            'captcha'     => 'required|captcha',],
-            ['captcha.captcha'  =>'Wrong code.'],);
+            'captcha'     => 'required|captcha',]);
             // dd("You are here :) .");
            $role = '2';
            $role_name = 'cooperative';
