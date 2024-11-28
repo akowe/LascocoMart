@@ -3,26 +3,21 @@
 
 <head>
       <meta charset="utf-8">
-
       <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-
       <link rel="stylesheet" type="text/css" href="{{ asset('admin/css/adminx.css') }}" media="screen" />
-
       <!-- CSRF Token -->
       <meta name="csrf-token" content="{{ csrf_token() }}">
-
       <title>{{ config('app.name', 'Lascocomart') }}</title>
       <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
-
       <script async src="https://www.google.com/recaptcha/api.js"></script>
       <!-- Scripts -->
       <script src="{{ asset('js/app.js') }}" defer></script>
 
       <!-- Fonts -->
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
       <link rel="dns-prefetch" href="//fonts.gstatic.com">
       <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet">
-
 
       <!-- Styles -->
       <link href="{{ asset('css/app.css') }}" rel="stylesheet">
@@ -42,7 +37,7 @@
                                     </a>
                               </div>
                               <div class="card">
-                                    <div class="card-header text-center ">Signup as a  member of a cooperative</div>
+                                    <div class="card-header text-center ">Signup as a member of a cooperative</div>
                                     @if ($errors->any())
                                     <div class="alert alert-danger">
                                           <ul>
@@ -63,11 +58,12 @@
                                                             Code <i class="text-danger">*</i></label>
 
                                                       <div class="col-md-6 form-group">
-                                                      <span class="small text-primary">get code from your cooperative
+                                                            <span class="small text-primary">get code from your
+                                                                  cooperative
                                                                   admin</span>
                                                             <input type="text" name="code" value=""
                                                                   class="form-control">
-                                           
+
                                                       </div>
                                                 </div>
 
@@ -76,8 +72,8 @@
                                                             Name <i class="text-danger">*</i></label>
 
                                                       <div class="col-md-6 form-group">
-                                                            <input id="fname" type="text" name="fullname" value="" required
-                                                                  class="form-control">
+                                                            <input id="fname" type="text" name="fullname" value=""
+                                                                  required class="form-control">
                                                             @error('fullname')
                                                             <span class="invalid-feedback" role="alert">
                                                                   <strong>{{ $message }}</strong>
@@ -88,7 +84,8 @@
 
                                                 <div class="row mb-3">
                                                       <label for="email"
-                                                            class="col-md-4 col-form-label text-md-end">{{ __('Email Address') }}  <i class="text-danger">*</i></label>
+                                                            class="col-md-4 col-form-label text-md-end">{{ __('Email Address') }}
+                                                            <i class="text-danger">*</i></label>
 
                                                       <div class="col-md-6 form-group ">
                                                             <input id="email" type="email"
@@ -106,16 +103,27 @@
 
                                                 <div class="row mb-3">
                                                       <label for="password"
-                                                            class="col-md-4 col-form-label text-md-end">{{ __('Password') }}  <i class="text-danger">*</i></label>
+                                                            class="col-md-4 col-form-label text-md-end">{{ __('Password') }}
+                                                            <i class="text-danger">*</i></label>
 
                                                       <div class="col-md-6 ">
-                                                      <span class="small text-primary">minimum length: 6</span>
-                                                           <div class="form-group">
-                                                           <input id="password" type="password"
-                                                                  class="@error('password') is-invalid @enderror input-field form-control "
-                                                                  name="password" required autocomplete="new-password">
+                                                            <span class="small text-primary">minimum length: 6</span>
+                                                            <div class="form-group">
+                                                                  <div class="input-group input-group-flat"
+                                                                        id="show_hide_password">
+                                                                        <input id="password" type="password"
+                                                                              class="@error('password') is-invalid @enderror input-field form-control "
+                                                                              name="password" required
+                                                                              autocomplete="new-password"
+                                                                              onkeyup="check_password()">
 
-                                                           </div>
+                                                                        <span class="input-group-text">
+                                                                              <a href="" class="text-secondary">
+                                                                                    <i class="fa fa-eye-slash"></i>
+                                                                              </a>
+                                                                        </span>
+                                                                  </div>
+                                                            </div>
 
                                                             @error('password')
                                                             <span class="invalid-feedback" role="alert">
@@ -125,16 +133,23 @@
                                                       </div>
                                                 </div>
 
-
                                                 <div class="row mb-3">
                                                       <label for="password-confirm"
-                                                            class="col-md-4 col-form-label text-md-end">{{ __('Confirm Password') }}  <i class="text-danger">*</i></label>
+                                                            class="col-md-4 col-form-label text-md-end">{{ __('Confirm Password') }}
+                                                            <i class="text-danger">*</i></label>
 
                                                       <div class="col-md-6 ">
                                                             <div class="form-group">
-                                                            <input id="password-confirm" type="password"
-                                                                  class="form-control" name="password_confirmation"
-                                                                  required autocomplete="new-password">
+                                                                  <div class="input-group input-group-flat">
+                                                                        <input id="password-confirm" type="password"
+                                                                              class="form-control"
+                                                                              name="password_confirmation" required
+                                                                              autocomplete="new-password"
+                                                                              onkeyup="validate_password()">
+                                                                        <span class="input-group-text"
+                                                                              id="wrong_pass_alert">
+                                                                        </span>
+                                                                  </div>
                                                             </div>
                                                       </div>
                                                 </div>
@@ -164,11 +179,11 @@
 
                                                 </div>
 
-                                                 <!-- Google Recaptcha Widget-->
-                                                 <div class="row mb-3">
-                                                    
+                                                <!-- Google Recaptcha Widget-->
+                                                <div class="row mb-3">
+
                                                 </div>
-                                             
+
                                                 <div class="form-group text-center">
                                                       <br>
                                                       <button type="submit" class="btn btn-danger btn-block">Create
@@ -186,7 +201,8 @@
 
                               @if (Route::has('login'))
 
-                              Already have an account? <a class="" href="{{ route('login') }}">{{ __('Login') }} &nbsp;</a>
+                              Already have an account? <a class="" href="{{ route('login') }}">{{ __('Login') }}
+                                    &nbsp;</a>
 
                               @endif
                               <br><br>
@@ -224,6 +240,58 @@
                   }
             });
       });
+      </script>
+      <script>
+      $(document).ready(function() {
+            $("#show_hide_password a").on('click', function(event) {
+                  event.preventDefault();
+                  if ($('#show_hide_password input').attr("type") == "text") {
+                        $('#show_hide_password input').attr('type', 'password');
+                        $('#show_hide_password i').addClass("fa-eye-slash");
+                        $('#show_hide_password i').removeClass("fa-eye");
+                  } else if ($('#show_hide_password input').attr("type") == "password") {
+                        $('#show_hide_password input').attr('type', 'text');
+                        $('#show_hide_password i').removeClass("fa-eye-slash");
+                        $('#show_hide_password i').addClass("fa-eye");
+                  }
+            });
+      });
+      </script>
+
+      <script>
+      function validate_password() {
+
+            let pass = document.getElementById('password').value;
+            let confirm_pass = document.getElementById('password-confirm').value;
+            if (confirm_pass != pass) {
+                  document.getElementById('wrong_pass_alert').style.color = 'red';
+                  document.getElementById('password-confirm').style.border = '1px solid red';
+                  document.getElementById('wrong_pass_alert').innerHTML =
+                        '<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-x" width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M18 6l-12 12" /><path d="M6 6l12 12" /></svg>';
+
+            } else if (confirm_pass = pass) {
+                  document.getElementById('wrong_pass_alert').style.color = 'green';
+                  document.getElementById('password-confirm').style.border = '1px solid green';
+                  document.getElementById('wrong_pass_alert').innerHTML =
+                        '<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-check" width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M5 12l5 5l10 -10" /></svg>';
+
+            } else {
+                  document.getElementById('wrong_pass_alert').innerHTML = ' ';
+            }
+      }
+
+      function check_password() {
+            let pass = document.getElementById('password').value;
+            let confirm_pass = document.getElementById('password-confirm').value;
+
+            if (pass.length < 8) {
+                  document.getElementById('check_password').style.color = 'red';
+                  document.getElementById('check_password').innerHTML = '☒ password  must be atleast 8 ';
+
+            } else {
+                  document.getElementById('check_password').innerHTML = ' ';
+            }
+      }
       </script>
 </body>
 
