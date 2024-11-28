@@ -137,9 +137,8 @@ class CoopController extends Controller
            $request->validate([
             'email'       =>'required|unique:users|regex:/^([a-z0-9\+_\-]+)(\.[a-z0-9\+_\-]+)*@([a-z0-9\-]+\.)+[a-z]{2,6}$/ix',
             'fullname'    => 'required|string|max:255',
-            'captcha'     => 'required|captcha',],
-            ['captcha.captcha'  =>'Wrong code.'],);
-            
+            'captcha'     => 'required|captcha',]);
+
           $user = new User();
           $user->role         = $role;
           $user->role_name    = $role_name;
