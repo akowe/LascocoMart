@@ -168,18 +168,20 @@
                                                       <div class="col-md-6 ">
                                                             <span class="small text-primary">minimum length: 6</span>
                                                             <div class="form-group">
-                                                            <div class="input-group input-group-flat"  id="show_hide_password">
-                                                                  <input id="password" type="password"
-                                                                        class="@error('password') is-invalid @enderror input-field form-control "
-                                                                        name="password" required
-                                                                        autocomplete="new-password"   onkeyup="check_password()">
-                                                                  
-                                                                  <span class="input-group-text">
-                                                                        <a href="" class="text-secondary">
-                                                                              <i class="fa fa-eye-slash"></i>
-                                                                        </a>
-                                                                  </span>
-                                                            </div>
+                                                                  <div class="input-group input-group-flat"
+                                                                        id="show_hide_password">
+                                                                        <input id="password" type="password"
+                                                                              class="@error('password') is-invalid @enderror input-field form-control "
+                                                                              name="password" required
+                                                                              autocomplete="new-password"
+                                                                              onkeyup="check_password()">
+
+                                                                        <span class="input-group-text">
+                                                                              <a href="" class="text-secondary">
+                                                                                    <i class="fa fa-eye-slash"></i>
+                                                                              </a>
+                                                                        </span>
+                                                                  </div>
                                                             </div>
 
                                                             @error('password')
@@ -198,14 +200,15 @@
 
                                                       <div class="col-md-6 ">
                                                             <div class="form-group">
-                                                                   <div class="input-group input-group-flat" >
-                                                                  <input id="password-confirm" type="password"
-                                                                        class="form-control"
-                                                                        name="password_confirmation" required
-                                                                        autocomplete="new-password"
-                                                                        onkeyup="validate_password()">
-                                                                  <span class="input-group-text" id="wrong_pass_alert">
-                                                                  </span>
+                                                                  <div class="input-group input-group-flat">
+                                                                        <input id="password-confirm" type="password"
+                                                                              class="form-control"
+                                                                              name="password_confirmation" required
+                                                                              autocomplete="new-password"
+                                                                              onkeyup="validate_password()">
+                                                                        <span class="input-group-text"
+                                                                              id="wrong_pass_alert">
+                                                                        </span>
                                                                   </div>
                                                             </div>
 
