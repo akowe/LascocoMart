@@ -24,6 +24,7 @@ use App\Models\Terms;
 use App\Models\Review;
 use App\Models\Wishlist;
 use App\Mail\MemberWelcomeEmail;
+use Illuminate\Support\Str;
 
 use Session;
 use Validator;
