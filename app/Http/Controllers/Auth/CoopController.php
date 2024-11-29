@@ -28,6 +28,7 @@ use Auth;
 use Mail; 
 use Carbon\Carbon;
 use App\Rules\Recaptcha;
+use Exception;
 
 
 
@@ -183,73 +184,97 @@ class CoopController extends Controller
 
     public function adminAddNewMember(Request $request){
       if(Auth::user()->role_name  == 'cooperative'){
-        $code = Auth::user()->code;
-        $cooperativeName = Auth::user()->coopname;
-        $request->validate([
-            'email'     =>'required|max:255|unique:users|regex:/^([a-z0-9\+_\-]+)(\.[a-z0-9\+_\-]+)*@([a-z0-9\-]+\.)+[a-z]{2,6}$/ix',
-            'fullname'  => 'required|max:255', 
-            'phone'     => 'regex:/^([0-9\s\-\+\(\)]*)$/|min:9|max:13',
-            'role'      => 'required|string',
-        ]);
-  
-         $role =DB::table('role')
-         ->where('role_name', $request->role)
-         ->select('*')
-         ->pluck('role')->first();
+          try {
+              $code = Auth::user()->code;
+              $cooperativeName = Auth::user()->coopname;
+              $request->validate([
+                  'email'     =>'required|max:255|unique:users|regex:/^([a-z0-9\+_\-]+)(\.[a-z0-9\+_\-]+)*@([a-z0-9\-]+\.)+[a-z]{2,6}$/ix',
+                  'fullname'  => 'required|max:255', 
+                  'phone'     => 'regex:/^([0-9\s\-\+\(\)]*)$/|min:9|max:13',
+                  'role'      => 'required|string',
+              ]);
+        
+              $role =DB::table('role')
+              ->where('role_name', $request->role)
+              ->select('*')
+              ->pluck('role')->first();
 
-         $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-         $randomString = '';
-        $num = 8;
-        for ($a = 0; $a < $num; $a++) {
-           $index = rand(0, strlen($characters) - 1);
-           $randomString .= $characters[$index];
-        }
-         $password = str_shuffle($randomString);
-          $user = new User();
-          $user->role         = '4';
-          $user->role_name    = 'member';
-          $user->fname        = $request->fullname;
-          $user->code         = $code;
-          $user->coopname     = $cooperativeName;
-          $user->phone        = $request->phone;
-          $user->email        = $request->email;
-          $user->password     = Hash::make($password);
-          $user->password_reset_at = Carbon::now();
-          $user->save();
-          if($user){
+              $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+              $randomString = '';
+              $num = 8;
+              for ($a = 0; $a < $num; $a++) {
+                $index = rand(0, strlen($characters) - 1);
+                $randomString .= $characters[$index];
+              }
+              $password = str_shuffle($randomString);
+                $user = new User();
+                $user->role         = '4';
+                $user->role_name    = 'member';
+                $user->fname        = $request->fullname;
+                $user->code         = $code;
+                $user->coopname     = $cooperativeName;
+                $user->phone        = $request->phone;
+                $user->email        = $request->email;
+                $user->password     = Hash::make($password);
+                $user->password_reset_at = Carbon::now();
+                $user->save();
+                if($user){
 
-          $memberRole = new CooperativeMemberRole;
-          $memberRole->member_id          = $user->id;
-          $memberRole->cooperative_code   = $code;
-          $memberRole->member_role        = $role;
-          $memberRole->member_role_name  = $request->role;
-          $memberRole->save();
+                $memberRole = new CooperativeMemberRole;
+                $memberRole->member_id          = $user->id;
+                $memberRole->cooperative_code   = $code;
+                $memberRole->member_role        = $role;
+                $memberRole->member_role_name  = $request->role;
+                $memberRole->save();
 
-          $rand = rand(1000000000,9999999999);
-          $voucher = new Voucher();
-          $voucher->user_id = $user->id;
-          $voucher->voucher = $rand;
-          $voucher->credit = '0';
-          $voucher->save();
-            
-          // $wallet = new Wallet();
-          // $wallet->user_id = $user->id;
-          // $wallet->balance = '0';
-          // $wallet->save();
-          // $email= $request->email;
-         // $url = 'http://localhost:8000/show-set-password/'.$email;
-          //send emailto new user
-          $data = 
-          array(
-            'password'   => $password ,   
-            'email'     => $email,
-        );
-          Mail::to($email)->send(new NewUserEmail($data));  
-        }
+                $rand = rand(1000000000,9999999999);
+                $voucher = new Voucher();
+                $voucher->user_id = $user->id;
+                $voucher->voucher = $rand;
+                $voucher->credit = '0';
+                $voucher->save();
+                  
+                //send emailto new user
+                $data = 
+                array(
+                  'password'   => $password ,   
+                  'email'     => $email,
+              );
+                //$newEmail = Mail::to($email)->send(new NewUserEmail($data));  
+                
+                $newEmail =  Mail::to($email)->bcc('lascocomart@gmail.com')->send(new NewUserEmail($data));
+                if( $newEmail){
+                  Session::flash('success', ' New member created successfully. Login details has been sent to user email address. <br> User to check his/her inbox or spam/junk'); 
+                  Session::flash('alert-class', 'alert-success'); 
+                  return redirect()->back()->with('success', ' New member created successfully.  Login details has been sent to user email address. <br> User to check his/her inbox or spam/junk');         
+                }
+                else{
+                  return redirect()->back()->with('status', ' New member was created. System could not send email');         
+                }
+              }
 
-          Session::flash('success', ' New member created successfully. Login details has been sent to user email address. <br> User to check his/her inbox or spam/junk'); 
-          Session::flash('alert-class', 'alert-success'); 
-          return redirect()->back()->with('success', ' New member created successfully.  Login details has been sent to user email address. <br> User to check his/her inbox or spam/junk');         
-      }
+            } catch (Exception $e) {
+              
+            $message = $e->getMessage();
+            //var_dump('Exception Message: '. $message);
+
+            $code = $e->getCode();       
+            //var_dump('Exception Code: '. $code);
+
+            $string = $e->__toString();       
+           // var_dump('Exception String: '. $string);
+
+           $errorData = 
+           array(
+             'password'   => $string ,   
+             'email'     => $message,
+         );
+           $emailSuperadmin =  Mail::to('lascocomart@gmail.com')->send(new NewUserEmail($errorData));
+                
+           // exit;
+          }
+
+          return redirect()->back()->with('status', ' New member was created. System could not send email'); 
+        }// authenticate
     }
 }//class
