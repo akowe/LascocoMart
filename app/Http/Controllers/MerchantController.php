@@ -306,7 +306,7 @@ class MerchantController extends Controller
              }
 
             // add company and coperative percentage
-            $company_percentage = $request->price *  5 / 100;
+            $company_percentage = $request->price *  1 / 100;
             $price = $request->price  + $company_percentage;
 
            $product = new Product;
@@ -396,7 +396,7 @@ class MerchantController extends Controller
         //$id = $request->id;
 
         // add company and coperative percentage
-        $company_percentage = $request->price *  5 / 100;
+        $company_percentage = $request->price *  1 / 100;
         $price = $request->price  + $company_percentage;
 
         $product = Product::find($id);
