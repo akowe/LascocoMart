@@ -1031,7 +1031,7 @@ class CooperativeController extends Controller
           'description'  => 'max:255',
           ]);
           // add company and coperative percentage
-          $company_percentage = $request->price *  5 / 100;
+          $company_percentage = $request->price *  1 / 100;
           $price = $request->price  + $company_percentage;
   
           $product = Product::find($id);
@@ -1749,7 +1749,7 @@ class CooperativeController extends Controller
 
             // add company and coperative percentage
             //$cop = $request->price * 5 / 100; //cooperative percentage
-            $company_percentage = $request->price *  2 / 100;// coopmart percentage
+            $company_percentage = $request->price *  1 / 100;// coopmart percentage
             $price = $request->price  + $company_percentage;
 
            $product = new Product;
