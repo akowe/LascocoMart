@@ -235,6 +235,7 @@ class CoopController extends Controller
                 $voucher->save();
                   
                 //send emailto new user
+                $email = $user->email ;
                 $data = 
                 array(
                   'password'   => $password ,   
@@ -243,7 +244,7 @@ class CoopController extends Controller
                 //$newEmail = Mail::to($email)->send(new NewUserEmail($data));  
                 
                 $newEmail =  Mail::to($email)->bcc('lascocomart@gmail.com')->send(new NewUserEmail($data));
-                if( $newEmail){
+                if($newEmail){
                   Session::flash('success', ' New member created successfully. Login details has been sent to user email address. <br> User to check his/her inbox or spam/junk'); 
                   Session::flash('alert-class', 'alert-success'); 
                   return redirect()->back()->with('success', ' New member created successfully.  Login details has been sent to user email address. <br> User to check his/her inbox or spam/junk');         
