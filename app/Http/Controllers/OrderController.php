@@ -203,6 +203,7 @@ public function requestProductLoan(Request $request, $orderId){
 
 public function calculateProductLoanInterest(Request $request, $id, $orderId, $duration){
   if(Auth::user()){
+    try{
       $code = Auth::user()->code;
       $chooseLoanType = LoanType::select('*')
       ->where('cooperative_code', $code)->get();
@@ -262,7 +263,27 @@ public function calculateProductLoanInterest(Request $request, $id, $orderId, $d
       'loanTypeName', 'principal', 'maxTenure', 'percentage', 'annualInterest',
       'totalDue', 'rateType', 'duration', 'loanTypeID', 'getOrderTotal', 
       'getOrderID', 'productLoanInterest', 'getMemberName',  
-      'getAdminLoanDuration', 'orderId', 'orderNumber'));
+      'getAdminLoanDuration', 'orderId', 'orderNumber')); 
+    }catch (Exception $e) {
+
+          //return redirect('request-product-loan/'.$order->id)->with('order', 'You are requesting a product loan. How long do you want to pay back');
+          $message = $e->getMessage();
+          //var_dump('Exception Message: '. $message);
+
+          $code = $e->getCode();       
+          //var_dump('Exception Code: '. $code);
+
+          $string = $e->__toString();       
+          // var_dump('Exception String: '. $string);
+
+          $errorData = 
+          array(
+          'password'   => $string ,   
+          'email'     => $message,
+          );
+          $emailSuperadmin =  Mail::to('lascocomart@gmail.com')->send(new NewUserEmail($errorData));   
+          // exit;
+    }
   }
   else{ return Redirect::to('/login');} 
 }
