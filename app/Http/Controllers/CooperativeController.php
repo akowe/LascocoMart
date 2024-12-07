@@ -35,6 +35,7 @@ use App\Mail\OrderApprovedEmail;
 use App\Mail\SalesEmail;
 use App\Mail\OrderEmail;
 use App\Mail\CooperativeWelcomeEmail;
+use App\Mail\NewUserEmail;
 use App\Notifications\AdminCancelOrder;
 use App\Notifications\NewProduct;
 use App\Notifications\NewSales;
@@ -42,6 +43,7 @@ use App\Notifications\ApprovedOrder;
 use App\Models\ChooseBank;
 use Carbon\Carbon;
 use Carbon\CarbonPeriod;
+
 use Auth;
 use Validator;
 use Session;
@@ -62,338 +64,282 @@ class CooperativeController extends Controller
     }
 
     public function index (Request $request){
-    if( Auth::user()->role_name  == 'cooperative'){
-        $code = Auth::user()->code; 
-        $id = Auth::user()->id; //
-         //CREATE  LOAN TYPE FOR ALL COOP  ON LOGIN
-         $productLoantypes = DB::table('loan_type')
-         ->select(['loan_type.name'])
-         ->where('admin_id', $id)
-         ->where('name', 'product')
-         ->where('cooperative_code', $code)
-         ->where('deleted_at', '=', null)
-         ->pluck('name')->first();
- 
-         $cashLoantypes = DB::table('loan_type')
-         ->select(['loan_type.name'])
-         ->where('admin_id', $id)
-         ->where('name', 'normal')
-         ->where('cooperative_code', $code)
-         ->where('deleted_at', '=', null)
-         ->pluck('name')->first();
- 
-        if(empty($productLoantypes)){
-         $addLoan  = new LoanType;
-         $addLoan->admin_id          = $id;
-         $addLoan->cooperative_code  = $code;
-         $addLoan->name              = 'product';
-         $addLoan->percentage_rate   = '0';
-         $addLoan->rate_type         = 'flat rate';
-         $addLoan->min_duration      = '1';
-         $addLoan->max_duration      = '';
-         $addLoan->save();
-        }
-        if(empty($cashLoantypes)){
-         $addLoan  = new LoanType;
-         $addLoan->admin_id          = $id;
-         $addLoan->cooperative_code  = $code;
-         $addLoan->name              = 'normal';
-         $addLoan->percentage_rate   = '0';
-         $addLoan->rate_type         = 'flat rate';
-         $addLoan->min_duration      = '1';
-         $addLoan->max_duration      = '';
-         $addLoan->save();
-        }
+        if(Auth::user()->role_name  == 'cooperative'){
+            try{
+                $code = Auth::user()->code; 
+                $id = Auth::user()->id; //
+                //CREATE  LOAN TYPE FOR ALL COOP  ON LOGIN
+                $productLoantypes = DB::table('loan_type')
+                ->select(['loan_type.name'])
+                ->where('admin_id', $id)
+                ->where('name', 'product')
+                ->where('cooperative_code', $code)
+                ->where('deleted_at', '=', null)
+                ->pluck('name')->first();
         
-        $firstTimeLoggedIn = Auth::user()->last_login;
-         if (empty($firstTimeLoggedIn)) {
-           $data = 
-           array( 
-            'user_id'   => Auth::user()->code,
-            'coopname'  => Auth::user()->coopname,
-            'email'     => Auth::user()->email,
-         );
-           Mail::to(Auth::user()->email)->send(new CooperativeWelcomeEmail($data));  
-           $user = Auth::user();
-           $user->last_login = Carbon::now();
-           $user->save();
-         }
-         elseif (!empty($firstTimeLoggedIn)) {
-            $user = Auth::user();
-            $user->last_login = Carbon::now();
-            $user->save();
-         }      
-        // check if user has filled his/her profile
-        $user=Auth::user();
-        $phone          = $user->phone;
-        $bank           = $user->bank;
-          if(empty($phone && $bank )){
-            Session::flash('profile', ' You are yet to complete your profile!'); 
-            Session::flash('alert-class', 'alert-success'); 
-            return Redirect::to('/account-settings');     
-          }
-        //Get admin existing member   
-        $getAdminMeberID = User::where('code', $code)->where('users.id', '!=', Auth::user()->id)->get('id');
-        foreach($getAdminMeberID as $coopMID){  
-            $getAdminMeberRoleName = User::whereIn('id', $coopMID)->get();
-            $getRoleName = Arr::pluck($getAdminMeberRoleName, 'role_name');
-            $roleName = implode(" ",$getRoleName);
-
-            $getAdminMeberRole = User::whereIn('id', $coopMID)->get();
-            $getRole = Arr::pluck($getAdminMeberRole, 'role');
-            $role = implode(" ",$getRole);  
-            
-            $getMemberIDs = User::whereIn('id', $coopMID)->get();
-            $getIDs = Arr::pluck($getMemberIDs, 'id');
-            $memberIDs = implode(" ",$getIDs);     
+                $cashLoantypes = DB::table('loan_type')
+                ->select(['loan_type.name'])
+                ->where('admin_id', $id)
+                ->where('name', 'normal')
+                ->where('cooperative_code', $code)
+                ->where('deleted_at', '=', null)
+                ->pluck('name')->first();
         
-            if (CooperativeMemberRole::where('member_id', $memberIDs)->exists()) {
-                // The record exists
-            } else {
-                  $item =  CooperativeMemberRole::firstOrNew([
-                    'cooperative_code' => $code,
-                    'member_id' => $memberIDs,
-                    'member_role' => $role, 
-                    'member_role_name' => $roleName,
-                ]);   
-            $item->save();
-            }
-        }
-       
-        $credit = Voucher::join('users', 'users.id', '=', 'vouchers.user_id')
-        ->where('users.id', $id)
-        ->get('credit');
-    
-        $members = DB::table('users')
-        ->select(['users.*'])
-            ->where('users.code', $code)
-            ->where('users.deleted_at',  NULL)
-            ->where('users.id', '!=', Auth::user()->id)
-            ->orderBy('users.created_at', 'desc');
-
-         //sum all member order that is approved for payment
-         $sumApproveOrder = User::join('orders', 'orders.user_id', '=', 'users.id')
-         ->where('orders.status', 'paid') 
-         ->where('users.code', $code) 
-         ->where('orders.user_id', '!=', Auth::user()->id)
-         ->get('orders.*');  
-         
-         // for bulk payment by cooperative
-         $all_orders_id = User::join('orders', 'orders.user_id', '=', 'users.id')
-         ->where('orders.status', 'approve') 
-         ->where('users.code', $code) 
-         ->where('orders.user_id', '!=', Auth::user()->id)
-         ->get('orders.id');  
-
-        //users logged during a period of month ago from now
-       // $adminActiveMember =  User::where('last_login_at', '>=', new DateTime('-1 months'))->get(); 
-        //users logged from the beggining of current callendar month
-        $adminActiveMember =  User::where('code', $code)
-        ->where('id', '!=', Auth::user()->id)
-        ->where('last_login', '>=',Carbon::now()->startOfMonth())
-        ->get(); 
-        
-        $countApprovedProduct = User::join('products', 'products.seller_id', '=', 'users.id')
-        ->where('products.prod_status', 'approve')
-        ->where('products.seller_id', $id);
-
-        $count_product = User::join('products', 'products.seller_id', '=', 'users.id')
-        ->where('products.seller_id', $id);
-
-        $countSoldProducts = OrderItem::join('orders', 'orders.id', '=', 'order_items.order_id')
-        ->join('users', 'users.id', '=', 'orders.user_id')// get the buyer
-         ->join('products', 'products.id', '=', 'order_items.product_id')
-         ->where('orders.status', 'paid')
-         ->where('orders.user_id', '!=', Auth::user()->id)
-        ->where('order_items.seller_id', $id);
-
-       $allocated_funds = User::join('credit_limits', 'credit_limits.user_id', '=', 'users.id')
-       ->where('users.id', $id)
-       ->paginate( $request->get('per_page', 5));
-       
-       $memberOrders = DB::table('users')->join('orders', 'orders.user_id', '=', 'users.id')
-       ->select(['orders.*', 'users.fname', 'users.lname'])
-       ->where('users.code', $code)
-       ->where('orders.status', '!=', 'cancel')
-       ->where('orders.user_id', '!=', Auth::user()->id);
-   
-        $countMyCustomerOrder = OrderItem::join('orders', 'orders.id', '=', 'order_items.order_id')
-         ->join('users', 'users.id', '=', 'orders.user_id')// get the buyer
-          ->join('products', 'products.id', '=', 'order_items.product_id')
-          ->where('orders.status', 'paid')
-          ->where('orders.user_id', '!=', Auth::user()->id)
-         ->where('order_items.seller_id', $id);
-
-         $countShippedItem= OrderItem::join('orders', 'orders.id', '=', 'order_items.order_id')
-         ->join('users', 'users.id', '=', 'orders.user_id')// get the buyer
-         ->join('products', 'products.id', '=', 'order_items.product_id')
-         ->where('order_items.delivery_status', 'delivered')
-         ->where('orders.user_id', '!=', Auth::user()->id)
-         ->where('order_items.seller_id', $id);
-
-         $sales =  DB::table('order_items')
-         ->join('orders', 'orders.id', '=', 'order_items.order_id')
-         ->join('users', 'users.id', '=', 'orders.user_id')// get the buyer
-          ->join('products', 'products.id', '=', 'order_items.product_id')
-         ->select(['orders.*','order_items.*','users.fname', 'users.phone',
-          'products.prod_name','products.image','products.seller_price'])
-          ->where('orders.status', 'paid')
-          ->where('orders.user_id', '!=', Auth::user()->id)
-         ->where('order_items.seller_id', $id);
-
-         $loan = DB::table('loan')->join('users', 'users.id', '=', 'loan.member_id')
-         ->join('loan_type', 'loan_type.name', '=', 'loan.loan_type')
-          ->select(['loan.*', 'loan_type.name', 'users.fname'])
-          ->where('loan.cooperative_code', $code);
-
-          $payOutLoan = DB::table('loan')
-           ->select(['loan.*'])
-           ->where('loan.loan_status', 'payout')
-           ->where('loan.cooperative_code', $code);
-
-           $WalletAccountNumber =  DB::table('wallet')
-           ->select(['wallet_account_number'])
-           ->where('user_id', $id)
-           ->pluck('wallet_account_number')->first();
-          
-           $WalletAccountName = DB::table('wallet')
-           ->select(['fullname'])
-           ->where('user_id', $id)
-           ->where('cooperative_code', $code)
-           ->pluck('fullname')->first(); 
-
-           $WalletBankName = DB::table('wallet')
-           ->select(['bank_name'])
-           ->where('user_id', $id)
-           ->where('cooperative_code', $code)
-           ->pluck('bank_name')->first(); 
-
-           $phoneNumber = DB::table('wallet')
-           ->select(['phone'])
-           ->where('user_id', $id)
-           ->pluck('phone')->first();
-
-           $lastTenDays = Carbon::now()->subDays(10)->format('Y-m-d');
-           $todayDate = Carbon::now()->format('Y-m-d');
- 
-        $perPage = $request->perPage ?? 10;
-        $search = $request->input('search');
-        
-        $wallets = DB::table('wallet_transaction')
-        ->join('wallet', 'wallet.wallet_account_number', '=','wallet_transaction.wallet_account_number' )
-        ->join('users', 'users.id', '=', 'wallet.user_id')
-        ->select(['wallet_transaction.*', 'users.fname'])
-        ->where('wallet.user_id', $id)
-        ->orderBy('wallet_transaction.created_at', 'desc')
-        ->where(function ($query) use ($search) {  // <<<
-        $query->where('users.fname', 'LIKE', '%'.$search.'%')
-            ->orWhere('wallet_transaction.type', 'LIKE', '%'.$search.'%')
-            ->orderBy('wallet_transaction.created_at', 'desc');
-        })->paginate($perPage, $columns = ['*'], $pageName = 'wallets')
-            ->appends(['per_page'   => $perPage]);
-        
-        //Ogaranya Wallet Account 
-            $data = array(
-            "phone"            => $phoneNumber,
-            "account_number"   => $WalletAccountNumber,
-            );
-            $testToken = DB::table('ogaranya_api_token')
-            ->select('*')->pluck('test_token')->first();
-            $testPublicKey = DB::table('ogaranya_api_token')
-            ->select('*')->pluck('test_publickey')->first();
-    
-            $liveToken = DB::table('ogaranya_api_token')
-            ->select('*')->pluck('live_token')->first();
-            $livePublicKey = DB::table('ogaranya_api_token')
-            ->select('*')->pluck('live_publickey')->first();
-
-            $jsonData = json_encode($data);
-
-            $testURl = "https://api.staging.ogaranya.com/v1/2347033141516/wallet/info";
-            $liveURL = 'https://api.ogaranya.com/v1/2347033141516/wallet/info';
-
-             $url =    $liveURL;
-            if($jsonData) {
-                     $curl = curl_init();
-                     curl_setopt_array($curl, array(
-                     CURLOPT_URL => $url,
-                     CURLOPT_RETURNTRANSFER => true,
-                     CURLOPT_CUSTOMREQUEST => 'POST',
-                     CURLOPT_POSTFIELDS =>$jsonData,
-                     CURLOPT_HTTPHEADER => array(
-                       'Content-Type: application/json',
-                        'token: '.$liveToken,
-                        'publickey:  '.$livePublicKey,
-                       )
-                     ));
-                  $res = curl_exec($curl);
-                  $error = curl_error($curl);
-                  curl_close($curl);
-                  $result =  json_decode($res, true);
-                 // dd($result);
+                if(empty($productLoantypes)){
+                $addLoan  = new LoanType;
+                $addLoan->admin_id          = $id;
+                $addLoan->cooperative_code  = $code;
+                $addLoan->name              = 'product';
+                $addLoan->percentage_rate   = '0';
+                $addLoan->rate_type         = 'flat rate';
+                $addLoan->min_duration      = '1';
+                $addLoan->max_duration      = '';
+                $addLoan->save();
                 }
-                 if($result['status'] == 'success'){
-                  $accountBalance = $result['data']['available_balance'];      
-                 }
-                 if($result['status'] == 'error'){
-                   return view('cooperative.cooperative', compact(
-                        'perPage', 'wallets', 'members', 'memberOrders',  'credit', 
-                        'count_product', 'countMyCustomerOrder', 'sales', 
-                        'allocated_funds', 'sumApproveOrder', 'all_orders_id',
-                        'countSoldProducts', 'countApprovedProduct', 'adminActiveMember',
-                        'countShippedItem', 'loan', 'payOutLoan', 'WalletAccountNumber',
-                        'WalletAccountName', 'WalletBankName'));
-                   }
-                   $walletdData = array(
+                if(empty($cashLoantypes)){
+                $addLoan  = new LoanType;
+                $addLoan->admin_id          = $id;
+                $addLoan->cooperative_code  = $code;
+                $addLoan->name              = 'normal';
+                $addLoan->percentage_rate   = '0';
+                $addLoan->rate_type         = 'flat rate';
+                $addLoan->min_duration      = '1';
+                $addLoan->max_duration      = '';
+                $addLoan->save();
+                }
+                
+                $firstTimeLoggedIn = Auth::user()->last_login;
+                if (empty($firstTimeLoggedIn)) {
+                $data = 
+                array( 
+                    'user_id'   => Auth::user()->code,
+                    'coopname'  => Auth::user()->coopname,
+                    'email'     => Auth::user()->email,
+                );
+                Mail::to(Auth::user()->email)->send(new CooperativeWelcomeEmail($data));  
+                $user = Auth::user();
+                $user->last_login = Carbon::now();
+                $user->save();
+                }
+                elseif (!empty($firstTimeLoggedIn)) {
+                    $user = Auth::user();
+                    $user->last_login = Carbon::now();
+                    $user->save();
+                }      
+                // check if user has filled his/her profile
+                $user=Auth::user();
+                $phone          = $user->phone;
+                $bank           = $user->bank;
+                if(empty($phone && $bank )){
+                    Session::flash('profile', ' You are yet to complete your profile!'); 
+                    Session::flash('alert-class', 'alert-success'); 
+                    return Redirect::to('/account-settings');     
+                }
+                //Get admin existing member   
+                $getAdminMeberID = User::where('code', $code)->where('users.id', '!=', Auth::user()->id)->get('id');
+                foreach($getAdminMeberID as $coopMID){  
+                    $getAdminMeberRoleName = User::whereIn('id', $coopMID)->get();
+                    $getRoleName = Arr::pluck($getAdminMeberRoleName, 'role_name');
+                    $roleName = implode(" ",$getRoleName);
+
+                    $getAdminMeberRole = User::whereIn('id', $coopMID)->get();
+                    $getRole = Arr::pluck($getAdminMeberRole, 'role');
+                    $role = implode(" ",$getRole);  
+                    
+                    $getMemberIDs = User::whereIn('id', $coopMID)->get();
+                    $getIDs = Arr::pluck($getMemberIDs, 'id');
+                    $memberIDs = implode(" ",$getIDs);     
+                
+                    if (CooperativeMemberRole::where('member_id', $memberIDs)->exists()) {
+                        // The record exists
+                    } else {
+                        $item =  CooperativeMemberRole::firstOrNew([
+                            'cooperative_code' => $code,
+                            'member_id' => $memberIDs,
+                            'member_role' => $role, 
+                            'member_role_name' => $roleName,
+                        ]);   
+                    $item->save();
+                    }
+                }
+            
+                $credit = Voucher::join('users', 'users.id', '=', 'vouchers.user_id')
+                ->where('users.id', $id)
+                ->get('credit');
+            
+                $members = DB::table('users')
+                ->select(['users.*'])
+                    ->where('users.code', $code)
+                    ->where('users.deleted_at',  NULL)
+                    ->where('users.id', '!=', Auth::user()->id)
+                    ->orderBy('users.created_at', 'desc');
+
+                //sum all member order that is approved for payment
+                $sumApproveOrder = User::join('orders', 'orders.user_id', '=', 'users.id')
+                ->where('orders.status', 'paid') 
+                ->where('users.code', $code) 
+                ->where('orders.user_id', '!=', Auth::user()->id)
+                ->get('orders.*');  
+                
+                // for bulk payment by cooperative
+                $all_orders_id = User::join('orders', 'orders.user_id', '=', 'users.id')
+                ->where('orders.status', 'approve') 
+                ->where('users.code', $code) 
+                ->where('orders.user_id', '!=', Auth::user()->id)
+                ->get('orders.id');  
+
+                //users logged during a period of month ago from now
+            // $adminActiveMember =  User::where('last_login_at', '>=', new DateTime('-1 months'))->get(); 
+                //users logged from the beggining of current callendar month
+                $adminActiveMember =  User::where('code', $code)
+                ->where('id', '!=', Auth::user()->id)
+                ->where('last_login', '>=',Carbon::now()->startOfMonth())
+                ->get(); 
+                
+                $countApprovedProduct = User::join('products', 'products.seller_id', '=', 'users.id')
+                ->where('products.prod_status', 'approve')
+                ->where('products.seller_id', $id);
+
+                $count_product = User::join('products', 'products.seller_id', '=', 'users.id')
+                ->where('products.seller_id', $id);
+
+                $countSoldProducts = OrderItem::join('orders', 'orders.id', '=', 'order_items.order_id')
+                ->join('users', 'users.id', '=', 'orders.user_id')// get the buyer
+                ->join('products', 'products.id', '=', 'order_items.product_id')
+                ->where('orders.status', 'paid')
+                ->where('orders.user_id', '!=', Auth::user()->id)
+                ->where('order_items.seller_id', $id);
+
+            $allocated_funds = User::join('credit_limits', 'credit_limits.user_id', '=', 'users.id')
+            ->where('users.id', $id)
+            ->paginate( $request->get('per_page', 5));
+            
+            $memberOrders = DB::table('users')->join('orders', 'orders.user_id', '=', 'users.id')
+            ->select(['orders.*', 'users.fname', 'users.lname'])
+            ->where('users.code', $code)
+            ->where('orders.status', '!=', 'cancel')
+            ->where('orders.user_id', '!=', Auth::user()->id);
+        
+                $countMyCustomerOrder = OrderItem::join('orders', 'orders.id', '=', 'order_items.order_id')
+                ->join('users', 'users.id', '=', 'orders.user_id')// get the buyer
+                ->join('products', 'products.id', '=', 'order_items.product_id')
+                ->where('orders.status', 'paid')
+                ->where('orders.user_id', '!=', Auth::user()->id)
+                ->where('order_items.seller_id', $id);
+
+                $countShippedItem= OrderItem::join('orders', 'orders.id', '=', 'order_items.order_id')
+                ->join('users', 'users.id', '=', 'orders.user_id')// get the buyer
+                ->join('products', 'products.id', '=', 'order_items.product_id')
+                ->where('order_items.delivery_status', 'delivered')
+                ->where('orders.user_id', '!=', Auth::user()->id)
+                ->where('order_items.seller_id', $id);
+
+                $sales =  DB::table('order_items')
+                ->join('orders', 'orders.id', '=', 'order_items.order_id')
+                ->join('users', 'users.id', '=', 'orders.user_id')// get the buyer
+                ->join('products', 'products.id', '=', 'order_items.product_id')
+                ->select(['orders.*','order_items.*','users.fname', 'users.phone',
+                'products.prod_name','products.image','products.seller_price'])
+                ->where('orders.status', 'paid')
+                ->where('orders.user_id', '!=', Auth::user()->id)
+                ->where('order_items.seller_id', $id);
+
+                $loan = DB::table('loan')->join('users', 'users.id', '=', 'loan.member_id')
+                ->join('loan_type', 'loan_type.name', '=', 'loan.loan_type')
+                ->select(['loan.*', 'loan_type.name', 'users.fname'])
+                ->where('loan.cooperative_code', $code);
+
+                $payOutLoan = DB::table('loan')
+                ->select(['loan.*'])
+                ->where('loan.loan_status', 'payout')
+                ->where('loan.cooperative_code', $code);
+
+                $WalletAccountNumber =  DB::table('wallet')
+                ->select(['wallet_account_number'])
+                ->where('user_id', $id)
+                ->pluck('wallet_account_number')->first();
+                
+                $WalletAccountName = DB::table('wallet')
+                ->select(['fullname'])
+                ->where('user_id', $id)
+                ->where('cooperative_code', $code)
+                ->pluck('fullname')->first(); 
+
+                $WalletBankName = DB::table('wallet')
+                ->select(['bank_name'])
+                ->where('user_id', $id)
+                ->where('cooperative_code', $code)
+                ->pluck('bank_name')->first(); 
+
+                $phoneNumber = DB::table('wallet')
+                ->select(['phone'])
+                ->where('user_id', $id)
+                ->pluck('phone')->first();
+
+                $lastTenDays = Carbon::now()->subDays(10)->format('Y-m-d');
+                $todayDate = Carbon::now()->format('Y-m-d');
+        
+                $perPage = $request->perPage ?? 10;
+                $search = $request->input('search');
+                
+                $wallets = DB::table('wallet_transaction')
+                ->join('wallet', 'wallet.wallet_account_number', '=','wallet_transaction.wallet_account_number' )
+                ->join('users', 'users.id', '=', 'wallet.user_id')
+                ->select(['wallet_transaction.*', 'users.fname'])
+                ->where('wallet.user_id', $id)
+                ->orderBy('wallet_transaction.created_at', 'desc')
+                ->where(function ($query) use ($search) {  // <<<
+                $query->where('users.fname', 'LIKE', '%'.$search.'%')
+                    ->orWhere('wallet_transaction.type', 'LIKE', '%'.$search.'%')
+                    ->orderBy('wallet_transaction.created_at', 'desc');
+                })->paginate($perPage, $columns = ['*'], $pageName = 'wallets')
+                    ->appends(['per_page'   => $perPage]);
+                
+                //Ogaranya Wallet Account 
+                    $data = array(
                     "phone"            => $phoneNumber,
                     "account_number"   => $WalletAccountNumber,
-                    "from"             => $lastTenDays,
-                    "to"               => $todayDate,
                     );
-
                     $testToken = DB::table('ogaranya_api_token')
                     ->select('*')->pluck('test_token')->first();
                     $testPublicKey = DB::table('ogaranya_api_token')
                     ->select('*')->pluck('test_publickey')->first();
-              
+            
                     $liveToken = DB::table('ogaranya_api_token')
                     ->select('*')->pluck('live_token')->first();
                     $livePublicKey = DB::table('ogaranya_api_token')
                     ->select('*')->pluck('live_publickey')->first();
 
-                    $jsonWalletData = json_encode($walletdData);
-                   // dd($jsonWalletData);
-                   $testURl = "https://api.staging.ogaranya.com/v1/2347033141516/wallet/history";
-                   $liveURL = 'https://api.ogaranya.com/v1/2347033141516/wallet/history';
+                    $jsonData = json_encode($data);
 
-                    $walletHistoryUrl =   $liveURL;
-                    if($jsonWalletData) {
-                             $curlopt = curl_init();
-                             curl_setopt_array($curlopt, array(
-                             CURLOPT_URL => $walletHistoryUrl,
-                             CURLOPT_RETURNTRANSFER => true,
-                             CURLOPT_CUSTOMREQUEST => 'POST',
-                             CURLOPT_POSTFIELDS =>$jsonWalletData,
-                             CURLOPT_HTTPHEADER => array(
-                               'Content-Type: application/json',
-                               'token: '.$liveToken,
+                    $testURl = "https://api.staging.ogaranya.com/v1/2347033141516/wallet/info";
+                    $liveURL = 'https://api.ogaranya.com/v1/2347033141516/wallet/info';
+
+                    $url =    $liveURL;
+                    if($jsonData) {
+                            $curl = curl_init();
+                            curl_setopt_array($curl, array(
+                            CURLOPT_URL => $url,
+                            CURLOPT_RETURNTRANSFER => true,
+                            CURLOPT_CUSTOMREQUEST => 'POST',
+                            CURLOPT_POSTFIELDS =>$jsonData,
+                            CURLOPT_HTTPHEADER => array(
+                            'Content-Type: application/json',
+                                'token: '.$liveToken,
                                 'publickey:  '.$livePublicKey,
-                              )
-                             ));
-                          $response = curl_exec($curlopt);
-                          $error = curl_error($curlopt);
-                          curl_close($curlopt);
-                          $detail =  json_decode($response, true);
+                            )
+                            ));
+                        $res = curl_exec($curl);
+                        $error = curl_error($curl);
+                        curl_close($curl);
+                        $result =  json_decode($res, true);
+                        // dd($result);
                         }
-                        if($detail['status'] == 'success'){
-                          $arrayWalletTransaction = $detail['data'];
-                          $getWalletAmount = Arr::pluck($arrayWalletTransaction, 'amount');
-                          $walletAmount = implode(" ",$getWalletAmount);
-                          $walletTransaction = $detail['data'];
+                        if($result['status'] == 'success'){
+                        $accountBalance = $result['data']['available_balance'];      
                         }
-                         if($detail['status'] == 'error'){
-                           
-                            return view('cooperative.cooperative', compact(
+                        if($result['status'] == 'error'){
+                        return view('cooperative.cooperative', compact(
                                 'perPage', 'wallets', 'members', 'memberOrders',  'credit', 
                                 'count_product', 'countMyCustomerOrder', 'sales', 
                                 'allocated_funds', 'sumApproveOrder', 'all_orders_id',
@@ -401,34 +347,110 @@ class CooperativeController extends Controller
                                 'countShippedItem', 'loan', 'payOutLoan', 'WalletAccountNumber',
                                 'WalletAccountName', 'WalletBankName'));
                         }
-              
-                $pagination = $wallets->appends ( array ('search' => $search) );
-                if (count ( $pagination ) > 0){
-                    return view ('cooperative.cooperative' ,  compact(
-                    'perPage', 'wallets', 'members', 'memberOrders',  'credit', 
-                    'count_product', 'countMyCustomerOrder', 'sales', 
-                    'allocated_funds', 'sumApproveOrder', 'all_orders_id',
-                    'countSoldProducts', 'countApprovedProduct', 'adminActiveMember',
-                    'countShippedItem', 'loan', 'payOutLoan', 'WalletAccountNumber',
-                    'WalletAccountName', 'WalletBankName', 'accountBalance'))->withDetails( $pagination );     
-                } 
-                else{redirect()->back()->with('status', 'No record order found'); } 
+                        $walletdData = array(
+                            "phone"            => $phoneNumber,
+                            "account_number"   => $WalletAccountNumber,
+                            "from"             => $lastTenDays,
+                            "to"               => $todayDate,
+                            );
+
+                            $testToken = DB::table('ogaranya_api_token')
+                            ->select('*')->pluck('test_token')->first();
+                            $testPublicKey = DB::table('ogaranya_api_token')
+                            ->select('*')->pluck('test_publickey')->first();
+                    
+                            $liveToken = DB::table('ogaranya_api_token')
+                            ->select('*')->pluck('live_token')->first();
+                            $livePublicKey = DB::table('ogaranya_api_token')
+                            ->select('*')->pluck('live_publickey')->first();
+
+                            $jsonWalletData = json_encode($walletdData);
+                        // dd($jsonWalletData);
+                        $testURl = "https://api.staging.ogaranya.com/v1/2347033141516/wallet/history";
+                        $liveURL = 'https://api.ogaranya.com/v1/2347033141516/wallet/history';
+
+                            $walletHistoryUrl =   $liveURL;
+                            if($jsonWalletData) {
+                                    $curlopt = curl_init();
+                                    curl_setopt_array($curlopt, array(
+                                    CURLOPT_URL => $walletHistoryUrl,
+                                    CURLOPT_RETURNTRANSFER => true,
+                                    CURLOPT_CUSTOMREQUEST => 'POST',
+                                    CURLOPT_POSTFIELDS =>$jsonWalletData,
+                                    CURLOPT_HTTPHEADER => array(
+                                    'Content-Type: application/json',
+                                    'token: '.$liveToken,
+                                        'publickey:  '.$livePublicKey,
+                                    )
+                                    ));
+                                $response = curl_exec($curlopt);
+                                $error = curl_error($curlopt);
+                                curl_close($curlopt);
+                                $detail =  json_decode($response, true);
+                                }
+                                if($detail['status'] == 'success'){
+                                $arrayWalletTransaction = $detail['data'];
+                                $getWalletAmount = Arr::pluck($arrayWalletTransaction, 'amount');
+                                $walletAmount = implode(" ",$getWalletAmount);
+                                $walletTransaction = $detail['data'];
+                                }
+                                if($detail['status'] == 'error'){
+                                
+                                    return view('cooperative.cooperative', compact(
+                                        'perPage', 'wallets', 'members', 'memberOrders',  'credit', 
+                                        'count_product', 'countMyCustomerOrder', 'sales', 
+                                        'allocated_funds', 'sumApproveOrder', 'all_orders_id',
+                                        'countSoldProducts', 'countApprovedProduct', 'adminActiveMember',
+                                        'countShippedItem', 'loan', 'payOutLoan', 'WalletAccountNumber',
+                                        'WalletAccountName', 'WalletBankName'));
+                                }
+                    
+                        $pagination = $wallets->appends ( array ('search' => $search) );
+                        if (count ( $pagination ) > 0){
+                            return view ('cooperative.cooperative' ,  compact(
+                            'perPage', 'wallets', 'members', 'memberOrders',  'credit', 
+                            'count_product', 'countMyCustomerOrder', 'sales', 
+                            'allocated_funds', 'sumApproveOrder', 'all_orders_id',
+                            'countSoldProducts', 'countApprovedProduct', 'adminActiveMember',
+                            'countShippedItem', 'loan', 'payOutLoan', 'WalletAccountNumber',
+                            'WalletAccountName', 'WalletBankName', 'accountBalance'))->withDetails( $pagination );     
+                        } 
+                        else{redirect()->back()->with('status', 'No record order found'); } 
+                    
+                    \LogActivity::addToLog('Admin dashboard'); 
+                    //search
+                    return view('cooperative.cooperative', compact(
+                        'perPage', 'wallets', 'members', 'memberOrders',  'credit', 
+                        'count_product', 'countMyCustomerOrder', 'sales', 
+                        'allocated_funds', 'sumApproveOrder', 'all_orders_id',
+                        'countSoldProducts', 'countApprovedProduct', 'adminActiveMember',
+                        'countShippedItem', 'loan', 'payOutLoan', 'WalletAccountNumber',
+                        'WalletAccountName', 'WalletBankName', 'accountBalance',  'walletTransaction'));
             
-            \LogActivity::addToLog('Admin dashboard'); 
-            //search
-            return view('cooperative.cooperative', compact(
-                'perPage', 'wallets', 'members', 'memberOrders',  'credit', 
-                'count_product', 'countMyCustomerOrder', 'sales', 
-                'allocated_funds', 'sumApproveOrder', 'all_orders_id',
-                'countSoldProducts', 'countApprovedProduct', 'adminActiveMember',
-                'countShippedItem', 'loan', 'payOutLoan', 'WalletAccountNumber',
-                'WalletAccountName', 'WalletBankName', 'accountBalance',  'walletTransaction'));
+            }catch (Exception $e) {
+
+                    //return redirect('request-product-loan/'.$order->id)->with('order', 'You are requesting a product loan. How long do you want to pay back');
+                    $message = $e->getMessage();
+                    //var_dump('Exception Message: '. $message);
+            
+                    $code = $e->getCode();       
+                    //var_dump('Exception Code: '. $code);
+            
+                    $string = $e->__toString();       
+                    // var_dump('Exception String: '. $string);
+            
+                    $errorData = 
+                    array(
+                    'password'   => $string ,   
+                    'email'     => $message,
+                    );
+                    $emailSuperadmin =  Mail::to('lascocomart@gmail.com')->send(new NewUserEmail($errorData));   
+                    // exit;
+            }
         }
         else { return Redirect::to('/login');}
-    }
+ }
 
-
-    
 
     public function adminOrderHistory(Request $request){
         $id = Auth::user()->id;
@@ -524,176 +546,217 @@ class CooperativeController extends Controller
 
 
     public function cooperativeMemberOrder(Request $request){
-        $id = Auth::user()->id;
-        $code = Auth::user()->code;
-        $countMemberOrders = User::join('orders', 'orders.user_id', '=', 'users.id')
-        ->where('orders.status','!=', 'cancel')
-        ->where('users.code', $code)
-        ->where('orders.user_id', '!=', Auth::user()->id);
-        // for bulk payment by cooperative
-        $sumApproveOrder = User::join('orders', 'orders.user_id', '=', 'users.id')
-        ->where('orders.status', 'approved') 
-        ->where('users.code', $code) 
-        ->where('users.id', '!=', Auth::user()->id)
-        ->get('orders.*'); 
+        try{
+                $id = Auth::user()->id;
+                $code = Auth::user()->code;
+                $countMemberOrders = User::join('orders', 'orders.user_id', '=', 'users.id')
+                ->where('orders.status','!=', 'cancel')
+                ->where('users.code', $code)
+                ->where('orders.user_id', '!=', Auth::user()->id);
+                // for bulk payment by cooperative
+                $sumApproveOrder = User::join('orders', 'orders.user_id', '=', 'users.id')
+                ->where('orders.status', 'approved') 
+                ->where('users.code', $code) 
+                ->where('users.id', '!=', Auth::user()->id)
+                ->get('orders.*'); 
+                
+                $credit = Voucher::join('users', 'users.id', '=', 'vouchers.user_id')
+                ->where('users.id', $id)
+                ->get('credit');  
+
+                $WalletAccountNumber =  DB::table('wallet')
+                ->select(['wallet_account_number'])
+                ->where('user_id', $id)
+                ->where('cooperative_code', $code)
+                ->pluck('wallet_account_number')->first();
+                $WalletAccountName = DB::table('wallet')
+                ->select(['fullname'])
+                ->where('user_id', $id)
+                ->where('cooperative_code', $code)
+                ->pluck('fullname')->first(); 
+
+                $WalletBankName = DB::table('wallet')
+                ->select(['bank_name'])
+                ->where('user_id', $id)
+                ->where('cooperative_code', $code)
+                ->pluck('bank_name')->first(); 
+
+                $phoneNumber = DB::table('wallet')
+                ->select(['phone'])
+                ->where('user_id', $id)
+                ->where('cooperative_code', $code)
+                ->pluck('phone')->first();
+
+                $getAdminLoanDuration = LoanSetting::where('cooperative_code', $code)->pluck('max_duration')->first();
+                $loanTypeID = LoanType::select('id')
+                ->where('cooperative_code', $code)
+                ->where('name', 'product')->pluck('id')->first();
+
+                $data = array(
+                    "phone"            => $phoneNumber,
+                "account_number"   => $WalletAccountNumber,
+                );
+                $testToken = DB::table('ogaranya_api_token')
+                ->select('*')->pluck('test_token')->first();
+                $testPublicKey = DB::table('ogaranya_api_token')
+                ->select('*')->pluck('test_publickey')->first();
         
-        $credit = Voucher::join('users', 'users.id', '=', 'vouchers.user_id')
-        ->where('users.id', $id)
-        ->get('credit');  
+                $liveToken = DB::table('ogaranya_api_token')
+                ->select('*')->pluck('live_token')->first();
+                $livePublicKey = DB::table('ogaranya_api_token')
+                ->select('*')->pluck('live_publickey')->first();
 
-        $WalletAccountNumber =  DB::table('wallet')
-        ->select(['wallet_account_number'])
-        ->where('user_id', $id)
-        ->where('cooperative_code', $code)
-        ->pluck('wallet_account_number')->first();
-        $WalletAccountName = DB::table('wallet')
-       ->select(['fullname'])
-       ->where('user_id', $id)
-       ->where('cooperative_code', $code)
-       ->pluck('fullname')->first(); 
+                $jsonData = json_encode($data);
 
-       $WalletBankName = DB::table('wallet')
-       ->select(['bank_name'])
-       ->where('user_id', $id)
-       ->where('cooperative_code', $code)
-       ->pluck('bank_name')->first(); 
+                $testURl = "https://api.staging.ogaranya.com/v1/2347033141516/wallet/info";
+                $liveURL = 'https://api.ogaranya.com/v1/2347033141516/wallet/info';
 
-       $phoneNumber = DB::table('wallet')
-       ->select(['phone'])
-       ->where('user_id', $id)
-       ->where('cooperative_code', $code)
-       ->pluck('phone')->first();
-
-       $getAdminLoanDuration = LoanSetting::where('cooperative_code', $code)->pluck('max_duration')->first();
-       $loanTypeID = LoanType::select('id')
-       ->where('cooperative_code', $code)
-       ->where('name', 'product')->pluck('id')->first();
-
-       $data = array(
-          "phone"            => $phoneNumber,
-          "account_number"   => $WalletAccountNumber,
-          );
-          $testToken = DB::table('ogaranya_api_token')
-          ->select('*')->pluck('test_token')->first();
-          $testPublicKey = DB::table('ogaranya_api_token')
-          ->select('*')->pluck('test_publickey')->first();
-  
-          $liveToken = DB::table('ogaranya_api_token')
-          ->select('*')->pluck('live_token')->first();
-          $livePublicKey = DB::table('ogaranya_api_token')
-          ->select('*')->pluck('live_publickey')->first();
-
-          $jsonData = json_encode($data);
-
-          $testURl = "https://api.staging.ogaranya.com/v1/2347033141516/wallet/info";
-          $liveURL = 'https://api.ogaranya.com/v1/2347033141516/wallet/info';
-
-           $url =   $liveURL;
-          if($jsonData) {
-                   $curl = curl_init();
-                   curl_setopt_array($curl, array(
-                   CURLOPT_URL => $url,
-                   CURLOPT_RETURNTRANSFER => true,
-                   CURLOPT_CUSTOMREQUEST => 'POST',
-                   CURLOPT_POSTFIELDS =>$jsonData,
-                   CURLOPT_HTTPHEADER => array(
-                     'Content-Type: application/json',
-                     'token: '.$liveToken,
-                     'publickey:  '.$livePublicKey,
-                     )
-                   ));
-                $res = curl_exec($curl);
-                $error = curl_error($curl);
-                curl_close($curl);
-                $result =  json_decode($res, true);
-               // dd($result);
-              }
-              if($result['status'] == 'success'){
-                $accountBalance = $result['data']['available_balance'];
-                $perPage = $request->perPage ?? 10;
-                $search = $request->input('search');
-                $orders = User::join('orders', 'orders.user_id', '=', 'users.id')
-                ->where('users.code', $code)
-                ->where('orders.user_id', '!=', Auth::user()->id)
-                ->where('orders.status', '!=', 'cancel')
-                ->where('orders.status', '!=', 'pending')
-                // ->where('orders.status', '=', 'awaits approval')
-                ->where('orders.cooperative_code', '=', $code)
-                ->orderBy('orders.updated_at', 'desc')
-                ->where(function ($query) use ($search) {  // <<<
-                $query->where('users.fname', 'LIKE', '%'.$search.'%')
-                    ->orWhere('users.lname', 'LIKE', '%'.$search.'%')
-                    ->orWhere('orders.order_number', 'LIKE', '%'.$search.'%')
-                    ->orWhere('orders.grandtotal', 'LIKE', '%'.$search.'%')
-                    ->orWhere('orders.date', 'LIKE', '%'.$search.'%')
-                    ->orWhere('orders.status', 'LIKE', '%'.$search.'%')
-                    ->orderBy('orders.created_at', 'desc');
-                })->paginate($perPage, $columns = ['*'], $pageName = 'orders'
-                )->appends([
-                'per_page'   => $perPage
-                ]);
-                $pagination = $orders->appends ( array ('search' => $search) );
-                if (count ( $pagination ) > 0){
-                    return view('cooperative.member-order', compact(
-                    'perPage',
-                    'countMemberOrders', 
-                    'credit', 
-                    'orders', 
-                    'sumApproveOrder',
-                    'WalletAccountNumber', 
-                    'WalletAccountName',
-                    'WalletBankName', 'accountBalance', 
-                    'getAdminLoanDuration', 'loanTypeID'))->withDetails ( $pagination );     
-                    } 
-                    else{
-                        redirect()->back()->with('status', 'No record found'); 
+                $url =   $liveURL;
+                if($jsonData) {
+                        $curl = curl_init();
+                        curl_setopt_array($curl, array(
+                        CURLOPT_URL => $url,
+                        CURLOPT_RETURNTRANSFER => true,
+                        CURLOPT_CUSTOMREQUEST => 'POST',
+                        CURLOPT_POSTFIELDS =>$jsonData,
+                        CURLOPT_HTTPHEADER => array(
+                            'Content-Type: application/json',
+                            'token: '.$liveToken,
+                            'publickey:  '.$livePublicKey,
+                            )
+                        ));
+                        $res = curl_exec($curl);
+                        $error = curl_error($curl);
+                        curl_close($curl);
+                        $result =  json_decode($res, true);
+                    // dd($result);
                     }
-              }
+                    if($result['status'] == 'success'){
+                        $accountBalance = $result['data']['available_balance'];
+                        $perPage = $request->perPage ?? 10;
+                        $search = $request->input('search');
+                        $orders = User::join('orders', 'orders.user_id', '=', 'users.id')
+                        ->where('users.code', $code)
+                        ->where('orders.user_id', '!=', Auth::user()->id)
+                        ->where('orders.status', '!=', 'cancel')
+                        ->where('orders.status', '!=', 'pending')
+                        // ->where('orders.status', '=', 'awaits approval')
+                        ->where('orders.cooperative_code', '=', $code)
+                        ->orderBy('orders.updated_at', 'desc')
+                        ->where(function ($query) use ($search) {  // <<<
+                        $query->where('users.fname', 'LIKE', '%'.$search.'%')
+                            ->orWhere('users.lname', 'LIKE', '%'.$search.'%')
+                            ->orWhere('orders.order_number', 'LIKE', '%'.$search.'%')
+                            ->orWhere('orders.grandtotal', 'LIKE', '%'.$search.'%')
+                            ->orWhere('orders.date', 'LIKE', '%'.$search.'%')
+                            ->orWhere('orders.status', 'LIKE', '%'.$search.'%')
+                            ->orderBy('orders.created_at', 'desc');
+                        })->paginate($perPage, $columns = ['*'], $pageName = 'orders'
+                        )->appends([
+                        'per_page'   => $perPage
+                        ]);
+                        $pagination = $orders->appends ( array ('search' => $search) );
+                        if (count ( $pagination ) > 0){
+                            return view('cooperative.member-order', compact(
+                            'perPage',
+                            'countMemberOrders', 
+                            'credit', 
+                            'orders', 
+                            'sumApproveOrder',
+                            'WalletAccountNumber', 
+                            'WalletAccountName',
+                            'WalletBankName', 'accountBalance', 
+                            'getAdminLoanDuration', 'loanTypeID'))->withDetails ( $pagination );     
+                            } 
+                            else{
+                                redirect()->back()->with('status', 'No record found'); 
+                            }
+                    }
 
-              if ($result == null) {
+                    if ($result == null) {
+                            
+                        $perPage = $request->perPage ?? 10;
+                        $search = $request->input('search');
+                        $orders = User::join('orders', 'orders.user_id', '=', 'users.id')
+                        ->where('users.code', $code)
+                        ->where('orders.user_id', '!=', Auth::user()->id)
+                        ->where('orders.status', '!=', 'cancel')
+                        ->where('orders.status', '!=', 'pending')
+                        // ->where('orders.status', '=', 'awaits approval')
+                        ->where('orders.cooperative_code', '=', $code)
+                        ->orderBy('orders.updated_at', 'desc')
+                        ->where(function ($query) use ($search) {  // <<<
+                        $query->where('users.fname', 'LIKE', '%'.$search.'%')
+                            ->orWhere('users.lname', 'LIKE', '%'.$search.'%')
+                            ->orWhere('orders.order_number', 'LIKE', '%'.$search.'%')
+                            ->orWhere('orders.grandtotal', 'LIKE', '%'.$search.'%')
+                            ->orWhere('orders.date', 'LIKE', '%'.$search.'%')
+                            ->orWhere('orders.status', 'LIKE', '%'.$search.'%')
+                            ->orderBy('orders.created_at', 'desc');
+                        })->paginate($perPage, $columns = ['*'], $pageName = 'orders'
+                        )->appends([
+                        'per_page'   => $perPage
+                        ]);
+                        $pagination = $orders->appends ( array ('search' => $search) );
+                        if (count ( $pagination ) > 0){
+                            return view('cooperative.member-order', compact(
+                            'perPage',
+                            'countMemberOrders', 
+                            'credit', 
+                            'orders', 
+                            'sumApproveOrder',
+                            'WalletAccountNumber', 
+                            'WalletAccountName',
+                            'WalletBankName', 'getAdminLoanDuration',
+                            'loanTypeID'))->withDetails ( $pagination );     
+                            } 
+                            else{
+                                redirect()->back()->with('status', 'No record found'); 
+                            }
+                    }
                     
-                $perPage = $request->perPage ?? 10;
-                $search = $request->input('search');
-                $orders = User::join('orders', 'orders.user_id', '=', 'users.id')
-                ->where('users.code', $code)
-                ->where('orders.user_id', '!=', Auth::user()->id)
-                ->where('orders.status', '!=', 'cancel')
-                ->where('orders.status', '!=', 'pending')
-                // ->where('orders.status', '=', 'awaits approval')
-                ->where('orders.cooperative_code', '=', $code)
-                ->orderBy('orders.updated_at', 'desc')
-                ->where(function ($query) use ($search) {  // <<<
-                $query->where('users.fname', 'LIKE', '%'.$search.'%')
-                    ->orWhere('users.lname', 'LIKE', '%'.$search.'%')
-                    ->orWhere('orders.order_number', 'LIKE', '%'.$search.'%')
-                    ->orWhere('orders.grandtotal', 'LIKE', '%'.$search.'%')
-                    ->orWhere('orders.date', 'LIKE', '%'.$search.'%')
-                    ->orWhere('orders.status', 'LIKE', '%'.$search.'%')
-                    ->orderBy('orders.created_at', 'desc');
-                })->paginate($perPage, $columns = ['*'], $pageName = 'orders'
-                )->appends([
-                'per_page'   => $perPage
-                ]);
-                $pagination = $orders->appends ( array ('search' => $search) );
-                if (count ( $pagination ) > 0){
-                    return view('cooperative.member-order', compact(
-                    'perPage',
-                    'countMemberOrders', 
-                    'credit', 
-                    'orders', 
-                    'sumApproveOrder',
-                    'WalletAccountNumber', 
-                    'WalletAccountName',
-                    'WalletBankName', 'getAdminLoanDuration',
-                    'loanTypeID'))->withDetails ( $pagination );     
-                    } 
-                    else{
-                        redirect()->back()->with('status', 'No record found'); 
+                    if($result['status'] == 'error'){
+                        Session::flash('error',  ' No wallet account balance'); 
+                        $perPage = $request->perPage ?? 10;
+                        $search = $request->input('search');
+                        $orders = User::join('orders', 'orders.user_id', '=', 'users.id')
+                        ->where('users.code', $code)
+                        ->where('orders.user_id', '!=', Auth::user()->id)
+                        ->where('orders.status', '!=', 'cancel')
+                        ->where('orders.status', '!=', 'pending')
+                        // ->where('orders.status', '=', 'awaits approval')
+                        ->where('orders.cooperative_code', '=', $code)
+                        ->orderBy('orders.updated_at', 'desc')
+                        ->where(function ($query) use ($search) {  // <<<
+                        $query->where('users.fname', 'LIKE', '%'.$search.'%')
+                            ->orWhere('users.lname', 'LIKE', '%'.$search.'%')
+                            ->orWhere('orders.order_number', 'LIKE', '%'.$search.'%')
+                            ->orWhere('orders.grandtotal', 'LIKE', '%'.$search.'%')
+                            ->orWhere('orders.date', 'LIKE', '%'.$search.'%')
+                            ->orWhere('orders.status', 'LIKE', '%'.$search.'%')
+                            ->orderBy('orders.created_at', 'desc');
+                        })->paginate($perPage, $columns = ['*'], $pageName = 'orders'
+                        )->appends([
+                        'per_page'   => $perPage
+                        ]);
+                        $pagination = $orders->appends ( array ('search' => $search) );
+                        if (count ( $pagination ) > 0){
+                            return view('cooperative.member-order', compact(
+                            'perPage',
+                            'countMemberOrders', 
+                            'credit', 
+                            'orders', 
+                            'sumApproveOrder',
+                            'WalletAccountNumber', 
+                            'WalletAccountName',
+                            'WalletBankName', 'getAdminLoanDuration', 'loanTypeID'))->withDetails ( $pagination );     
+                            } 
+                            else{
+                                redirect()->back()->with('status', 'No record found'); 
+                            }
+                    
                     }
-               }
-             
-              if($result['status'] == 'error'){
-                Session::flash('error',  ' No wallet account balance'); 
+
                 $perPage = $request->perPage ?? 10;
                 $search = $request->input('search');
                 $orders = User::join('orders', 'orders.user_id', '=', 'users.id')
@@ -724,67 +787,47 @@ class CooperativeController extends Controller
                     'credit', 
                     'orders', 
                     'sumApproveOrder',
-                    'WalletAccountNumber', 
+                    'WalletAccountNumber', 'accountBalance',
                     'WalletAccountName',
                     'WalletBankName', 'getAdminLoanDuration', 'loanTypeID'))->withDetails ( $pagination );     
                     } 
                     else{
                         redirect()->back()->with('status', 'No record found'); 
                     }
-               
-              }
+                \LogActivity::addToLog('Admin member order');
+                return view('cooperative.member-order', compact(
+                'perPage',
+                'countMemberOrders', 
+                'credit', 
+                'orders', 
+                'sumApproveOrder',
+                'WalletAccountNumber', 'accountBalance',
+                'WalletAccountName',
+                'WalletBankName', 'getAdminLoanDuration', 'loanTypeID'));
+        }//try
+        catch (Exception $e) {
 
-        $perPage = $request->perPage ?? 10;
-        $search = $request->input('search');
-        $orders = User::join('orders', 'orders.user_id', '=', 'users.id')
-         ->where('users.code', $code)
-         ->where('orders.user_id', '!=', Auth::user()->id)
-          ->where('orders.status', '!=', 'cancel')
-          ->where('orders.status', '!=', 'pending')
-        // ->where('orders.status', '=', 'awaits approval')
-         ->where('orders.cooperative_code', '=', $code)
-         ->orderBy('orders.updated_at', 'desc')
-         ->where(function ($query) use ($search) {  // <<<
-        $query->where('users.fname', 'LIKE', '%'.$search.'%')
-            ->orWhere('users.lname', 'LIKE', '%'.$search.'%')
-            ->orWhere('orders.order_number', 'LIKE', '%'.$search.'%')
-            ->orWhere('orders.grandtotal', 'LIKE', '%'.$search.'%')
-            ->orWhere('orders.date', 'LIKE', '%'.$search.'%')
-            ->orWhere('orders.status', 'LIKE', '%'.$search.'%')
-            ->orderBy('orders.created_at', 'desc');
-         })->paginate($perPage, $columns = ['*'], $pageName = 'orders'
-         )->appends([
-        'per_page'   => $perPage
-         ]);
-         $pagination = $orders->appends ( array ('search' => $search) );
-        if (count ( $pagination ) > 0){
-            return view('cooperative.member-order', compact(
-            'perPage',
-            'countMemberOrders', 
-            'credit', 
-            'orders', 
-            'sumApproveOrder',
-            'WalletAccountNumber', 'accountBalance',
-            'WalletAccountName',
-            'WalletBankName', 'getAdminLoanDuration', 'loanTypeID'))->withDetails ( $pagination );     
-             } 
-             else{
-                 redirect()->back()->with('status', 'No record found'); 
-             }
-        \LogActivity::addToLog('Admin member order');
-        return view('cooperative.member-order', compact(
-        'perPage',
-        'countMemberOrders', 
-        'credit', 
-        'orders', 
-        'sumApproveOrder',
-        'WalletAccountNumber', 'accountBalance',
-        'WalletAccountName',
-        'WalletBankName', 'getAdminLoanDuration', 'loanTypeID'));
+            //return redirect('request-product-loan/'.$order->id)->with('order', 'You are requesting a product loan. How long do you want to pay back');
+            $message = $e->getMessage();
+            //var_dump('Exception Message: '. $message);
+
+            $code = $e->getCode();       
+            //var_dump('Exception Code: '. $code);
+
+            $string = $e->__toString();       
+            // var_dump('Exception String: '. $string);
+
+            $errorData = 
+            array(
+            'password'   => $string ,   
+            'email'     => $message,
+            );
+            $emailSuperadmin =  Mail::to('lascocomart@gmail.com')->send(new NewUserEmail($errorData));   
+            // exit;
+        }
     }
 
-    public function cancelMemberNewOrder($id)
-    {
+    public function cancelMemberNewOrder($id){
         $order = Order::find($id);
         $user = User::where('id', $order->user_id)->get('fname');
         $array = Arr::pluck($user,'fname' );
@@ -1082,200 +1125,118 @@ class CooperativeController extends Controller
   
 
     public function approveOrder(Request $request){
-        $id = Auth::user()->id;
-        $code = Auth::user()->code;
-        $cooperative = Auth::user()->coopname;
-        $order_id = $request->order_id;
-        $order = Order::find($order_id);
-        $order_number = Order::where('id', $order_id)
-        ->pluck('order_number')
-        ->first();
+        try{
+            $id = Auth::user()->id;
+            $code = Auth::user()->code;
+            $cooperative = Auth::user()->coopname;
+            $order_id = $request->order_id;
+            $order = Order::find($order_id);
+            $order_number = Order::where('id', $order_id)
+            ->pluck('order_number')
+            ->first();
 
-        $updateOrder = Order::find($order_id);
-        $updateOrder->status            = 'awaits approval';
-        $updateOrder->cooperative_code  = $code;
-        $updateOrder->loan_type_id      = $request->loanTypeID;
-        $updateOrder->duration          = $request->duration;
-        $updateOrder->update();
+            $updateOrder = Order::find($order_id);
+            $updateOrder->status            = 'awaits approval';
+            $updateOrder->cooperative_code  = $code;
+            $updateOrder->loan_type_id      = $request->loanTypeID;
+            $updateOrder->duration          = $request->duration;
+            $updateOrder->update();
 
-        $grandtotal = \DB::table('orders')->where('id', $order_id)->first()->grandtotal;
-        // check admin wallet
-         // CHECK ADIM LOAN SETINGS
-         $product_loan_type = Order::join('loan_type', 'loan_type.id', 'orders.loan_type_id')
-         ->where('orders.id', $order_id)
-         ->get('loan_type.name')->pluck('name')->first() ;
+            $grandtotal = \DB::table('orders')->where('id', $order_id)->first()->grandtotal;
+            // check admin wallet
+            // CHECK ADIM LOAN SETINGS
+            $product_loan_type = Order::join('loan_type', 'loan_type.id', 'orders.loan_type_id')
+            ->where('orders.id', $order_id)
+            ->get('loan_type.name')->pluck('name')->first() ;
 
-         $product_loan_duration = Order::where('id', $order_id)
-         ->get('duration')->pluck('duration')->first();
-         $percentageRate = DB::table('loan_settings')
-         ->select('percentage_rate')
-         ->where('cooperative_code', $code)
-         ->pluck('percentage_rate')->first();
+            $product_loan_duration = Order::where('id', $order_id)
+            ->get('duration')->pluck('duration')->first();
+            $percentageRate = DB::table('loan_settings')
+            ->select('percentage_rate')
+            ->where('cooperative_code', $code)
+            ->pluck('percentage_rate')->first();
 
-         $maxTenure =  DB::table('loan_settings')
-         ->select('max_duration')
-         ->where('cooperative_code', $code)
-         ->pluck('max_duration')->first();
+            $maxTenure =  DB::table('loan_settings')
+            ->select('max_duration')
+            ->where('cooperative_code', $code)
+            ->pluck('max_duration')->first();
 
-         $principal = (int)$grandtotal;
-         $percentage = $principal / 100 * $percentageRate ;
-      
-         $rateType = DB::table('loan_settings')
-         ->select('rate_type')
-         ->where('cooperative_code', $code)
-         ->pluck('rate_type')->first();
-
-         if($rateType == 'flat rate'){
-            $annualInterest = $percentage * $maxTenure; 
-            $totalDue = $principal + $annualInterest;//for flat rate interest type
-            $monthlyPrincipal = $principal / (int)$product_loan_duration;
-            $monthlyInterest = $annualInterest / (int)$product_loan_duration;
-            $totalMonthlyDue = $monthlyPrincipal + $monthlyInterest ;
-         }
-
-         if($rateType == 'reducing balance'){
-            $annualInterest = $percentage * (int)$product_loan_duration;
-            $totalDue = $principal + $annualInterest;//for flat rate interest type
-            $monthlyPrincipal = $principal / (int)$product_loan_duration;
-            $monthlyInterest = $annualInterest / (int)$product_loan_duration;
-            $totalMonthlyDue = $monthlyPrincipal + $monthlyInterest ;
-         }
-         $cooperativeRepaymentStart = DB::table('loan_settings')
-         ->where('cooperative_code', $code)
-         ->select('*')
-         ->pluck('start_repayment')->first();
-
-         $today = Carbon::now();
-         $loanStartRepaymentDay = $cooperativeRepaymentStart * 30;//30 days
-         $loanEndPeriod =  $product_loan_duration * 30; 
-         $payOutDate =  $today->format('Y-m-d');
-        // dd($today);
-         
-         $getRepaymentStartDate = Carbon::parse($payOutDate)->addDays($loanStartRepaymentDay);
-        // Carbon::createFromFormat('Y-m-d', $payOutDate)->addDays($loanStartRepaymentDay);
-         $repaymentStartDate =  $getRepaymentStartDate->format('Y-m-d');
-
-         $getRepaymentEndDate =  Carbon::createFromFormat('Y-m-d', $payOutDate)->addDays( $loanEndPeriod);
-         $repaymentEndDate =  $getRepaymentEndDate->format('Y-m-d');
-
-         if($percentageRate < 1){
-             $setInterest = url('/account-settings');
-             return redirect('cooperative-create-loan')->with('loan', 'Interest on normal loan can not be "0" . Click here set interest '.$setInterest); 
-         }
-
-         $WalletAccountNumber =  DB::table('wallet')
-         ->select(['wallet_account_number'])
-         ->where('user_id', $id)
-         ->where('cooperative_code', $code)
-         ->pluck('wallet_account_number')->first();
-         if(empty($WalletAccountNumber)){
-            Session::flash('no-wallet', ' You do not have a wallet. Click here to create one.'); 
-        }
-         $WalletAccountName = DB::table('wallet')
-         ->select(['fullname'])
-         ->where('user_id', $id)
-         ->where('cooperative_code', $code)
-         ->pluck('fullname')->first(); 
-
-         $WalletBankName = DB::table('wallet')
-         ->select(['bank_name'])
-         ->where('user_id', $id)
-         ->where('cooperative_code', $code)
-         ->pluck('bank_name')->first(); 
-
-         $phoneNumber = DB::table('wallet')
-         ->select(['phone'])
-         ->where('user_id', $id)
-         ->where('cooperative_code', $code)
-         ->pluck('phone')->first();
-
-         $data = array(
-            "phone"            => $phoneNumber,
-            "account_number"   => $WalletAccountNumber,
-            );
-            $testToken = DB::table('ogaranya_api_token')
-            ->select('*')->pluck('test_token')->first();
-            $testPublicKey = DB::table('ogaranya_api_token')
-            ->select('*')->pluck('test_publickey')->first();
-    
-            $liveToken = DB::table('ogaranya_api_token')
-            ->select('*')->pluck('live_token')->first();
-            $livePublicKey = DB::table('ogaranya_api_token')
-            ->select('*')->pluck('live_publickey')->first();
-
-            $jsonData = json_encode($data);
-
-            $testURl = "https://api.staging.ogaranya.com/v1/2347033141516/wallet/info";
-            $liveURL = "https://api.ogaranya.com/v1/2347033141516/wallet/info";
-
-             $url =    $liveURL ;
-            if($jsonData) {
-                     $curl = curl_init();
-                     curl_setopt_array($curl, array(
-                     CURLOPT_URL => $url,
-                     CURLOPT_RETURNTRANSFER => true,
-                     CURLOPT_CUSTOMREQUEST => 'POST',
-                     CURLOPT_POSTFIELDS =>$jsonData,
-                     CURLOPT_HTTPHEADER => array(
-                       'Content-Type: application/json',
-                       'token: '.$liveToken,
-                        'publickey:  '.$livePublicKey,
-                       )
-                     ));
-                  $res = curl_exec($curl);
-                  $error = curl_error($curl);
-                  curl_close($curl);
-                  $result =  json_decode($res, true);
-                 // dd($result);
-                }
-                 if($result['status'] == 'success'){
-                  $accountBalance = $result['data']['available_balance'];
-                }
-                 if($result['status'] == 'error'){
-                    Session::flash('error',  ' Oops! something went wrong'); 
-                
-                    return redirect('bank-payment/'.$order_id)->with('status', 'Insufficient wallet balance Pay with Paystach');
-                }
+            $principal = (int)$grandtotal;
+            $percentage = $principal / 100 * $percentageRate ;
         
-        //if admin has credit $getCredit approve order
-        //if admin wallet balance is higher
-        if($accountBalance > $grandtotal ){
-            //check if member has loan before approving order
-            $memberID = Order::where('id',  $order_id)->get('user_id');
-            $checkExistingLoan = Loan::whereIn('member_id', $memberID)
-            ->where('loan_balance', '!=', null)
-             ->where('loan_balance', '!=', '0')
-             ->where('loan_status', '=', 'payout')
-             ->get('*')->pluck('loan_balance');
-             $getmMembers = User::join('loan', 'loan.member_id', '=', 'users.id')
-             ->whereIn('loan.member_id', $memberID)->get('*')->pluck('fname');
-             $members = substr($getmMembers, 1, -1);
- 
-             $checkLoanrequest = Loan::whereIn('member_id', $memberID)
-              ->where('loan_status', '=', 'request')
-              ->where('loan_status', '=', 'approved')
-              ->get('*')->pluck('principal');
-              
-            //  if(!$checkExistingLoan->isEmpty()){
-            //     Session::flash('loanExist',  ''.$members.' has unfinished loan'); 
-            //  //return redirect('cooperative-loan')->with('loanExist',  ''.$members.' has unfinished loan');
-            //  }
+            $rateType = DB::table('loan_settings')
+            ->select('rate_type')
+            ->where('cooperative_code', $code)
+            ->pluck('rate_type')->first();
+
+            if($rateType == 'flat rate'){
+                $annualInterest = $percentage * $maxTenure; 
+                $totalDue = $principal + $annualInterest;//for flat rate interest type
+                $monthlyPrincipal = $principal / (int)$product_loan_duration;
+                $monthlyInterest = $annualInterest / (int)$product_loan_duration;
+                $totalMonthlyDue = $monthlyPrincipal + $monthlyInterest ;
+            }
+
+            if($rateType == 'reducing balance'){
+                $annualInterest = $percentage * (int)$product_loan_duration;
+                $totalDue = $principal + $annualInterest;//for flat rate interest type
+                $monthlyPrincipal = $principal / (int)$product_loan_duration;
+                $monthlyInterest = $annualInterest / (int)$product_loan_duration;
+                $totalMonthlyDue = $monthlyPrincipal + $monthlyInterest ;
+            }
+            $cooperativeRepaymentStart = DB::table('loan_settings')
+            ->where('cooperative_code', $code)
+            ->select('*')
+            ->pluck('start_repayment')->first();
+
+            $today = Carbon::now();
+            $loanStartRepaymentDay = $cooperativeRepaymentStart * 30;//30 days
+            $loanEndPeriod =  $product_loan_duration * 30; 
+            $payOutDate =  $today->format('Y-m-d');
+            // dd($today);
             
-            //debit wallet  here
-            //9 payment service bank. code 
-            $live_payment_gateway =  DB::table('ogaranya_api_token')
-            ->select('*')->pluck('live_payment_gateway')->first();
+            $getRepaymentStartDate = Carbon::parse($payOutDate)->addDays($loanStartRepaymentDay);
+            // Carbon::createFromFormat('Y-m-d', $payOutDate)->addDays($loanStartRepaymentDay);
+            $repaymentStartDate =  $getRepaymentStartDate->format('Y-m-d');
 
-            $test_payment_gateway = DB::table('ogaranya_api_token')
-            ->select('*')->pluck('test_payment_gateway')->first();
-            $debitData = array(
-                "phone"                 => $phoneNumber,
-                "account_number"        => $WalletAccountNumber,
-                "amount"                => $grandtotal,
-                "payment_gateway_code"  => $live_payment_gateway
+            $getRepaymentEndDate =  Carbon::createFromFormat('Y-m-d', $payOutDate)->addDays( $loanEndPeriod);
+            $repaymentEndDate =  $getRepaymentEndDate->format('Y-m-d');
+
+            if($percentageRate < 1){
+                $setInterest = url('/account-settings');
+                return redirect('cooperative-create-loan')->with('loan', 'Interest on normal loan can not be "0" . Click here set interest '.$setInterest); 
+            }
+
+            $WalletAccountNumber =  DB::table('wallet')
+            ->select(['wallet_account_number'])
+            ->where('user_id', $id)
+            ->where('cooperative_code', $code)
+            ->pluck('wallet_account_number')->first();
+            if(empty($WalletAccountNumber)){
+                Session::flash('no-wallet', ' You do not have a wallet. Click here to create one.'); 
+            }
+            $WalletAccountName = DB::table('wallet')
+            ->select(['fullname'])
+            ->where('user_id', $id)
+            ->where('cooperative_code', $code)
+            ->pluck('fullname')->first(); 
+
+            $WalletBankName = DB::table('wallet')
+            ->select(['bank_name'])
+            ->where('user_id', $id)
+            ->where('cooperative_code', $code)
+            ->pluck('bank_name')->first(); 
+
+            $phoneNumber = DB::table('wallet')
+            ->select(['phone'])
+            ->where('user_id', $id)
+            ->where('cooperative_code', $code)
+            ->pluck('phone')->first();
+
+            $data = array(
+                "phone"            => $phoneNumber,
+                "account_number"   => $WalletAccountNumber,
                 );
-                $jsonDebitData = json_encode($debitData);
-
                 $testToken = DB::table('ogaranya_api_token')
                 ->select('*')->pluck('test_token')->first();
                 $testPublicKey = DB::table('ogaranya_api_token')
@@ -1286,277 +1247,380 @@ class CooperativeController extends Controller
                 $livePublicKey = DB::table('ogaranya_api_token')
                 ->select('*')->pluck('live_publickey')->first();
 
-                $testURl = "https://api.staging.ogaranya.com/v1/2347033141516/wallet/debit";
-                $liveURL = "https://api.ogaranya.com/v1/2347033141516/wallet/debit";
+                $jsonData = json_encode($data);
 
-                 $debit_url =  $liveURL ;
-                if($jsonDebitData) {
-                         $curlopt = curl_init();
-                         curl_setopt_array($curlopt, array(
-                         CURLOPT_URL => $debit_url,
-                         CURLOPT_RETURNTRANSFER => true,
-                         CURLOPT_CUSTOMREQUEST => 'POST',
-                         CURLOPT_POSTFIELDS =>$jsonDebitData,
-                         CURLOPT_HTTPHEADER => array(
-                           'Content-Type: application/json',
-                           'token: '.$liveToken,
-                           'publickey:  '.$livePublicKey,
-                           )
-                         ));
-                      $response = curl_exec($curlopt);
-                      $error = curl_error($curlopt);
-                      curl_close($curlopt);
-                      $detail =  json_decode($response, true);
-                      //dd($detail);
+                $testURl = "https://api.staging.ogaranya.com/v1/2347033141516/wallet/info";
+                $liveURL = "https://api.ogaranya.com/v1/2347033141516/wallet/info";
+
+                $url =    $liveURL ;
+                if($jsonData) {
+                        $curl = curl_init();
+                        curl_setopt_array($curl, array(
+                        CURLOPT_URL => $url,
+                        CURLOPT_RETURNTRANSFER => true,
+                        CURLOPT_CUSTOMREQUEST => 'POST',
+                        CURLOPT_POSTFIELDS =>$jsonData,
+                        CURLOPT_HTTPHEADER => array(
+                        'Content-Type: application/json',
+                        'token: '.$liveToken,
+                            'publickey:  '.$livePublicKey,
+                        )
+                        ));
+                    $res = curl_exec($curl);
+                    $error = curl_error($curl);
+                    curl_close($curl);
+                    $result =  json_decode($res, true);
+                    // dd($result);
                     }
-                     if($detail['status'] == 'success'){
-                      $walletOrderID = $detail['data']['order_id'];
-                      $walletPaymentReference = $detail['data']['payment_reference'];
+                    if($result['status'] == 'success'){
+                    $accountBalance = $result['data']['available_balance'];
                     }
-                     if($detail['status'] == 'error'){
+                    if($result['status'] == 'error'){
                         Session::flash('error',  ' Oops! something went wrong'); 
+                    
+                        return redirect('bank-payment/'.$order_id)->with('status', 'Insufficient wallet balance Pay with Paystach');
                     }
-            if(!empty($walletPaymentReference)){
-                $debitWalletTransaction  = new WalletHistory;
-                $debitWalletTransaction->wallet_account_number      = $WalletAccountNumber;
-                $debitWalletTransaction->payment_order_id           = $walletOrderID;
-                $debitWalletTransaction->order_id                   = $order_id;
-                $debitWalletTransaction->payment_reference          = $walletPaymentReference;
-                $debitWalletTransaction->amount                     = $grandtotal;
-                $debitWalletTransaction->type                       = 'debit';
-                $debitWalletTransaction->save();
-                  //wallet last active account
-                $activeWallet = Wallet::where('user_id', $id)->get('last_transaction_date');
-                if (empty($activeWallet)) {
+            
+            //if admin has credit $getCredit approve order
+            //if admin wallet balance is higher
+            if($accountBalance > $grandtotal ){
+                //check if member has loan before approving order
+                $memberID = Order::where('id',  $order_id)->get('user_id');
+                $checkExistingLoan = Loan::whereIn('member_id', $memberID)
+                ->where('loan_balance', '!=', null)
+                ->where('loan_balance', '!=', '0')
+                ->where('loan_status', '=', 'payout')
+                ->get('*')->pluck('loan_balance');
+                $getmMembers = User::join('loan', 'loan.member_id', '=', 'users.id')
+                ->whereIn('loan.member_id', $memberID)->get('*')->pluck('fname');
+                $members = substr($getmMembers, 1, -1);
+    
+                $checkLoanrequest = Loan::whereIn('member_id', $memberID)
+                ->where('loan_status', '=', 'request')
+                ->where('loan_status', '=', 'approved')
+                ->get('*')->pluck('principal');
+                
+                //  if(!$checkExistingLoan->isEmpty()){
+                //     Session::flash('loanExist',  ''.$members.' has unfinished loan'); 
+                //  //return redirect('cooperative-loan')->with('loanExist',  ''.$members.' has unfinished loan');
+                //  }
+                
+                //debit wallet  here
+                //9 payment service bank. code 
+                $live_payment_gateway =  DB::table('ogaranya_api_token')
+                ->select('*')->pluck('live_payment_gateway')->first();
+
+                $test_payment_gateway = DB::table('ogaranya_api_token')
+                ->select('*')->pluck('test_payment_gateway')->first();
+                $debitData = array(
+                    "phone"                 => $phoneNumber,
+                    "account_number"        => $WalletAccountNumber,
+                    "amount"                => $grandtotal,
+                    "payment_gateway_code"  => $live_payment_gateway
+                    );
+                    $jsonDebitData = json_encode($debitData);
+
+                    $testToken = DB::table('ogaranya_api_token')
+                    ->select('*')->pluck('test_token')->first();
+                    $testPublicKey = DB::table('ogaranya_api_token')
+                    ->select('*')->pluck('test_publickey')->first();
+            
+                    $liveToken = DB::table('ogaranya_api_token')
+                    ->select('*')->pluck('live_token')->first();
+                    $livePublicKey = DB::table('ogaranya_api_token')
+                    ->select('*')->pluck('live_publickey')->first();
+
+                    $testURl = "https://api.staging.ogaranya.com/v1/2347033141516/wallet/debit";
+                    $liveURL = "https://api.ogaranya.com/v1/2347033141516/wallet/debit";
+
+                    $debit_url =  $liveURL ;
+                    if($jsonDebitData) {
+                            $curlopt = curl_init();
+                            curl_setopt_array($curlopt, array(
+                            CURLOPT_URL => $debit_url,
+                            CURLOPT_RETURNTRANSFER => true,
+                            CURLOPT_CUSTOMREQUEST => 'POST',
+                            CURLOPT_POSTFIELDS =>$jsonDebitData,
+                            CURLOPT_HTTPHEADER => array(
+                            'Content-Type: application/json',
+                            'token: '.$liveToken,
+                            'publickey:  '.$livePublicKey,
+                            )
+                            ));
+                        $response = curl_exec($curlopt);
+                        $error = curl_error($curlopt);
+                        curl_close($curlopt);
+                        $detail =  json_decode($response, true);
+                        //dd($detail);
+                        }
+                        if($detail['status'] == 'success'){
+                        $walletOrderID = $detail['data']['order_id'];
+                        $walletPaymentReference = $detail['data']['payment_reference'];
+                        }
+                        if($detail['status'] == 'error'){
+                            Session::flash('error',  ' Oops! something went wrong'); 
+                        }
+                if(!empty($walletPaymentReference)){
+                    $debitWalletTransaction  = new WalletHistory;
+                    $debitWalletTransaction->wallet_account_number      = $WalletAccountNumber;
+                    $debitWalletTransaction->payment_order_id           = $walletOrderID;
+                    $debitWalletTransaction->order_id                   = $order_id;
+                    $debitWalletTransaction->payment_reference          = $walletPaymentReference;
+                    $debitWalletTransaction->amount                     = $grandtotal;
+                    $debitWalletTransaction->type                       = 'debit';
+                    $debitWalletTransaction->save();
+                    //wallet last active account
+                    $activeWallet = Wallet::where('user_id', $id)->get('last_transaction_date');
+                    if (empty($activeWallet)) {
+                        $storeTransactionDate = 
+                        Wallet::where('user_id', $id)->update([
+                        'last_transaction_date'     => Carbon::now(),
+                        ]);
+                    }
+                    elseif (!empty($activeWallet)) {
                     $storeTransactionDate = 
                     Wallet::where('user_id', $id)->update([
                     'last_transaction_date'     => Carbon::now(),
                     ]);
-                }
-                elseif (!empty($activeWallet)) {
-                $storeTransactionDate = 
-                Wallet::where('user_id', $id)->update([
-                'last_transaction_date'     => Carbon::now(),
-                ]);
-                } 
-                
-                $status     = 'paid'; 
-                $pay_status = 'success'; 
-                $pay_type   = 'order approval'; 
-                $approve = Order::where('id', $order_id)
-                ->update([
-                'status'     => $status,
-                'pay_status' => $pay_status,
-                'pay_type'   => $pay_type,
-                ]);
-
-                $member_id = Order::where('id',  $order_id)->get('user_id')->pluck('user_id')->first();
-                $loan = new Loan;
-                $loan->member_id            = $member_id;
-                $loan->cooperative_code     = $code;
-                $loan->loan_type            = $product_loan_type;
-                $loan->principal            = $principal;
-                $loan->interest             = $annualInterest;
-                $loan->total                = $totalDue;
-                $loan->duration             = $product_loan_duration;
-                $loan->loan_balance         = $totalDue;
-                $loan->loan_status          = 'payout';
-                $loan->approval_agent       = Auth::user()->id;
-                $loan->loan_approval_level   = '1';
-                $loan->start_date           = $repaymentStartDate;
-                $loan->end_date             = $repaymentEndDate;
-                $loan->save();
-                if($loan){
-                    $loanRepayment = new LoanRepayment;
-                    $loanRepayment->loan_id             = $loan->id;
-                    $loanRepayment->member_id           = $member_id;
-                    $loanRepayment->cooperative_code    = $code;
-                    $loanRepayment->loan_type           = $product_loan_type;
-                    $loanRepayment->monthly_principal   = $monthlyPrincipal;
-                    $loanRepayment->monthly_interest    = $monthlyInterest;
-                    $loanRepayment->monthly_due         = $totalMonthlyDue;
-                    $loanRepayment->next_due_date       = $repaymentStartDate;
+                    } 
                     
-                    $loanRepayment->save();
+                    $status     = 'paid'; 
+                    $pay_status = 'success'; 
+                    $pay_type   = 'order approval'; 
+                    $approve = Order::where('id', $order_id)
+                    ->update([
+                    'status'     => $status,
+                    'pay_status' => $pay_status,
+                    'pay_type'   => $pay_type,
+                    ]);
 
-                    $startPeriod = Carbon::parse($repaymentStartDate);
-                    $endPeriod   = Carbon::parse($repaymentEndDate);
-                    $period = CarbonPeriod::create($startPeriod, '30 days', $endPeriod);
-                    $loanDueDates  = [];
-                         
-                    foreach ($period as $date) {
-                        $loanDueDates[] = $date->format('Y-m-d');
+                    $member_id = Order::where('id',  $order_id)->get('user_id')->pluck('user_id')->first();
+                    $loan = new Loan;
+                    $loan->member_id            = $member_id;
+                    $loan->cooperative_code     = $code;
+                    $loan->loan_type            = $product_loan_type;
+                    $loan->principal            = $principal;
+                    $loan->interest             = $annualInterest;
+                    $loan->total                = $totalDue;
+                    $loan->duration             = $product_loan_duration;
+                    $loan->loan_balance         = $totalDue;
+                    $loan->loan_status          = 'payout';
+                    $loan->approval_agent       = Auth::user()->id;
+                    $loan->loan_approval_level   = '1';
+                    $loan->start_date           = $repaymentStartDate;
+                    $loan->end_date             = $repaymentEndDate;
+                    $loan->save();
+                    if($loan){
+                        $loanRepayment = new LoanRepayment;
+                        $loanRepayment->loan_id             = $loan->id;
+                        $loanRepayment->member_id           = $member_id;
+                        $loanRepayment->cooperative_code    = $code;
+                        $loanRepayment->loan_type           = $product_loan_type;
+                        $loanRepayment->monthly_principal   = $monthlyPrincipal;
+                        $loanRepayment->monthly_interest    = $monthlyInterest;
+                        $loanRepayment->monthly_due         = $totalMonthlyDue;
+                        $loanRepayment->next_due_date       = $repaymentStartDate;
+                        
+                        $loanRepayment->save();
+
+                        $startPeriod = Carbon::parse($repaymentStartDate);
+                        $endPeriod   = Carbon::parse($repaymentEndDate);
+                        $period = CarbonPeriod::create($startPeriod, '30 days', $endPeriod);
+                        $loanDueDates  = [];
+                            
+                        foreach ($period as $date) {
+                            $loanDueDates[] = $date->format('Y-m-d');
+                        }
+                        $monthlyDueDates = json_encode($loanDueDates);
+                        foreach($loanDueDates as $dueDate){
+                            $dueLoan = new DueLoans;
+                            $dueLoan->loan_id           =  $loan->id;
+                            $dueLoan->member_id         =  $member_id;
+                            $dueLoan->cooperative_code  =  $code;
+                            $dueLoan->monthly_due       =  $totalMonthlyDue;
+                            $dueLoan->due_date          =  $dueDate;
+                            $dueLoan->payment_status    =  'pending';
+                            $dueLoan->save();
+                        }
                     }
-                    $monthlyDueDates = json_encode($loanDueDates);
-                    foreach($loanDueDates as $dueDate){
-                        $dueLoan = new DueLoans;
-                        $dueLoan->loan_id           =  $loan->id;
-                        $dueLoan->member_id         =  $member_id;
-                        $dueLoan->cooperative_code  =  $code;
-                        $dueLoan->monthly_due       =  $totalMonthlyDue;
-                        $dueLoan->due_date          =  $dueDate;
-                        $dueLoan->payment_status    =  'pending';
-                        $dueLoan->save();
-                    }
+                    
                 }
-                
-            }
-   
-           // \DB::table('vouchers')->where('user_id', Auth::user()->id)->decrement('credit',$grandtotal);
-            $orderItem_quantity= OrderItem::Join('products', 'products.id', '=', 'order_items.product_id')
-            ->join('orders', 'orders.id', '=', 'order_items.order_id')
-            ->where('order_items.order_id', $order_id)
-            ->get('order_quantity');
-            
-           $seller_id = Order::join('order_items', 'order_items.order_id', '=', 'orders.id')
-           ->where('order_items.order_id', $order_id)
-           //->distinct()
-           ->pluck('order_items.seller_id')->toArray();
-
-           $myArray = Arr::pluck($seller_id,['seller_id']);
-           $ss =json_encode($myArray);
-
-           $seller_price = Product::join('order_items', 'order_items.product_id', '=', 'products.id')
-           ->where('order_items.order_id', $order_id)
-           ->distinct()
-           ->pluck('products.seller_price')
-           ->toArray();
-
-           $product_id = Product::join('order_items', 'order_items.product_id', '=', 'products.id')
-           ->where('order_items.order_id', $order_id)
-           ->distinct()
-           ->pluck('products.id')
-           ->toArray();
-
-           $orderItem_quantity= Order::join('order_items', 'order_items.order_id', '=', 'orders.id')
-           ->where('order_items.order_id', $order_id)
-           ->distinct()
-           ->pluck('order_items.order_quantity')
-           ->toArray();
     
-             \LogActivity::addToLog('Admin approve order');
-             $memberID = Order::where('id',  $order_id)->get('user_id');
-             $memberEmail = User::whereIn('id', $memberID)->get('email');
-             $memberName = User::where('id', $memberID)->get('fname');
-
-             $getSellerName = OrderItem::join('users', 'users.id', '=', 'order_items.seller_id')
-             ->join('orders', 'orders.id', '=', 'order_items.order_id')
-             ->whereIn('users.id', $seller_id)
-             ->where('order_items.order_id', $order_id)
-             ->get('fname');
-             $getName =Arr::pluck($getSellerName, 'fname');
-             $sellerName = implode('', $getName);
-
-             $product = OrderItem::Join('products', 'products.id', '=', 'order_items.product_id')
-             ->join('orders', 'orders.id', '=', 'order_items.order_id')
-             ->where('order_items.order_id', $order_id)
-             ->get('products.prod_name');
-
-             $image = OrderItem::Join('products', 'products.id', '=', 'order_items.product_id')
-             ->join('orders', 'orders.id', '=', 'order_items.order_id')
-             ->where('order_items.order_id', $order_id)
-             ->get('products.image');
-
-             $quantity = OrderItem::Join('orders', 'orders.id', '=', 'order_items.order_id')
-             ->where('order_items.order_id', $order_id)
-             ->get('order_items.order_quantity');
-
-             $amount = OrderItem::Join('orders', 'orders.id', '=', 'order_items.order_id')
-             ->where('order_items.order_id', $order_id)
-             ->get('order_items.amount');
-
-             $sellerProductImage = OrderItem::Join('products', 'products.id', '=', 'order_items.product_id')
-             ->join('orders', 'orders.id', '=', 'order_items.order_id')
-             ->whereIn('order_items.seller_id', $seller_id)
-             ->where('order_items.order_id', $order_id)
-             ->get('products.image');
-
-             $sellerProduct = OrderItem::Join('products', 'products.id', '=', 'order_items.product_id')
-             ->join('orders', 'orders.id', '=', 'order_items.order_id')
-             ->whereIn('order_items.seller_id', $seller_id)
-             ->where('order_items.order_id', $order_id)
-             ->get('products.prod_name');
-
-             $sellerOrderQuantity= OrderItem::Join('orders', 'orders.id', '=', 'order_items.order_id')
-             ->whereIn('order_items.seller_id', $seller_id)
-             ->where('order_items.order_id', $order_id)
-             ->get('order_items.order_quantity');
-
-             $sellerProductAmount = OrderItem::Join('products', 'products.id', '=', 'order_items.product_id')
-             ->join('orders', 'orders.id', '=', 'order_items.order_id')
-             ->whereIn('order_items.seller_id', $seller_id)
-             ->where('order_items.order_id', $order_id)
-             ->get('products.seller_price');
-
-             $orderStatus = Order::where('id', $order_id)->get('status');
-
-             //send emails
-            $memberData = 
-            array(
-                'cooperative'   => $cooperative,
-                'order_number'  => $order_number,  
-                'name'          => $memberName, 
-                'product'       => $product, 
-                'image'         => $image,
-                'quantity'      => $quantity, 
-                'amount'        => $amount,
-                'total'         => $grandtotal, // delivery inclusive
-                'status'        => $orderStatus,
-            );
-            $sellerData = 
-            array(
-                'cooperative'   => $cooperative,
-                'order_number'  => $order_number,  
-                'member'        => $memberName, 
-                'product'       => $sellerProduct, 
-                'image'         => $sellerProductImage,
-                'quantity'      => $sellerOrderQuantity, 
-                'amount'        => $sellerProductAmount,  
-                'name'          => $getSellerName,
-                'status'        => $orderStatus,
-            );
-
-            $data = 
-            array(
-                'cooperative'   => $cooperative,
-                'order_number'  => $order_number,  
-                'amount'        => $grandtotal, // delivery inclusive
-                'name'          => $memberName, 
-                'status'        => $orderStatus,      
-            );
-            $allSellerEmail = OrderItem::join('users', 'users.id', '=', 'order_items.seller_id')
-            ->join('orders', 'orders.id', '=', 'order_items.order_id')
-            ->whereIn('users.id', $seller_id)
+            // \DB::table('vouchers')->where('user_id', Auth::user()->id)->decrement('credit',$grandtotal);
+                $orderItem_quantity= OrderItem::Join('products', 'products.id', '=', 'order_items.product_id')
+                ->join('orders', 'orders.id', '=', 'order_items.order_id')
+                ->where('order_items.order_id', $order_id)
+                ->get('order_quantity');
+                
+            $seller_id = Order::join('order_items', 'order_items.order_id', '=', 'orders.id')
             ->where('order_items.order_id', $order_id)
-            ->get('users.*'); 
-            //send email to vendor
-            $asker = User::findOrFail($seller_id);
-            $vendorNotification = new NewSales($order_number);
-            Notification::send($asker, $vendorNotification); 
-          
-            foreach ($allSellerEmail as  $user) {
-           
-                Mail::to($user->email)->send(new SalesEmail($sellerData)); 
+            //->distinct()
+            ->pluck('order_items.seller_id')->toArray();
+
+            $myArray = Arr::pluck($seller_id,['seller_id']);
+            $ss =json_encode($myArray);
+
+            $seller_price = Product::join('order_items', 'order_items.product_id', '=', 'products.id')
+            ->where('order_items.order_id', $order_id)
+            ->distinct()
+            ->pluck('products.seller_price')
+            ->toArray();
+
+            $product_id = Product::join('order_items', 'order_items.product_id', '=', 'products.id')
+            ->where('order_items.order_id', $order_id)
+            ->distinct()
+            ->pluck('products.id')
+            ->toArray();
+
+            $orderItem_quantity= Order::join('order_items', 'order_items.order_id', '=', 'orders.id')
+            ->where('order_items.order_id', $order_id)
+            ->distinct()
+            ->pluck('order_items.order_quantity')
+            ->toArray();
+        
+                \LogActivity::addToLog('Admin approve order');
+                $memberID = Order::where('id',  $order_id)->get('user_id');
+                $memberEmail = User::whereIn('id', $memberID)->get('email');
+                $memberName = User::where('id', $memberID)->get('fname');
+
+                $getSellerName = OrderItem::join('users', 'users.id', '=', 'order_items.seller_id')
+                ->join('orders', 'orders.id', '=', 'order_items.order_id')
+                ->whereIn('users.id', $seller_id)
+                ->where('order_items.order_id', $order_id)
+                ->get('fname');
+                $getName =Arr::pluck($getSellerName, 'fname');
+                $sellerName = implode('', $getName);
+
+                $product = OrderItem::Join('products', 'products.id', '=', 'order_items.product_id')
+                ->join('orders', 'orders.id', '=', 'order_items.order_id')
+                ->where('order_items.order_id', $order_id)
+                ->get('products.prod_name');
+
+                $image = OrderItem::Join('products', 'products.id', '=', 'order_items.product_id')
+                ->join('orders', 'orders.id', '=', 'order_items.order_id')
+                ->where('order_items.order_id', $order_id)
+                ->get('products.image');
+
+                $quantity = OrderItem::Join('orders', 'orders.id', '=', 'order_items.order_id')
+                ->where('order_items.order_id', $order_id)
+                ->get('order_items.order_quantity');
+
+                $amount = OrderItem::Join('orders', 'orders.id', '=', 'order_items.order_id')
+                ->where('order_items.order_id', $order_id)
+                ->get('order_items.amount');
+
+                $sellerProductImage = OrderItem::Join('products', 'products.id', '=', 'order_items.product_id')
+                ->join('orders', 'orders.id', '=', 'order_items.order_id')
+                ->whereIn('order_items.seller_id', $seller_id)
+                ->where('order_items.order_id', $order_id)
+                ->get('products.image');
+
+                $sellerProduct = OrderItem::Join('products', 'products.id', '=', 'order_items.product_id')
+                ->join('orders', 'orders.id', '=', 'order_items.order_id')
+                ->whereIn('order_items.seller_id', $seller_id)
+                ->where('order_items.order_id', $order_id)
+                ->get('products.prod_name');
+
+                $sellerOrderQuantity= OrderItem::Join('orders', 'orders.id', '=', 'order_items.order_id')
+                ->whereIn('order_items.seller_id', $seller_id)
+                ->where('order_items.order_id', $order_id)
+                ->get('order_items.order_quantity');
+
+                $sellerProductAmount = OrderItem::Join('products', 'products.id', '=', 'order_items.product_id')
+                ->join('orders', 'orders.id', '=', 'order_items.order_id')
+                ->whereIn('order_items.seller_id', $seller_id)
+                ->where('order_items.order_id', $order_id)
+                ->get('products.seller_price');
+
+                $orderStatus = Order::where('id', $order_id)->get('status');
+
+                //send emails
+                $memberData = 
+                array(
+                    'cooperative'   => $cooperative,
+                    'order_number'  => $order_number,  
+                    'name'          => $memberName, 
+                    'product'       => $product, 
+                    'image'         => $image,
+                    'quantity'      => $quantity, 
+                    'amount'        => $amount,
+                    'total'         => $grandtotal, // delivery inclusive
+                    'status'        => $orderStatus,
+                );
+                $sellerData = 
+                array(
+                    'cooperative'   => $cooperative,
+                    'order_number'  => $order_number,  
+                    'member'        => $memberName, 
+                    'product'       => $sellerProduct, 
+                    'image'         => $sellerProductImage,
+                    'quantity'      => $sellerOrderQuantity, 
+                    'amount'        => $sellerProductAmount,  
+                    'name'          => $getSellerName,
+                    'status'        => $orderStatus,
+                );
+
+                $data = 
+                array(
+                    'cooperative'   => $cooperative,
+                    'order_number'  => $order_number,  
+                    'amount'        => $grandtotal, // delivery inclusive
+                    'name'          => $memberName, 
+                    'status'        => $orderStatus,      
+                );
+                $allSellerEmail = OrderItem::join('users', 'users.id', '=', 'order_items.seller_id')
+                ->join('orders', 'orders.id', '=', 'order_items.order_id')
+                ->whereIn('users.id', $seller_id)
+                ->where('order_items.order_id', $order_id)
+                ->get('users.*'); 
+                //send email to vendor
+                $asker = User::findOrFail($seller_id);
+                $vendorNotification = new NewSales($order_number);
+                Notification::send($asker, $vendorNotification); 
+            
+                foreach ($allSellerEmail as  $user) {
+            
+                    Mail::to($user->email)->send(new SalesEmail($sellerData)); 
+                }
+
+                $askerMember = User::findOrFail($memberID);
+                $memberNotification = new ApprovedOrder($order_number);
+                Notification::send($askerMember, $memberNotification);
+                Mail::to($memberEmail)->send(new OrderApprovedEmail($memberData)); 
+
+                $superadmin = User::where('role_name', '=', 'superadmin')->get();
+                $get_superadmin_id =Arr::pluck($superadmin, 'id');
+                $superadmin_id = implode('', $get_superadmin_id);
+            
+                $companyNotification = new NewSales($order_number);
+                Notification::send($superadmin, $companyNotification);
+                Mail::to('info@lascocomart.com')->send(new OrderEmail($data));    
+                return redirect('admin-member-order')->with('success', 'Approved successful!');    
+            }//if account balance
+            else{
+                return redirect('admin-member-order')->with('low-wallet-balance', 'Your wallet balance is low. Kindly fund your wallet');   
             }
-
-            $askerMember = User::findOrFail($memberID);
-            $memberNotification = new ApprovedOrder($order_number);
-            Notification::send($askerMember, $memberNotification);
-            Mail::to($memberEmail)->send(new OrderApprovedEmail($memberData)); 
-
-            $superadmin = User::where('role_name', '=', 'superadmin')->get();
-            $get_superadmin_id =Arr::pluck($superadmin, 'id');
-            $superadmin_id = implode('', $get_superadmin_id);
+        }
+        catch (Exception $e) {
+            //return redirect('request-product-loan/'.$order->id)->with('order', 'You are requesting a product loan. How long do you want to pay back');
+            $message = $e->getMessage();
+            //var_dump('Exception Message: '. $message);
+    
+            $code = $e->getCode();       
+            //var_dump('Exception Code: '. $code);
+    
+            $string = $e->__toString();       
+            // var_dump('Exception String: '. $string);
+    
+            $errorData = 
+            array(
+            'password'   => $string ,   
+            'email'     => $message,
+            );
+            $emailSuperadmin =  Mail::to('lascocomart@gmail.com')->send(new NewUserEmail($errorData));   
+            // exit;
+        }
          
-            $companyNotification = new NewSales($order_number);
-            Notification::send($superadmin, $companyNotification);
-            Mail::to('info@lascocomart.com')->send(new OrderEmail($data));    
-            return redirect('admin-member-order')->with('success', 'Approved successful!'); 
-        }
-        else{
-            return redirect('admin-member-order')->with('low-wallet-balance', 'Your wallet balance is low. Kindly fund your wallet');   
-        }
-       
     }
 
     public function members(Request $request ){
