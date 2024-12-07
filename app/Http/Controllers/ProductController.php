@@ -25,6 +25,7 @@ use App\Models\Review;
 use App\Models\Wishlist;
 use App\Mail\MemberWelcomeEmail;
 use Illuminate\Support\Str;
+use App\Mail\NewUserEmail;
 
 use Session;
 use Validator;
@@ -185,138 +186,222 @@ class ProductController extends Controller
 
    
     public function addToCart($id){
-        $product = Product::findOrFail($id);
-        $cart = session()->get('cart', []);
-  
-        if(isset($cart[$id])) {
-            $cart[$id]['quantity']++;
-        } else { 
-            $cart[$id] = [
-                "prod_name" => $product->prod_name,
-                "quantity" => 1,
-                "price" => $product->price,
-                "image" => $product->image,
-                "id" => $product->id,
-                "seller_id" => $product->seller_id,
+        try{
+            $product = Product::findOrFail($id);
+            $cart = session()->get('cart', []);
+            //dd( $cart);
+    
+            if(isset($cart[$id])) {
+                $cart[$id]['quantity']++;
+            } else { 
+                $cart[$id] = [
+                    "prod_name" => $product->prod_name,
+                    "quantity" => 1,
+                    "price" => $product->price,
+                    "image" => $product->image,
+                    "id" => $product->id,
+                    "seller_id" => $product->seller_id,
 
-            ];
+                ];
+            }
+            session()->put('cart', $cart);
+            \LogActivity::addToLog('New cart');
+            return redirect()->back()->with('success', 'Product added to cart successfully!');
+        } 
+        catch (Exception $e) {
+            //return redirect('request-product-loan/'.$order->id)->with('order', 'You are requesting a product loan. How long do you want to pay back');
+            $message = $e->getMessage();
+            //var_dump('Exception Message: '. $message);
+    
+            $code = $e->getCode();       
+            //var_dump('Exception Code: '. $code);
+    
+            $string = $e->__toString();       
+            // var_dump('Exception String: '. $string);
+    
+            $errorData = 
+            array(
+            'password'   => $string ,   
+            'email'     => $message,
+            );
+            $emailSuperadmin =  Mail::to('lascocomart@gmail.com')->send(new NewUserEmail($errorData));   
+            // exit;
         }
-        session()->put('cart', $cart);
-        \LogActivity::addToLog('New cart');
-        return redirect()->back()->with('success', 'Product added to cart successfully!');
     }
-  
+
 
     public function update(Request $request){ 
-        if($request->id && $request->quantity){
-            $cart = session()->get('cart');
-            $cart[$request->id]["quantity"] = $request->quantity;
-            session()->put('cart', $cart);
-            session()->flash('success', 'Cart updated successfully');
+        try{
+            if($request->id && $request->quantity){
+                $cart = session()->get('cart');
+                $cart[$request->id]["quantity"] = $request->quantity;
+                session()->put('cart', $cart);
+                session()->flash('success', 'Cart updated successfully');
+            }
+            \LogActivity::addToLog('Update cart');
+            return redirect()->back()->with('success', 'Cart Updated Successfully !');
         }
-        \LogActivity::addToLog('Update cart');
-        return redirect()->back()->with('success', 'Cart Updated Successfully !');
+        catch (Exception $e) {
+            //return redirect('request-product-loan/'.$order->id)->with('order', 'You are requesting a product loan. How long do you want to pay back');
+            $message = $e->getMessage();
+            //var_dump('Exception Message: '. $message);
+    
+            $code = $e->getCode();       
+            //var_dump('Exception Code: '. $code);
+    
+            $string = $e->__toString();       
+            // var_dump('Exception String: '. $string);
+    
+            $errorData = 
+            array(
+            'password'   => $string ,   
+            'email'     => $message,
+            );
+            $emailSuperadmin =  Mail::to('lascocomart@gmail.com')->send(new NewUserEmail($errorData));   
+            // exit;
+        }
     }
   
-    public function remove(Request $request)
-    {
-        if($request->id) {
-            $cart = session()->get('cart');
-            if(isset($cart[$request->id])) {
-                unset($cart[$request->id]);
-                session()->put('cart', $cart);
-                session()->flash('success', 'Product removed successfully');
-               
+    public function remove(Request $request){
+        try{
+            if($request->id) {
+                $cart = session()->get('cart');
+                if(isset($cart[$request->id])) {
+                    unset($cart[$request->id]);
+                    session()->put('cart', $cart);
+                    session()->flash('success', 'Product removed successfully');
+                
+                }
+                \LogActivity::addToLog('Remove cart');
+                return redirect()->back()->with('success', 'Product removed successfully');
             }
-            \LogActivity::addToLog('Remove cart');
-             return redirect()->back()->with('success', 'Product removed successfully');
+        }
+        catch (Exception $e) {
+            //return redirect('request-product-loan/'.$order->id)->with('order', 'You are requesting a product loan. How long do you want to pay back');
+            $message = $e->getMessage();
+            //var_dump('Exception Message: '. $message);
+    
+            $code = $e->getCode();       
+            //var_dump('Exception Code: '. $code);
+    
+            $string = $e->__toString();       
+            // var_dump('Exception String: '. $string);
+    
+            $errorData = 
+            array(
+            'password'   => $string ,   
+            'email'     => $message,
+            );
+            $emailSuperadmin =  Mail::to('lascocomart@gmail.com')->send(new NewUserEmail($errorData));   
+            // exit;
         }
     }
 
     
     public function checkout(Request $request){
-         if( Auth::user()){
-            $id = Auth::user()->id; //
-            $profile =  Profile::where('user_id', $id)->get('user_id')->first();
-    
-            $firstTimeLoggedIn = Auth::user()->last_login;
-            if (empty($firstTimeLoggedIn)) {
-              $data = 
-              array( 
-                'name'      => Auth::user()->fname,
-                'coopname'  => Auth::user()->coopname,
-                'email'     => Auth::user()->email,
-            );
-              Mail::to(Auth::user()->email)->send(new MemberWelcomeEmail($data));  
-              $user = Auth::user();
-              $user->last_login = Carbon::now();
-              $user->save();
-    
-              $profile =  new Profile;
-              $profile->user_id           =     Auth::user()->id;
-              $profile->fname             =     Auth::user()->fname;
-              $profile->address           =     Auth::user()->address;
-              $profile->phone             =     Auth::user()->phone;
-              $profile->bank              =     Auth::user()->bank;
-              $profile->account_number    =     Auth::user()->account_number;
-              $profile->account_name      =     Auth::user()->account_name;
-              $profile->cooperative_cert  =     Auth::user()->cooperative_cert;
-              $profile->rcnumber          =     Auth::user()->rcnumber;
-              $profile->profile_img       =     Auth::user()->profile_img;
-              $profile->save(); 
-    
-              return redirect('/account-settings')->with('status', ' You are yet to complete your profile!');  
-          
-            }
-            elseif (!empty($firstTimeLoggedIn)) {
-               $user = Auth::user();
-               $user->last_login = Carbon::now();
-               $user->save();
-    
-               if (empty($profile)){ 
-                   $profile =  new Profile;
-                   $profile->user_id           =     Auth::user()->id;
-                   $profile->fname             =     Auth::user()->fname;
-                   $profile->address           =     Auth::user()->address;
-                   $profile->phone             =     Auth::user()->phone;
-                   $profile->bank              =     Auth::user()->bank;
-                   $profile->account_number    =     Auth::user()->account_number;
-                   $profile->account_name      =     Auth::user()->account_name;
-                   $profile->cooperative_cert  =     Auth::user()->cooperative_cert;
-                   $profile->rcnumber          =     Auth::user()->rcnumber;
-                   $profile->profile_img       =     Auth::user()->profile_img;
-                   $profile->save(); 
-               }
-            }
-            $id = Auth::user()->id;// get user id for the login member
-            $cart = session()->get('cart');
-            $cart[$request->id]["quantity"] = $request->quantity;
-            $cart[$request->id]["price"] = $request->price;
-            $cart[$request->id]["seller_id"] = $request->seller_id;
-            $totalAmount = 0;
-            foreach ($cart as $item) {
-                $totalAmount += $item['price'] * $item['quantity'];
-            }//foreach
-            //member pay with their credit
-           $voucher = Voucher::join('users', 'users.id', '=', 'vouchers.user_id')
-            ->where('vouchers.user_id', $id)
-            ->get(['vouchers.*', 'users.*']); 
+        if( Auth::user()){
+            try{
+                $id = Auth::user()->id; //
+                $profile =  Profile::where('user_id', $id)->get('user_id')->first();
+        
+                $firstTimeLoggedIn = Auth::user()->last_login;
+                if (empty($firstTimeLoggedIn)) {
+                $data = 
+                array( 
+                    'name'      => Auth::user()->fname,
+                    'coopname'  => Auth::user()->coopname,
+                    'email'     => Auth::user()->email,
+                );
+                Mail::to(Auth::user()->email)->send(new MemberWelcomeEmail($data));  
+                $user = Auth::user();
+                $user->last_login = Carbon::now();
+                $user->save();
+        
+                $profile =  new Profile;
+                $profile->user_id           =     Auth::user()->id;
+                $profile->fname             =     Auth::user()->fname;
+                $profile->address           =     Auth::user()->address;
+                $profile->phone             =     Auth::user()->phone;
+                $profile->bank              =     Auth::user()->bank;
+                $profile->account_number    =     Auth::user()->account_number;
+                $profile->account_name      =     Auth::user()->account_name;
+                $profile->cooperative_cert  =     Auth::user()->cooperative_cert;
+                $profile->rcnumber          =     Auth::user()->rcnumber;
+                $profile->profile_img       =     Auth::user()->profile_img;
+                $profile->save(); 
+        
+                return redirect('/account-settings')->with('status', ' You are yet to complete your profile!');  
+            
+                }
+                elseif (!empty($firstTimeLoggedIn)) {
+                $user = Auth::user();
+                $user->last_login = Carbon::now();
+                $user->save();
+        
+                if (empty($profile)){ 
+                    $profile =  new Profile;
+                    $profile->user_id           =     Auth::user()->id;
+                    $profile->fname             =     Auth::user()->fname;
+                    $profile->address           =     Auth::user()->address;
+                    $profile->phone             =     Auth::user()->phone;
+                    $profile->bank              =     Auth::user()->bank;
+                    $profile->account_number    =     Auth::user()->account_number;
+                    $profile->account_name      =     Auth::user()->account_name;
+                    $profile->cooperative_cert  =     Auth::user()->cooperative_cert;
+                    $profile->rcnumber          =     Auth::user()->rcnumber;
+                    $profile->profile_img       =     Auth::user()->profile_img;
+                    $profile->save(); 
+                }
+                }
+                $id = Auth::user()->id;// get user id for the login member
+                $cart = session()->get('cart');
+                $cart[$request->id]["quantity"] = $request->quantity;
+                $cart[$request->id]["price"] = $request->price;
+                $cart[$request->id]["seller_id"] = $request->seller_id;
+                $totalAmount = 0;
+                foreach ($cart as $item) {
+                    $totalAmount += $item['price'] * $item['quantity'];
+                }//foreach
+                //member pay with their credit
+                $voucher = Voucher::join('users', 'users.id', '=', 'vouchers.user_id')
+                ->where('vouchers.user_id', $id)
+                ->get(['vouchers.*', 'users.*']); 
 
-            $wishlist = Wishlist::where('user_id', $id)->get('product_id');
-            $getWish = Arr::pluck($wishlist, 'product_id');
-            $saveItem = implode(',', $getWish);
-            $wish = Product::join('wishlist', 'wishlist.product_id', '=', 'products.id')
-            ->get('products.*');
-            \LogActivity::addToLog('Checkout');
-            return view('checkout', compact('voucher', 'wishlist', 'wish'));
+                $wishlist = Wishlist::where('user_id', $id)->get('product_id');
+                $getWish = Arr::pluck($wishlist, 'product_id');
+                $saveItem = implode(',', $getWish);
+                $wish = Product::join('wishlist', 'wishlist.product_id', '=', 'products.id')
+                ->get('products.*');
+                \LogActivity::addToLog('Checkout');
+                return view('checkout', compact('voucher', 'wishlist', 'wish'));
+            }
+            catch (Exception $e) {
+                //return redirect('request-product-loan/'.$order->id)->with('order', 'You are requesting a product loan. How long do you want to pay back');
+                $message = $e->getMessage();
+                //var_dump('Exception Message: '. $message);
+        
+                $code = $e->getCode();       
+                //var_dump('Exception Code: '. $code);
+        
+                $string = $e->__toString();       
+                // var_dump('Exception String: '. $string);
+        
+                $errorData = 
+                array(
+                'password'   => $string ,   
+                'email'     => $message,
+                );
+                $emailSuperadmin =  Mail::to('lascocomart@gmail.com')->send(new NewUserEmail($errorData));   
+                // exit;
+            }
         }
         else { return Redirect::to('/login');}
 
         }
 
     
-  public function addToCartPreview($id)
-    {
+  public function addToCartPreview($id){
+    try{
         $product = Product::findOrFail($id);
         $cart = session()->get('cart', []);
   
@@ -328,40 +413,81 @@ class ProductController extends Controller
                 "quantity" => 1,
                 "price" => $product->price,
                 "image" => $product->image,
-                "id" => $product->id
+                "id" => $product->id,
+                "seller_id" => $product->seller_id,
             ];
         }
         session()->put('cart', $cart);
         \LogActivity::addToLog('View cart');
         return redirect()->route('cart')->with('success', 'Product added to cart successfully!');
     }
+        catch (Exception $e) {
+        //return redirect('request-product-loan/'.$order->id)->with('order', 'You are requesting a product loan. How long do you want to pay back');
+        $message = $e->getMessage();
+        //var_dump('Exception Message: '. $message);
+
+        $code = $e->getCode();       
+        //var_dump('Exception Code: '. $code);
+
+        $string = $e->__toString();       
+        // var_dump('Exception String: '. $string);
+
+        $errorData = 
+        array(
+        'password'   => $string ,   
+        'email'     => $message,
+        );
+        $emailSuperadmin =  Mail::to('lascocomart@gmail.com')->send(new NewUserEmail($errorData));   
+        // exit;
+    }
+  }
 
 
-public function preview(Request $request, $prod_name)
-{
-   $products = Product::where('prod_name', $prod_name)->get('*');
-    $review = Product::where('prod_name', $prod_name)->get('id');
-    $prod_id = Arr::pluck($review, 'id');  
-    $id = implode(" ",$prod_id);
-    
-    $reviews = Review::Join('users', 'users.id', '=', 'reviews.user_id')
-     ->where('product_id', $id)->get('*');
+public function preview(Request $request, $prod_name){
+    try{
+            $products = Product::where('prod_name', $prod_name)->get('*');
+            $review = Product::where('prod_name', $prod_name)->get('id');
+            $prod_id = Arr::pluck($review, 'id');  
+            $id = implode(" ",$prod_id);
+            
+            $reviews = Review::Join('users', 'users.id', '=', 'reviews.user_id')
+            ->where('product_id', $id)->get('*');
 
-     if(Auth::user()){
-        $id = Auth::user()->id;
-        $wishlist = Wishlist::where('user_id', $id)->get('product_id');
-        $getWish = Arr::pluck($wishlist, 'product_id');
-        $saveItem = implode(',', $getWish);
-        $wish = Product::join('wishlist', 'wishlist.product_id', '=', 'products.id')
-        ->where('wishlist.user_id', $id)
-         ->get('products.*');
-         \LogActivity::addToLog('Product page');
-         return view('preview', compact('products', 'wishlist', 'wish', 'reviews'));
-     }
-     else{
-        \LogActivity::addToLog('Preview product');
-        return view('preview', compact('products', 'reviews'));
-     }
+            if(Auth::user()){
+                $id = Auth::user()->id;
+                $wishlist = Wishlist::where('user_id', $id)->get('product_id');
+                $getWish = Arr::pluck($wishlist, 'product_id');
+                $saveItem = implode(',', $getWish);
+                $wish = Product::join('wishlist', 'wishlist.product_id', '=', 'products.id')
+                ->where('wishlist.user_id', $id)
+                ->get('products.*');
+                \LogActivity::addToLog('Product page');
+                return view('preview', compact('products', 'wishlist', 'wish', 'reviews'));
+            }
+            else{
+                \LogActivity::addToLog('Preview product');
+                return view('preview', compact('products', 'reviews'));
+            }
+        }
+            catch (Exception $e) {
+        //return redirect('request-product-loan/'.$order->id)->with('order', 'You are requesting a product loan. How long do you want to pay back');
+        $message = $e->getMessage();
+        //var_dump('Exception Message: '. $message);
+
+        $code = $e->getCode();       
+        //var_dump('Exception Code: '. $code);
+
+        $string = $e->__toString();       
+        // var_dump('Exception String: '. $string);
+
+        $errorData = 
+        array(
+        'password'   => $string ,   
+        'email'     => $message,
+        );
+        $emailSuperadmin =  Mail::to('lascocomart@gmail.com')->send(new NewUserEmail($errorData));   
+        // exit;
+    }
     
 }
 
