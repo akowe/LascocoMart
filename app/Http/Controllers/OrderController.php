@@ -30,6 +30,7 @@ use App\Mail\SalesEmail;
 use App\Mail\OrderEmail;
 use App\Mail\AwaitsApprovalEmail;
 use App\Notifications\NewOrder;
+use App\Mail\NewUserEmail;
 use Notification;
 use App\Models\User;
 use App\Models\SMS;
@@ -54,6 +55,7 @@ class OrderController extends Controller
 
 
     public function order(Request $request){
+      try{
         $member= Auth::user()->id;
         $cart = session()->get('cart', []);
         $characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
@@ -71,68 +73,86 @@ class OrderController extends Controller
         $note          = $_POST['note'];
  
        if(isset($_POST) && count($_POST) > 0) {
-         $totalAmount = 0;
-          foreach ($cart as $item) {
-              $totalAmount += $item['price'] * $item['quantity'];
-          } 
-          $grandtotal =  $totalAmount + $request->delivery;
-          $order = new Order();
-          $order->user_id             = Auth::user()->id;
-          $order->cooperative_code    = Auth::user()->code;
-          $order->total               = $totalAmount;
-          $order->delivery_fee        = $request->delivery;
-          $order->grandtotal          = $grandtotal;
-          $order->order_number        = $order_number;
-          $order->status              = $order_status;
-          $order->pay_status          = $pay_status ;
-          $order->save(); 
+            $totalAmount = 0;
+              foreach ($cart as $item) {
+                  $totalAmount += $item['price'] * $item['quantity'];
+              } 
+              $grandtotal =  $totalAmount + $request->delivery;
+              $order = new Order();
+              $order->user_id             = Auth::user()->id;
+              $order->cooperative_code    = Auth::user()->code;
+              $order->total               = $totalAmount;
+              $order->delivery_fee        = $request->delivery;
+              $order->grandtotal          = $grandtotal;
+              $order->order_number        = $order_number;
+              $order->status              = $order_status;
+              $order->pay_status          = $pay_status ;
+              $order->save(); 
 
-          $data = [];
+              $data = [];
 
-          foreach ($cart as $item) {
-            $data['items'] = [
-                [
-                    'prod_name' => $item['prod_name'],
-                    'price' => $item['price'],
-                    'quantity' => $item['quantity'],
-                    'seller_id'=> $item['seller_id'], 
-                    $seller_id = $item['seller_id'], 
-                    $price = $item['price'],
-                    $product_id = $item['id'],
-                    $quantity = $item['quantity'],
-                ]
-            ];
-            $company_percentage = 0;
-            $company_percentage +=  $price * 5/ 100;
-            $seller_price = 0;
-            $seller_price += $price - $company_percentage;
-            $amount = $item['price'] * $item['quantity'];
-            $orderItem = new OrderItem();
-            $orderItem->order_id   = $order->id;
-            $orderItem->product_id = $item['id'];
-            $orderItem->seller_id = $item['seller_id'];
-            $orderItem->order_quantity   = $item['quantity'];
-            $orderItem->unit_cost     = $item['price'];
-            $orderItem->amount     = $amount;
-            $orderItem->save();
-        }
-           $shipDetails = new ShippingDetail();
-            $shipDetails->shipping_id = $order->id;
-            $shipDetails->ship_address = $ship_address;
-            $shipDetails->ship_city = $ship_city;
-            $shipDetails->ship_phone = $ship_phone;
-            $shipDetails->note = $note;
-            $shipDetails->save();
-       
-        $request->session()->forget('cart');
-                   
-        \LogActivity::addToLog('New Order');
-      //return redirect('request-product-loan/'.$order->id)->with('order', 'You are requesting a product loan. How long do you want to pay back');
-      return redirect()->back()->with('status', 'Your order has been sent to your cooperative admin for approval');
-     
-    }//isset  
-
-}
+              foreach ($cart as $item) {
+                $data['items'] = [
+                    [
+                        'prod_name' => $item['prod_name'],
+                        'price' => $item['price'],
+                        'quantity' => $item['quantity'],
+                        'seller_id'=> $item['seller_id'], 
+                        $seller_id = $item['seller_id'], 
+                        $price = $item['price'],
+                        $product_id = $item['id'],
+                        $quantity = $item['quantity'],
+                    ]
+                ];
+                $company_percentage = 0;
+                $company_percentage +=  $price * 5/ 100;
+                $seller_price = 0;
+                $seller_price += $price - $company_percentage;
+                $amount = $item['price'] * $item['quantity'];
+                $orderItem = new OrderItem();
+                $orderItem->order_id   = $order->id;
+                $orderItem->product_id = $item['id'];
+                $orderItem->seller_id = $item['seller_id'];
+                $orderItem->order_quantity   = $item['quantity'];
+                $orderItem->unit_cost     = $item['price'];
+                $orderItem->amount     = $amount;
+                $orderItem->save();
+            }
+              $shipDetails = new ShippingDetail();
+                $shipDetails->shipping_id = $order->id;
+                $shipDetails->ship_address = $ship_address;
+                $shipDetails->ship_city = $ship_city;
+                $shipDetails->ship_phone = $ship_phone;
+                $shipDetails->note = $note;
+                $shipDetails->save();
+          
+              $request->session()->forget('cart');
+                      
+            \LogActivity::addToLog('New Order');  
+            return redirect()->back()->with('status', 'Your order has been sent to your cooperative admin for approval');
+        }//isset  
+      }
+        catch (Exception $e) {
+          //return redirect('request-product-loan/'.$order->id)->with('order', 'You are requesting a product loan. How long do you want to pay back');
+          $message = $e->getMessage();
+          //var_dump('Exception Message: '. $message);
+    
+          $code = $e->getCode();       
+          //var_dump('Exception Code: '. $code);
+    
+          $string = $e->__toString();       
+        // var_dump('Exception String: '. $string);
+    
+        $errorData = 
+        array(
+          'password'   => $string ,   
+          'email'     => $message,
+        );
+        $emailSuperadmin =  Mail::to('lascocomart@gmail.com')->send(new NewUserEmail($errorData));   
+        // exit;
+      }
+  
+  }
 
 
 public function requestProductLoan(Request $request, $orderId){
