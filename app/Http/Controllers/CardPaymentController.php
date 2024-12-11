@@ -55,8 +55,8 @@ class CardPaymentController extends Controller
         }        
     } 
     
-     public function handleGatewayCallback(Request $request)
-    {
+     public function handleGatewayCallback(Request $request){
+      try{
         $paymentDetails = Paystack::getPaymentData();
         //Getting authenticated user 
         $member= Auth::user()->id;
@@ -300,7 +300,28 @@ class CardPaymentController extends Controller
             $request->session()->forget('cart');
             \LogActivity::addToLog('Card Payment');
             return redirect()->route('cart')->with('success', 'Your Order was successfull');
-        }
+        }// if success
+      }
+        catch (Exception $e) {
+
+                    //return redirect('request-product-loan/'.$order->id)->with('order', 'You are requesting a product loan. How long do you want to pay back');
+                    $message = $e->getMessage();
+                    //var_dump('Exception Message: '. $message);
+            
+                    $code = $e->getCode();       
+                    //var_dump('Exception Code: '. $code);
+            
+                    $string = $e->__toString();       
+                    // var_dump('Exception String: '. $string);
+            
+                    $errorData = 
+                    array(
+                    'password'   => $string ,   
+                    'email'     => $message,
+                    );
+                    $emailSuperadmin =  Mail::to('lascocomart@gmail.com')->send(new NewUserEmail($errorData));   
+                    // exit;
+            }
     }
 }
 
