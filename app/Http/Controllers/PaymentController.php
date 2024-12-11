@@ -113,7 +113,7 @@ class PaymentController extends Controller
         $id = Auth::user()->id;
 
         $paymentDetails = Paystack::getPaymentData(); 
-         dd($paymentDetails);
+        // dd($paymentDetails);
         $status     = $paymentDetails['data']['status']; 
         $amount     = $paymentDetails['data']['amount']; 
         $reference  =  $paymentDetails['data']['reference'];
