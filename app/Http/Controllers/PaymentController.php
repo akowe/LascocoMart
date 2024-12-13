@@ -124,7 +124,7 @@ class PaymentController extends Controller
         $get_authCode = implode(" ",$authorization_code);
       
        
-        if($status == "success"){ 
+        if($status == "true"){ 
         // Storing the Paystack reference
              $tranx = new Transaction();
              $tranx->user_id            = $id;
