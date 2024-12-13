@@ -114,7 +114,7 @@ class PaymentController extends Controller
 
         $paymentDetails = Paystack::getPaymentData(); 
         // dd($paymentDetails);
-        $status     = $paymentDetails['data']['status']; 
+        $status     = $paymentDetails['status']; 
         $amount     = $paymentDetails['data']['amount']; 
         $reference  =  $paymentDetails['data']['reference'];
         //$order_number = $paymentDetails['data']['metadata'];

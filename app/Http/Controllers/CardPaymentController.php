@@ -71,10 +71,10 @@ class CardPaymentController extends Controller
 
         // shuffle the result
         $order_number = str_shuffle($pin);
-        $status = "paid";
+        //$status = "paid";
          //get others form input
         $order_number  = $order_number;
-        $order_status  = $status;
+        $order_status  = "paid";
         $pay_status = "success";   
         $ship_address  =  $request->input('ship_address');
         $ship_city     = $request->input('ship_city');
@@ -83,7 +83,8 @@ class CardPaymentController extends Controller
         //$amount = "0"; 
         $payment = json_decode(json_encode($paymentDetails),true);
        //get individual payment data from to store in DB
-        $status = $paymentDetails['data']['status'];// get the status of the payment
+        $status = $paymentDetails['status'];// get the  api status 
+        $dataStatus = $paymentDetails['data']['status'];// get the status of the payment
         $reference = $paymentDetails['data']['reference'];// paystack reference
         //$delivery_fee = $paymentDetails['data']['delivery'];
         $amount = $paymentDetails['data']['amount']; 
