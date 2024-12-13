@@ -108,7 +108,7 @@ class CardPaymentController extends Controller
          $type = Arr::pluck($metaData, 'transaction_type'); 
          $transactionType = implode(" ",$type);
         //Checking to Ensure the transaction was succesful
-        if($status == "success"){ 
+        if($status == "true"){ 
             $totalAmount = $total - $delivery_fee;
             $order = new Order();
             $order->user_id         = Auth::user()->id;
