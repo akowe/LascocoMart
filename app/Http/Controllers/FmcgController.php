@@ -242,8 +242,9 @@ class FmcgController extends Controller
             $img4_path = "/images/products/" . $img4Name; 
           }else {$img4_path = "";}
 
-          $company_percentage = $request->price *  2 / 100;// coopmart percentage
-          $price = $request->price  + $company_percentage;
+          $company_percentage = Settings::where('coopname', 'superadmin')->pluck('fmcg_product_percentage')->first();
+          $companyInterest = $request->price *  (int) $company_percentage / 100;
+          $price = $request->price + $companyInterest;
 
          $fcmgproduct = new FcmgProduct;
          $fcmgproduct->cat_id    = $request->cat_id;
