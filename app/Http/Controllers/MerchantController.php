@@ -20,6 +20,7 @@ use App\Models\OrderItem;
 // use Illuminate\Support\Facades\Mail;
 use App\Mail\SendMail;
 use App\Mail\SellerWelcomeEmail;
+use App\Models\Settings;
 
 use Carbon\Carbon;
 use Auth;
@@ -306,8 +307,9 @@ class MerchantController extends Controller
              }
 
             // add company and coperative percentage
-            $company_percentage = $request->price *  1 / 100;
-            $price = $request->price  + $company_percentage;
+            $company_percentage = Settings::where('coopname', 'superadmin')->pluck('vendor_product_percentage')->first();
+            $companyInterest = $request->price *  (int) $company_percentage / 100;
+            $price = $request->price + $companyInterest;
 
            $product = new Product;
            $product->cat_id    = $request->cat_id;
@@ -396,8 +398,9 @@ class MerchantController extends Controller
         //$id = $request->id;
 
         // add company and coperative percentage
-        $company_percentage = $request->price *  1 / 100;
-        $price = $request->price  + $company_percentage;
+        $company_percentage = Settings::where('coopname', 'superadmin')->pluck('vendor_product_percentage')->first();
+        $companyInterest= $request->price *  (int) $company_percentage / 100;
+        $price = $request->price + $companyInterest;
 
         $product = Product::find($id);
         $product->prod_name     = $request->productname;

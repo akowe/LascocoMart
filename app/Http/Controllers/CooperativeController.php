@@ -43,6 +43,7 @@ use App\Notifications\ApprovedOrder;
 use App\Models\ChooseBank;
 use Carbon\Carbon;
 use Carbon\CarbonPeriod;
+use App\Models\Settings;
 
 use Auth;
 use Validator;
@@ -1074,9 +1075,9 @@ class CooperativeController extends Controller
           'description'  => 'max:255',
           ]);
           // add company and coperative percentage
-          $company_percentage = $request->price *  1 / 100;
-          $price = $request->price  + $company_percentage;
-  
+          $company_percentage = Settings::where('coopname', 'superadmin')->pluck('vendor_product_percentage')->first();
+          $companyInterest= $request->price * (int)$company_percentage / 100;
+          $price = $request->price + $companyInterest;
           $product = Product::find($id);
           $product->prod_name     = $request->productname;
           $product->quantity      = $request->quantity;

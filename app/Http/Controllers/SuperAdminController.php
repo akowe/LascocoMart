@@ -1189,25 +1189,31 @@ public function vendorProductSeeting(Request $request){
 ]); 
 
 //set product percentage
-$settings =   Settings::where('coopname', 'superadmin')
-              ->where('user_id',   Auth::user()->id)
-              ->update(['vendor_product_percentage' => $request->vendor_pecentage,  'fmcg_product_percentage'  => $request->fmcg_pecentage ]);
-
-if($settings){
+$productSettings = Settings::where('coopname', 'superadmin')
+                  ->where('user_id',   Auth::user()->id)
+                  ->update([
+                  'vendor_product_percentage' => $request->vendor_pecentage,  
+                  'fmcg_product_percentage'  => $request->fmcg_pecentage ]);
+if($productSettings){
   $getSellerPrice =  Product::where('deleted_at',  null)->get('seller_price');
-  $getFMCGPrice =  FcmgProduct::where('deleted_at',  null)->get('seller_price')->toArray();
+  $getFMCGPrice =  FcmgProduct::where('deleted_at',  null)->get('seller_price');
 
-  //$ff = json_decode($getSellerPrice );
-  // $sellerPrice = $request->vendor_pecentage ;
-  // //dd($ff);
-  // foreach( $getSellerPrice  as $vPrice){
-  //  $vendorPrice =   $vPrice * (int)$sellerPrice /  100;
-  //  Product::where('deleted_at',  null)
-  //  ->update(['seller_price' => $vendorPrice ]);
-  // }
+  $getCompanyPercentage = $request->vendor_pecentage ;
+  $companyPercentage  = (int)$getCompanyPercentage;
+  foreach( $getSellerPrice  as $vendorPrice){
+   $productPercentage = $vendorPrice['seller_price'] * $companyPercentage / 100;
+   Product::where('deleted_at',  null)
+   ->update(['price' => $productPercentage + $vendorPrice['seller_price']]);
+  }
+
+  $getFmcgCompanyPercentage  = $request->fmcg_pecentage ;
+  $companyFmcgPercentage  = (int)$getFmcgCompanyPercentage;
+  foreach( $getFMCGPrice  as $fmcgPrice){
+    $fmcgPercentage = $fmcgPrice['seller_price'] * $companyFmcgPercentage / 100;
+    FcmgProduct::where('deleted_at',  null)
+    ->update(['price' => $fmcgPercentage + $fmcgPrice['seller_price']]);
+   }
   
-
- 
   \LogActivity::addToLog('Set product percentage'); 
   return redirect()->back()->with("success","You have   successfully set product percentage");
 }else{
