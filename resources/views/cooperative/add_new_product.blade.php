@@ -503,8 +503,43 @@
                                                                   </textarea>
                                                             </div>
                                                       </div>
+
+                                                                        <p><br></p>
+                                          <div class="form-group row {{ $errors->has('captcha') ? ' has-error' : '' }}">
+                                                <label for="password" class="col-md-4 control-label"></label>
+                                                <div class="col-md-12">
+
+                                                <label for="captcha" class="col-md-12 col-form-label text-md-right  required">I'm
+                                                      not a robot</label>
+                                                      <div class="captcha">
+                                                            <span> {!! captcha_img('flat') !!}</span>
+                                                            <button type="button" class="btn btn-danger" class="reload"
+                                                                  id="reload">
+                                                                  &#x21bb;<small> Reset</small>
+                                                            </button>
+                                                      </div>
+
                                                 </div>
                                           </div>
+                                          <p></p>
+                                          <div class="form-group row">
+                                                <div class="col-md-6">
+                                                      <input id="captcha" type="text" class="form-control"
+                                                            placeholder="Enter the above code here" name="captcha">
+                                                </div>
+
+                                          </div>
+                                    </div>
+                                    <!--row-->
+
+                              </div>
+                              <div class="row row-cards">
+                                    <div class="col-12">
+                                         
+                                    </div>
+                                    <!--row-->
+
+                              </div>
                                           <div class="card-footer text-end">
                                                 <button type="submit" class="btn  btn-ghost-danger active" id="submit">Add
                                                       Product &nbsp;
@@ -533,6 +568,20 @@
 
 
             <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+<script type="text/javascript">
+      $('#reload').click(function() {
+            $.ajax({
+                  type: 'GET',
+                  url: 'reload-captcha',
+                  success: function(data) {
+                        $(".captcha span").html(data.captcha);
+                  }
+            });
+      });
+      </script>
 
             <script type="text/javascript">
             $(document).ready(function(e) {

@@ -1751,6 +1751,7 @@ class CooperativeController extends Controller
          'quantity' => 'required|numeric|max:1000',
          'price' => 'required|numeric|min:100',
          'cat_id' => 'required|string|max:100',
+         'captcha'     => 'required',
         ]);
     
             //$image = $request->file('image')->getClientOriginalName();// get image original name
