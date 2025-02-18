@@ -251,6 +251,7 @@ class MerchantController extends Controller
          'quantity' => 'required|string|max:100',
          'price' => 'required|string|max:100',
          'cat_id' => 'required|string|max:100',
+         'captcha'     => 'required',
         ]);
             //this works on local host and linux
            //$path = $request->file('image')->store('/images/resource', ['disk' =>   'my_files']);

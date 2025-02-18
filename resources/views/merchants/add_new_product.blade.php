@@ -78,7 +78,7 @@
                                           <a class="btn-close" data-bs-dismiss="alert" aria-label="close"></a>
                                     </div>
                                     <!-- alert start--->
-                                
+
                                     @if ($errors->any())
                                     <div class="alert alert-danger" role="alert">
                                           <div class="d-flex">
@@ -135,11 +135,11 @@
                                                             {{ $message }}</div>
                                                       @enderror
                                                       <span class="small text-danger">(" / ") is not allowed
-                                                                        in product naming
-                                                                        rather use <span class="text-dark">" and "
-                                                                        </span> or
-                                                                        <span class="text-dark">" & "</span>
-                                                                  </span>
+                                                            in product naming
+                                                            rather use <span class="text-dark">" and "
+                                                            </span> or
+                                                            <span class="text-dark">" & "</span>
+                                                      </span>
                                                 </div>
                                           </div>
                                           <div class="col-md-6 ">
@@ -217,14 +217,14 @@
                                           <div class="col-md-6 ">
                                                 <p></p>
                                                 <div class="form-group">
-                                                <div class="form-label required">Front image</div>
-                                                            <input type="file" name="image" accept=".jpg,.jpeg,.png"
-                                                                  id="image" multiple="multiple" class="form-control">
-                                                            <!--  <input #imageInput accept="image/*" (change)="processFile(imageInput)" name="image" type="file" id="image"  class="form-control" /> -->
-                                                            @error('image')
-                                                            <div class="alert alert-danger mt-1 mb-1">
-                                                                  {{ $message }}</div>
-                                                            @enderror
+                                                      <div class="form-label required">Front image</div>
+                                                      <input type="file" name="image" accept=".jpg,.jpeg,.png"
+                                                            id="image" multiple="multiple" class="form-control">
+                                                      <!--  <input #imageInput accept="image/*" (change)="processFile(imageInput)" name="image" type="file" id="image"  class="form-control" /> -->
+                                                      @error('image')
+                                                      <div class="alert alert-danger mt-1 mb-1">
+                                                            {{ $message }}</div>
+                                                      @enderror
                                                 </div>
                                           </div>
 
@@ -233,13 +233,13 @@
                                                       <p></p>
                                                       <div class="form-label">Back image (Optional)</div>
 
-                                                            <input type="file" name="img1" accept=".jpg,.jpeg,.png"
-                                                                  id="img1" multiple="multiple" class="form-control">
-                                                            @error('img1')
-                                                            <div class="alert alert-danger mt-1 mb-1">
-                                                                  {{ $message }}
-                                                            </div>
-                                                            @enderror
+                                                      <input type="file" name="img1" accept=".jpg,.jpeg,.png" id="img1"
+                                                            multiple="multiple" class="form-control">
+                                                      @error('img1')
+                                                      <div class="alert alert-danger mt-1 mb-1">
+                                                            {{ $message }}
+                                                      </div>
+                                                      @enderror
                                                 </div>
                                           </div>
 
@@ -247,12 +247,12 @@
                                                 <div class="form-group">
                                                       <p></p>
                                                       <div class="form-label">Left side image (Optional)</div>
-                                                            <input type="file" name="img2" accept=".jpg,.jpeg,.png"
-                                                                  id="img2" multiple="multiple" class="form-control">
-                                                            @error('img2')
-                                                            <div class="alert alert-danger mt-1 mb-1">
-                                                                  {{ $message }}</div>
-                                                            @enderror
+                                                      <input type="file" name="img2" accept=".jpg,.jpeg,.png" id="img2"
+                                                            multiple="multiple" class="form-control">
+                                                      @error('img2')
+                                                      <div class="alert alert-danger mt-1 mb-1">
+                                                            {{ $message }}</div>
+                                                      @enderror
                                                 </div>
                                           </div>
 
@@ -260,12 +260,12 @@
                                                 <div class="form-group">
                                                       <p></p>
                                                       <div class="form-label">Right side image (Optional)</div>
-                                                            <input type="file" name="img3" accept=".jpg,.jpeg,.png"
-                                                                  id="img3" multiple="multiple" class="form-control">
-                                                            @error('img3')
-                                                            <div class="alert alert-danger mt-1 mb-1">
-                                                                  {{ $message }}</div>
-                                                            @enderror
+                                                      <input type="file" name="img3" accept=".jpg,.jpeg,.png" id="img3"
+                                                            multiple="multiple" class="form-control">
+                                                      @error('img3')
+                                                      <div class="alert alert-danger mt-1 mb-1">
+                                                            {{ $message }}</div>
+                                                      @enderror
                                                 </div>
                                           </div>
 
@@ -273,34 +273,69 @@
                                                 <div class="form-group">
                                                       <p></p>
                                                       <div class="form-label">Image (Optional)</div>
-                                                            <input type="file" name="img4" accept=".jpg,.jpeg,.png"
-                                                                  id="img4" multiple="multiple" class="form-control">
-                                                            @error('img4')
-                                                            <div class="alert alert-danger mt-1 mb-1">
-                                                                  {{ $message }}</div>
-                                                            @enderror
+                                                      <input type="file" name="img4" accept=".jpg,.jpeg,.png" id="img4"
+                                                            multiple="multiple" class="form-control">
+                                                      @error('img4')
+                                                      <div class="alert alert-danger mt-1 mb-1">
+                                                            {{ $message }}</div>
+                                                      @enderror
                                                 </div>
 
-                                          </div><!--col-4-->
-
-                                    </div><!--row-->
-                              </div>
-                              <div class="card-footer text-end">
-                                                <button type="submit" class="btn  btn-ghost-danger active " id="submit">Add
-                                                      Product &nbsp;
-                                                      <svg xmlns="http://www.w3.org/2000/svg"
-                                                            class="icon icon-tabler icon-tabler-upload" width="24"
-                                                            height="24" viewBox="0 0 24 24" stroke-width="1.5"
-                                                            stroke="currentColor" fill="none" stroke-linecap="round"
-                                                            stroke-linejoin="round">
-                                                            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                                                            <path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2 -2v-2" />
-                                                            <path d="M7 9l5 -5l5 5" />
-                                                            <path d="M12 4l0 12" />
-                                                      </svg>
-
-                                                </button>
                                           </div>
+                                          <!--col-4-->
+                                          <p><br></p>
+                                          <div class="form-group row {{ $errors->has('captcha') ? ' has-error' : '' }}">
+                                                <label for="password" class="col-md-4 control-label"></label>
+                                                <div class="col-md-12">
+
+                                                <label for="captcha" class="col-md-12 col-form-label text-md-right  required">I'm
+                                                      not a robot</label>
+                                                      <div class="captcha">
+                                                            <span> {!! captcha_img('flat') !!}</span>
+                                                            <button type="button" class="btn btn-danger" class="reload"
+                                                                  id="reload">
+                                                                  &#x21bb;<small> Reset</small>
+                                                            </button>
+                                                      </div>
+
+                                                </div>
+                                          </div>
+                                          <p></p>
+                                          <div class="form-group row">
+                                                <div class="col-md-6">
+                                                      <input id="captcha" type="text" class="form-control"
+                                                            placeholder="Enter the above code here" name="captcha">
+                                                </div>
+
+                                          </div>
+                                    </div>
+                                    <!--row-->
+
+                              </div>
+                              <div class="row row-cards">
+                                    <div class="col-12">
+                                         
+                                    </div>
+                                    <!--row-->
+
+                              </div>
+
+
+                              <div class="card-footer text-end">
+                                    <button type="submit" class="btn  btn-ghost-danger active " id="submit">Add
+                                          Product &nbsp;
+                                          <svg xmlns="http://www.w3.org/2000/svg"
+                                                class="icon icon-tabler icon-tabler-upload" width="24" height="24"
+                                                viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none"
+                                                stroke-linecap="round" stroke-linejoin="round">
+                                                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                                <path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2 -2v-2" />
+                                                <path d="M7 9l5 -5l5 5" />
+                                                <path d="M12 4l0 12" />
+                                          </svg>
+
+                                    </button>
+                              </div>
                         </form>
                   </div>
                   <!--col-12-->
@@ -314,6 +349,19 @@
 
 
 <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+<script type="text/javascript">
+      $('#reload').click(function() {
+            $.ajax({
+                  type: 'GET',
+                  url: 'reload-captcha',
+                  success: function(data) {
+                        $(".captcha span").html(data.captcha);
+                  }
+            });
+      });
+      </script>
 
 <script type="text/javascript">
 $(document).ready(function(e) {
