@@ -72,5 +72,6 @@ class Kernel extends HttpKernel
         'fmcg' => \App\Http\Middleware\Fmcg::class,   
         'ipcheck' => \App\Http\Middleware\WhiteListIpMiddleware::class,
         'only.ajax' => \App\Http\Middleware\OnlyAjax::class,
+        'blockIP' => \App\Http\Middleware\BlockIpMiddleware::class,
     ];
 }

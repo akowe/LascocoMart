@@ -99,7 +99,7 @@ Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $requ
     return redirect('/')->with('success','Verification successful');
 })->middleware(['auth', 'signed'])->name('verification.verify');
 
-Route::group(['middleware' => ['auth']], function() {
+Route::group(['middleware' => ['auth', 'blockIP']], function() {
     Route::post('logout', [App\Http\Controllers\Auth\LogoutController::class,'logout'])->name('logout');
     Route::get('show-change-password',[App\Http\Controllers\HomeController::class, 'showChangePassword'])->name('show-change-password');
     Route::post('change-password',[App\Http\Controllers\HomeController::class, 'changePassword'])->name('change-password');
@@ -125,6 +125,7 @@ Route::controller(HomeController::class)->group(function () {
     Route::get('verify-account-number', 'verify-account-number');
 });
  //Superadmin
+ Route::middleware(['blockIP'])->group(function () {
 Route::controller(SuperAdminController::class)->group(function () {
     Route::get('superadmin',  'index')->name('superadmin');
     Route::get('show-set-password',  'showSetPassword')->name('show-set-password');
@@ -180,7 +181,9 @@ Route::controller(SuperAdminController::class)->group(function () {
     Route::get('show-certificate/{id}',  'showCooperativeCertificate')->name('show-certificate');
   
 });
+});
 //Cooperatives
+Route::middleware(['blockIP'])->group(function () {
 Route::controller(CooperativeController::class)->group(function () {
     Route::get('cooperative',  'index')->name('cooperative');
     //cooperative admin see's invoice of his/her members only
@@ -206,11 +209,12 @@ Route::controller(CooperativeController::class)->group(function () {
     Route::post('remove-admin-product',  'removeProduct')->name('remove-admin-product');
     Route::get('approve-order/{id}',  'approveMemberOrderPage')->name('approve-order');
     Route::post('admin-approve-order',  'approveOrder')->name('admin-approve-order');
-
-  
     
 });
+
+});
 //Members
+Route::middleware(['blockIP'])->group(function () {
 Route::controller(MembersController::class)->group(function () {
     Route::get('dashboard',  'index')->name('dashboard');
     Route::get('cancel-order/{id}', 'cancelOrderPage')->name('cancel-order');
@@ -218,7 +222,9 @@ Route::controller(MembersController::class)->group(function () {
     Route::get('member-order',  'memberOrderHistory')->name('member-order');
     Route::get('member_invoice/{order_number}',  'member_invoice')->name('member_invoice');
 });
+});
 //Merchants
+Route::middleware(['blockIP'])->group(function () {
 Route::controller(MerchantController::class)->group(function () {
     Route::get('merchant', 'index')->name('merchant');
     Route::get('vendor-new-product', 'newProduct')->name('vendor-new-product');
@@ -234,7 +240,9 @@ Route::controller(MerchantController::class)->group(function () {
     Route::get('vendor-sales-invoice/{order_number}',  'invoice')->name('vendor-sales-invoice');
     //Route::get('payout', [App\Http\Controllers\MerchantController::class, 'payout'])->name('payout');
 });
+});
 //FMCG
+Route::middleware(['blockIP'])->group(function () {
 Route::controller(FmcgController::class)->group(function () {
     Route::get('fmcg',  'index')->name('fmcg');
     Route::get('fmcg-new-product',  'fcmgNewProductPage')->name('fmcg-new-product');
@@ -249,6 +257,7 @@ Route::controller(FmcgController::class)->group(function () {
     Route::get('fmcg-sales',  'fmcgSales')->name('fmcg-sales');
     Route::get('fmcg-sales-invoice/{order_number}',  'invoice')->name('fmcg-sales-invoice');
     
+});
 });
 //FMCG Products Landing Page
 Route::controller(FmcgProductController::class)->group(function () {
@@ -301,6 +310,7 @@ Route::controller(RegisterController::class)->group(function () {
 
 });
 //cooperative signup
+Route::middleware(['blockIP'])->group(function () {
 Route::controller(CoopController::class)->group(function () {
     Route::get('cooperative-register',  'registerCooperative')->name('cooperative-register');
     Route::get('member-register',  'registerMember')->name('member-register');
@@ -308,11 +318,13 @@ Route::controller(CoopController::class)->group(function () {
     Route::post('coop_insert', 'coop_insert')->name('coop_insert');
     Route::post('add-member', 'adminAddNewMember')->name('add-member');
 });
+});
 //Merchant signup
+Route::middleware(['blockIP'])->group(function () {
 Route::controller(SellerController::class)->group(function () {
     Route::get('seller-register', 'registerSeller')->name('seller-register');
     Route::post('seller_insert',  'seller_insert')->name('seller_insert');
-
+});
 });
 //search product by category
 Route::controller(CategoriesController::class)->group(function () {
