@@ -395,6 +395,7 @@ class MerchantController extends Controller
         'productname'  => 'required|max:255',
         'brand'        => 'max:255',
         'description'  => 'max:255',
+        'captcha'     => 'required',
         ]);
         //$id = $request->id;
 
