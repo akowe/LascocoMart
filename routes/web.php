@@ -122,7 +122,7 @@ Route::controller(HomeController::class)->group(function () {
     Route::post('/update_profile_image',  'updateProfileImage')->name('update_profile_image');
     Route::post('/update_certificate',  'updateCertificate')->name('update_certificate');
     Route::get('verify-account-number', 'verify-account-number');
-    Route::get('register-member?refid={code}',  'registerCoopMember')->name('register-member');
+    Route::get('/register-member/{code}',  'registerCoopMember')->name('register-member');
     Route::post('create-coop-member',  'createCoopMember')->name('create-coop-member');
 });
  //Superadmin
