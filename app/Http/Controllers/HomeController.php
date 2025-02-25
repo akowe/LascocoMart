@@ -524,7 +524,7 @@ class HomeController extends Controller
         }
     }
     
-    public function registerCoopMember(Request $request){
+    public function registerCoopMember(Request $reques,  $coopID){
         return view('auth.coop-member-register-url');
     }
 
