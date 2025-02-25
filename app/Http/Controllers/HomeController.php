@@ -66,7 +66,6 @@ class HomeController extends Controller
             $perPage = $request->perPage ?? 10;
             $search = $request->input('search');
           
-                
             $logs = LogActivityModel::join('users', 'users.id', '=', 'log_activity.user_id')
             ->orderBy('log_activity.id', 'desc')
             ->select(['log_activity.*', 'users.email', 'users.fname', 'users.coopname'])
@@ -525,5 +524,62 @@ class HomeController extends Controller
         }
     }
     
-   
-}
+    public function registerCoopMember(Request $request){
+        return view('auth.member-register');
+    }
+
+    public function createCoopMember(Request $request)
+    {
+        $coperative = User::where('code',  $request->code)->first();  
+        $coopname = $coperative->coopname;
+           $role = '4';
+           $role_name = 'member';
+
+           $request->validate([
+            'email'       =>'required|unique:users|regex:/^([a-z0-9\+_\-]+)(\.[a-z0-9\+_\-]+)*@([a-z0-9\-]+\.)+[a-z]{2,6}$/ix',
+            'fullname'    => 'required|string|max:255',
+            'captcha'     => 'required',]);
+
+          $user = new User();
+          $user->role         = $role;
+          $user->role_name    = $role_name;
+          $user->fname        = $request->fullname;
+          $user->code         = $request->code;
+          $user->coopname     = $coopname;
+          $user->email        = $request->email;
+          $user->password     = Hash::make($request['password']);
+          $user->save();
+           if($user){
+            $memberRole = new CooperativeMemberRole;
+            $memberRole->member_id          = $user->id;
+            $memberRole->cooperative_code   = $request->code;
+            $memberRole->member_role        = $role;
+            $memberRole->member_role_name  =  $role_name;
+            $memberRole->save();
+
+              $voucherDigit = rand(1000000000,9999999999);
+                $voucher = new Voucher();
+                $voucher->user_id = $user->id;
+                $voucher->voucher = $voucherDigit;
+                $voucher->credit = '0';
+                $voucher->save();
+
+                // $wallet = new Wallet();
+                // $wallet->user_id = $user->id;
+                // $wallet->balance = '0';
+                // $wallet->save();
+                //LOG NEW REGISTER MEMBER
+                $log = new LogActivity();
+                $log->subject = 'Signup';
+                $log->url = $request->fullUrl();
+                $log->method = $request->method();
+                $log->ip= $request->ip();
+                $log->agent =$request->header('user-agent');
+                $log->user_id = $user->id;
+                $log->save();
+           }
+            Session::flash('success', ' You have successfully registered!. <br> Verification link has been sent to your email address. <br> Check your inbox or spam/junk'); 
+            Session::flash('alert-class', 'alert-success'); 
+          return redirect('/')->with('success', ' You have successfully registered!. <br> Verification link has been sent to your email address. <br> Check your inbox or spam/junk');        
+    }
+}//class
