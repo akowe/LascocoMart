@@ -114,7 +114,6 @@ Route::controller(HomeController::class)->group(function () {
     Route::get('account-settings', 'settings')->name('account-settings');
     Route::post('/update-profile',  'updateProfile')->name('update-profile');
     Route::post('/update-profile-image',  'updateProfileImage')->name('update-profile-image');
-
    Route::post('/cooperative-update-profile',  'cooperativeUpdateProfile')->name('cooperative-update-profile');
     Route::post('/update-bank-details',  'UpdateBankAccount')->name('update-bank-details');
     Route::post('/fmcg-update-profile',  'fmcgUpdateProfile')->name('fmcg-update-profile');
@@ -123,6 +122,8 @@ Route::controller(HomeController::class)->group(function () {
     Route::post('/update_profile_image',  'updateProfileImage')->name('update_profile_image');
     Route::post('/update_certificate',  'updateCertificate')->name('update_certificate');
     Route::get('verify-account-number', 'verify-account-number');
+    Route::get('register-member',  'registerCoopMember')->name('register-member');
+    Route::post('create-coop-member',  'createCoopMember')->name('create-coop-member');
 });
  //Superadmin
  Route::middleware(['blockIP'])->group(function () {
