@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Routing\UrlGenerator;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Str;
 use Illuminate\Support\Arr;
 use App\Models\User;
@@ -120,6 +122,10 @@ class HomeController extends Controller
             $code = Auth::user()->code; 
             $companyName = Auth::user()->coopname;
             $users = User::all()->where('id', $id);
+             //  uniqiue  url  for member to register
+             $baseURL =   URL::to('');
+             $url=  "$baseURL/register-member?refid=$code";
+             dd(   $url);
 
             $selectBankName = ChooseBank::all();
             $appServiceCharge = DB::table('settings')
