@@ -408,7 +408,7 @@ class CoopController extends Controller
                   'email'     => $user->email,
                 );
               Mail::to($user->email)->send(new MemberWelcomeEmail($data));   
-              Mail::cc('lascocomart@gmail.com')->send(new NewUserEmail($data));
+              Mail::cc('lascocomart@gmail.com')->send(new MemberWelcomeEmail($data));
           }
         } catch (Exception $e) {
               
