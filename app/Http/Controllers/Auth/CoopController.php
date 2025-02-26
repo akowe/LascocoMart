@@ -163,56 +163,84 @@ class CoopController extends Controller
         return view('auth.member-register');
     }
 
-    public function createMember(Request $request)
-    {
-        $coperative = User::where('code',  $request->code)->first();  
-        $coopname = $coperative->coopname;
-           $role = '4';
-           $role_name = 'member';
+    public function createMember(Request $request){
+      try{
+          $coperative = User::where('code',  $request->code)->first();  
+          $coopname = $coperative->coopname;
+            $role = '4';
+            $role_name = 'member';
 
-           $request->validate([
-            'email'       =>'required|unique:users|regex:/^([a-z0-9\+_\-]+)(\.[a-z0-9\+_\-]+)*@([a-z0-9\-]+\.)+[a-z]{2,6}$/ix',
-            'fullname'    => 'required|string|max:255',
-            'captcha'     => 'required',]);
+            $request->validate([
+              'email'       =>'required|unique:users|regex:/^([a-z0-9\+_\-]+)(\.[a-z0-9\+_\-]+)*@([a-z0-9\-]+\.)+[a-z]{2,6}$/ix',
+              'fullname'    => 'required|string|max:255',
+              'captcha'     => 'required',]);
 
-          $user = new User();
-          $user->role         = $role;
-          $user->role_name    = $role_name;
-          $user->fname        = $request->fullname;
-          $user->code         = $request->code;
-          $user->coopname     = $coopname;
-          $user->email        = $request->email;
-          $user->password     = Hash::make($request['password']);
-          $user->save();
-           if($user){
-            $memberRole = new CooperativeMemberRole;
-            $memberRole->member_id          = $user->id;
-            $memberRole->cooperative_code   = $request->code;
-            $memberRole->member_role        = $role;
-            $memberRole->member_role_name  =  $role_name;
-            $memberRole->save();
+            $user = new User();
+            $user->role         = $role;
+            $user->role_name    = $role_name;
+            $user->fname        = $request->fullname;
+            $user->code         = $request->code;
+            $user->coopname     = $coopname;
+            $user->email        = $request->email;
+            $user->password     = Hash::make($request['password']);
+            $user->save();
+            if($user){
+              $memberRole = new CooperativeMemberRole;
+              $memberRole->member_id          = $user->id;
+              $memberRole->cooperative_code   = $request->code;
+              $memberRole->member_role        = $role;
+              $memberRole->member_role_name  =  $role_name;
+              $memberRole->save();
 
-              $voucherDigit = rand(1000000000,9999999999);
-                $voucher = new Voucher();
-                $voucher->user_id = $user->id;
-                $voucher->voucher = $voucherDigit;
-                $voucher->credit = '0';
-                $voucher->save();
+                $voucherDigit = rand(1000000000,9999999999);
+                  $voucher = new Voucher();
+                  $voucher->user_id = $user->id;
+                  $voucher->voucher = $voucherDigit;
+                  $voucher->credit = '0';
+                  $voucher->save();
 
-                // $wallet = new Wallet();
-                // $wallet->user_id = $user->id;
-                // $wallet->balance = '0';
-                // $wallet->save();
-                //LOG NEW REGISTER MEMBER
-                $log = new LogActivity();
-                $log->subject = 'Signup';
-                $log->url = $request->fullUrl();
-                $log->method = $request->method();
-                $log->ip= $request->ip();
-                $log->agent =$request->header('user-agent');
-                $log->user_id = $user->id;
-                $log->save();
-           }
+                  // $wallet = new Wallet();
+                  // $wallet->user_id = $user->id;
+                  // $wallet->balance = '0';
+                  // $wallet->save();
+                  //LOG NEW REGISTER MEMBER
+                  $log = new LogActivity();
+                  $log->subject = 'Signup';
+                  $log->url = $request->fullUrl();
+                  $log->method = $request->method();
+                  $log->ip= $request->ip();
+                  $log->agent =$request->header('user-agent');
+                  $log->user_id = $user->id;
+                  $log->save();
+              }
+            $data = 
+            array( 
+              'name'      => $user->fname,
+              'coopname'  => $user->coopname,
+              'email'     => $user->email ,
+            );
+          Mail::to($user->email)->send(new MemberWelcomeEmail($data));   
+          Mail::cc('lascocomart@gmail.com')->send(new NewUserEmail($data));
+      
+      } catch (Exception $e) {
+         
+          $message = $e->getMessage();
+          //var_dump('Exception Message: '. $message);
+
+          $code = $e->getCode();       
+          //var_dump('Exception Code: '. $code);
+
+          $string = $e->__toString();       
+        // var_dump('Exception String: '. $string);
+
+        $errorData = 
+        array(
+          'password'   => $string ,   
+          'email'     => $message,
+          );
+          $emailSuperadmin =  Mail::to('lascocomart@gmail.com')->send(new NewUserEmail($errorData));      
+        // exit;
+      }
             Session::flash('success', ' You have successfully registered!. <br> Verification link has been sent to your email address. <br> Check your inbox or spam/junk'); 
             Session::flash('alert-class', 'alert-success'); 
           return redirect('/')->with('success', ' You have successfully registered!. <br> Verification link has been sent to your email address. <br> Check your inbox or spam/junk');        
@@ -374,19 +402,14 @@ class CoopController extends Controller
                 $log->save();
                 $data = 
                 array( 
-                  'name'      => Auth::user()->fname,
-                  'coopname'  => Auth::user()->coopname,
-                  'email'     => Auth::user()->email,
+                  'name'      => $user->fname,
+                  'coopname'  => $user->coopname,
+                  'email'     => $user->email,
                 );
-            Mail::to(Auth::user()->email)->send(new MemberWelcomeEmail($data));   
+              Mail::to($user->email)->send(new MemberWelcomeEmail($data));   
               Mail::cc('lascocomart@gmail.com')->send(new NewUserEmail($data));
           }
-            Session::flash('success', ' You have successfully registered!. <br> Verification link has been sent to your email address. <br> Check your inbox or spam/junk'); 
-            Session::flash('alert-class', 'alert-success'); 
-          return redirect('/')->with('success', ' You have successfully registered!. <br> Verification link has been sent to your email address. <br> Check your inbox or spam/junk');        
-    
-
-      } catch (Exception $e) {
+        } catch (Exception $e) {
               
             $message = $e->getMessage();
             //var_dump('Exception Message: '. $message);
@@ -401,10 +424,13 @@ class CoopController extends Controller
           array(
             'password'   => $string ,   
             'email'     => $message,
-        );
-        $emailSuperadmin =  Mail::to('lascocomart@gmail.com')->send(new NewUserEmail($errorData));      
-       // exit;
-    }
+            );
+            $emailSuperadmin =  Mail::to('lascocomart@gmail.com')->send(new NewUserEmail($errorData));      
+          // exit;
+        }
+            Session::flash('success', ' You have successfully registered!. <br> Verification link has been sent to your email address. <br> Check your inbox or spam/junk'); 
+            Session::flash('alert-class', 'alert-success'); 
+          return redirect('/')->with('success', ' You have successfully registered!. <br> Verification link has been sent to your email address. <br> Check your inbox or spam/junk');            
   }
 
 }//class
