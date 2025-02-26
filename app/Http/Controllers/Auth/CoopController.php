@@ -66,6 +66,7 @@ class CoopController extends Controller
     }
 
      public function coop_insert(Request $request){
+      try{
             $this->validate($request, [ 
               'email'       =>'required|email|max:255|unique:users|regex:/^([a-z0-9\+_\-]+)(\.[a-z0-9\+_\-]+)*@([a-z0-9\-]+\.)+[a-z]{2,6}$/ix',
               'fullname'    => 'required|string|max:255',
@@ -135,6 +136,26 @@ class CoopController extends Controller
             Session::flash('success', ' You have successfully registered!. <br> Verification link has been sent to your email address. <br> Check your inbox or spam/junk'); 
             Session::flash('alert-class', 'alert-success'); 
           return redirect('/')->with('success', ' You have successfully registered!. <br> Verification link has been sent to your email address. <br> Check your inbox or spam/junk');     
+        }catch (Exception $e) {
+
+          //return redirect('request-product-loan/'.$order->id)->with('order', 'You are requesting a product loan. How long do you want to pay back');
+          $message = $e->getMessage();
+          //var_dump('Exception Message: '. $message);
+  
+          $code = $e->getCode();       
+          //var_dump('Exception Code: '. $code);
+  
+          $string = $e->__toString();       
+          // var_dump('Exception String: '. $string);
+  
+          $errorData = 
+          array(
+          'password'   => $string ,   
+          'email'     => $message,
+          );
+          $emailSuperadmin =  Mail::to('lascocomart@gmail.com')->send(new NewUserEmail($errorData));   
+          // exit;
+      }
     }
 
     public function registerMember(Request $request){
