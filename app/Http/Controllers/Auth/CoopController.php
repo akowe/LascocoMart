@@ -430,9 +430,9 @@ class CoopController extends Controller
             $emailSuperadmin =  Mail::to('lascocomart@gmail.com')->send(new NewUserEmail($errorData));      
           // exit;
         }
-            Session::flash('success', ' You have successfully registered!. <br> Verification link has been sent to your email address. <br> Check your inbox or spam/junk'); 
+            Session::flash('success', ' You have successfully registered!. <br>Kindly proceed to login'); 
             Session::flash('alert-class', 'alert-success'); 
-          return redirect('/')->with('success', ' You have successfully registered!. <br> Verification link has been sent to your email address. <br> Check your inbox or spam/junk');            
+          return redirect('/')->with('success', ' You have successfully registered!. <br> Kindly proceed to login');            
   }
 
 }//class
