@@ -276,6 +276,7 @@ class CooperativeController extends Controller
                 ->select(['phone'])
                 ->where('user_id', $id)
                 ->pluck('phone')->first();
+                 $shareUrl= route('register-member', ['reference' => 2, 'user' => $code]);
 
                 $lastTenDays = Carbon::now()->subDays(10)->format('Y-m-d');
                 $todayDate = Carbon::now()->format('Y-m-d');
@@ -346,7 +347,7 @@ class CooperativeController extends Controller
                                 'allocated_funds', 'sumApproveOrder', 'all_orders_id',
                                 'countSoldProducts', 'countApprovedProduct', 'adminActiveMember',
                                 'countShippedItem', 'loan', 'payOutLoan', 'WalletAccountNumber',
-                                'WalletAccountName', 'WalletBankName'));
+                                'WalletAccountName', 'WalletBankName', 'shareUrl'));
                         }
                         $walletdData = array(
                             "phone"            => $phoneNumber,
@@ -403,7 +404,7 @@ class CooperativeController extends Controller
                                         'allocated_funds', 'sumApproveOrder', 'all_orders_id',
                                         'countSoldProducts', 'countApprovedProduct', 'adminActiveMember',
                                         'countShippedItem', 'loan', 'payOutLoan', 'WalletAccountNumber',
-                                        'WalletAccountName', 'WalletBankName'));
+                                        'WalletAccountName', 'WalletBankName',   'shareUrl'));
                                 }
                     
                         $pagination = $wallets->appends ( array ('search' => $search) );
@@ -414,7 +415,7 @@ class CooperativeController extends Controller
                             'allocated_funds', 'sumApproveOrder', 'all_orders_id',
                             'countSoldProducts', 'countApprovedProduct', 'adminActiveMember',
                             'countShippedItem', 'loan', 'payOutLoan', 'WalletAccountNumber',
-                            'WalletAccountName', 'WalletBankName', 'accountBalance'))->withDetails( $pagination );     
+                            'WalletAccountName', 'WalletBankName', 'accountBalance', 'shareUrl'))->withDetails( $pagination );     
                         } 
                         else{redirect()->back()->with('status', 'No record order found'); } 
                     
@@ -426,7 +427,8 @@ class CooperativeController extends Controller
                         'allocated_funds', 'sumApproveOrder', 'all_orders_id',
                         'countSoldProducts', 'countApprovedProduct', 'adminActiveMember',
                         'countShippedItem', 'loan', 'payOutLoan', 'WalletAccountNumber',
-                        'WalletAccountName', 'WalletBankName', 'accountBalance',  'walletTransaction'));
+                        'WalletAccountName', 'WalletBankName', 'accountBalance',  'walletTransaction',
+                        'shareUrl'));
             
             }catch (Exception $e) {
 

@@ -21,6 +21,7 @@ use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\OrderItem;
 use App\Models\Product;
 use App\Models\FcmgProduct;
+use App\Models\User;
 
 use App\Http\Controllers\SuperAdminController;
 use App\Http\Controllers\CooperativeController;
@@ -122,8 +123,6 @@ Route::controller(HomeController::class)->group(function () {
     Route::post('/update_profile_image',  'updateProfileImage')->name('update_profile_image');
     Route::post('/update_certificate',  'updateCertificate')->name('update_certificate');
     Route::get('verify-account-number', 'verify-account-number');
-    Route::get('/register-member/{code}',  'registerCoopMember')->name('register-member');
-    Route::post('create-coop-member',  'createCoopMember')->name('create-coop-member');
 });
  //Superadmin
  Route::middleware(['blockIP'])->group(function () {
@@ -318,6 +317,10 @@ Route::controller(CoopController::class)->group(function () {
     Route::post('create-member',  'createMember')->name('create-member');
     Route::post('coop_insert', 'coop_insert')->name('coop_insert');
     Route::post('add-member', 'adminAddNewMember')->name('add-member');
+    Route::get('/register-member',  'registerCoopMember')->name('register-member');
+   Route::post('create-coop-member',  'createCoopMember')->name('create-coop-member');
+
+
 });
 });
 //Merchant signup

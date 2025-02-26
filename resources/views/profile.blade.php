@@ -3,11 +3,55 @@
 <!-- Page header -->
 <div class="page-header d-print-none">
       <div class="container-xl">
+            <!-- Mobile only -->
             <div class="row g-2 align-items-center">
-                  <div class="col">
+                  <div class="col d-sm-block d-md-none">
+                        <!-- Page pre-title -->
+                        <div class="page-pretitle">
+                              Settings
+                        </div>
+                        <strong class="text-info"> Referral link:</strong> <small><a
+                                    href="{{$shareUrl}}">{{$shareUrl}}</a></small>
+                        <a href="" alt="Copy" title="Copy" class="text-dark" onclick="copyToClipboard('{{$shareUrl}}')">
+                              <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-copy  "
+                                    viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none"
+                                    stroke-linecap="round" stroke-linejoin="round" style="">
+                                    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                    <path
+                                          d="M7 7m0 2.667a2.667 2.667 0 0 1 2.667 -2.667h8.666a2.667 2.667 0 0 1 2.667 2.667v8.666a2.667 2.667 0 0 1 -2.667 2.667h-8.666a2.667 2.667 0 0 1 -2.667 -2.667z" />
+                                    <path
+                                          d="M4.012 16.737a2.005 2.005 0 0 1 -1.012 -1.737v-10c0 -1.1 .9 -2 2 -2h10c.75 0 1.158 .385 1.5 1" />
+                              </svg> Copy</a>
+                  </div>
+                  <p></p>
+            </div>
+            <!-- end  Mobile only -->
+            <div class="row g-2 align-items-centerc ol d-none  d-md-block">
+                  <div class="">
                         <h2 class="page-title">
                               Settings
                         </h2>
+                  </div>
+                  <div class="col-auto ms-auto d-print-none">
+                        <div class="btn-list">
+                              <span class="d-block ">
+                                    <a href="#" class="btn d-none ">
+                                    </a>
+                              </span>
+                              <strong class="text-info"> Referral link:</strong> <small><a
+                                          href="{{$shareUrl}}">{{$shareUrl}}</a></small>
+                              <a href="" alt="Copy" title="Copy" class="text-dark"
+                                    onclick="copyToClipboard('{{$shareUrl}}')">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-copy  "
+                                          viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none"
+                                          stroke-linecap="round" stroke-linejoin="round" style="">
+                                          <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                          <path
+                                                d="M7 7m0 2.667a2.667 2.667 0 0 1 2.667 -2.667h8.666a2.667 2.667 0 0 1 2.667 2.667v8.666a2.667 2.667 0 0 1 -2.667 2.667h-8.666a2.667 2.667 0 0 1 -2.667 -2.667z" />
+                                          <path
+                                                d="M4.012 16.737a2.005 2.005 0 0 1 -1.012 -1.737v-10c0 -1.1 .9 -2 2 -2h10c.75 0 1.158 .385 1.5 1" />
+                                    </svg> Copy</a>
+                        </div>
                   </div>
             </div>
       </div>
@@ -180,6 +224,7 @@
 <!-- Page body -->
 <div class="page-body">
       <div class="container-xl">
+
             <div class="card">
                   <div class="row g-0">
                         <div class="col-12 col-md-3 border-end">
@@ -2891,8 +2936,8 @@
                                           <div class="tab-pane" id="tabs-product-settings">
                                                 <h4>Product </h4>
 
-                                                <form method="post" action="/update-vendor-product-settings" name="submit"
-                                                      enctype="multipart/form-data">
+                                                <form method="post" action="/update-vendor-product-settings"
+                                                      name="submit" enctype="multipart/form-data">
                                                       @csrf
                                                       <div class="row g-3">
                                                             <div class="col-md">
@@ -2900,14 +2945,14 @@
                                                                         <div class="form-label required">Vendor Product
                                                                               Percentage (%)
                                                                         </div>
-                                                                  
-                                                                         <div class="value-button" id="decrease"
+
+                                                                        <div class="value-button" id="decrease"
                                                                               onclick="decreaseRate()"
                                                                               value="decrease Value">-
                                                                         </div>
                                                                         <input type="number" name="vendor_pecentage"
-                                                                              value="{{$vendorProductPercentage}}" id="rate"
-                                                                              style="width:60%;">
+                                                                              value="{{$vendorProductPercentage}}"
+                                                                              id="rate" style="width:60%;">
                                                                         <div class="value-button" id="increase"
                                                                               onclick="increaseRate()"
                                                                               value="Increase Value">+
@@ -2953,14 +2998,14 @@
                                                                   <div class="form-label required">FMCG Product
                                                                         Percentage (%)</div>
 
-                                                                        <div class="value-button" id="decrease"
-                                                                              onclick="decreaseValue()"
-                                                                              value="decrease Value">-</div>
-                                                                        <input type="number" name="fmcg_pecentage" value="{{$fmcgProductPercentage}}"
-                                                                              id="number">
-                                                                        <div class="value-button" id="increase"
-                                                                              onclick="increaseValue()"
-                                                                              value="Increase Value">+</div>
+                                                                  <div class="value-button" id="decrease"
+                                                                        onclick="decreaseValue()"
+                                                                        value="decrease Value">-</div>
+                                                                  <input type="number" name="fmcg_pecentage"
+                                                                        value="{{$fmcgProductPercentage}}" id="number">
+                                                                  <div class="value-button" id="increase"
+                                                                        onclick="increaseValue()"
+                                                                        value="Increase Value">+</div>
 
                                                                   <!--- end validation error --->
                                                                   @error('fmcg_pecentage')
@@ -3001,7 +3046,6 @@
                                                             <div class="card-footer bg-transparent mt-auto">
                                                                   <div class="btn-list justify-content-end">
                                                                         <button type="submit" name="submit"
-                                                                            
                                                                               class="btn btn-ghost-danger active ms-auto">
                                                                               <svg xmlns="http://www.w3.org/2000/svg"
                                                                                     class="icon icon-tabler icon-tabler-device-floppy"
@@ -3024,7 +3068,7 @@
                                                                         </button>
 
 
-                                                                       
+
                                                                   </div>
                                                             </div>
                                                       </div>
