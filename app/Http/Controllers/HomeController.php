@@ -122,7 +122,7 @@ class HomeController extends Controller
             $companyName = Auth::user()->coopname;
             $users = User::all()->where('id', $id);
              //  uniqiue user  share link url  for member to register
-            $shareUrl= route('register-member', ['reference' => 2, 'user' => $code]);
+             $shareUrl= route('register-member', ['user' => $code, 'reference' => 2 ]);
             //$url= route('register-member', ['reference' => $code]);
 
             $selectBankName = ChooseBank::all();
