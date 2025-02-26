@@ -132,7 +132,7 @@ class CoopController extends Controller
                       'url'       =>  $shareUrl,
                   );
                   Mail::to($user->email)->send(new CooperativeWelcomeEmail($data));  
-                  Mail::cc('lascocomart@gmail.com')->send(new NewUserEmail($data));
+                  Mail::cc('lascocomart@gmail.com')->send(new CooperativeWelcomeEmail($data));
               }
         }catch (Exception $e) {
 
@@ -221,7 +221,7 @@ class CoopController extends Controller
               'email'     => $user->email ,
             );
           Mail::to($user->email)->send(new MemberWelcomeEmail($data));   
-          Mail::cc('lascocomart@gmail.com')->send(new NewUserEmail($data));
+          Mail::cc('lascocomart@gmail.com')->send(new MemberWelcomeEmail($data));
       
       } catch (Exception $e) {
          
