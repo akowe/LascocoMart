@@ -25,6 +25,11 @@ use App\Hpd\Captcha\CaptchaServiceProvider;
 use App\Hpd\Captcha\CaptchaController;
 use App\Hpd\Captcha\Captcha;
 use App\Mail\NewUserEmail;
+use App\Mail\SendMail;
+use App\Mail\OrderApprovedEmail;
+use App\Mail\SalesEmail;
+use App\Mail\OrderEmail;
+use App\Mail\CooperativeWelcomeEmail;
 use Session;
 use Auth;
 use Mail; 
@@ -99,18 +104,15 @@ class CoopController extends Controller
         $user->password     = Hash::make($request['password']);
         $user->save();
          if($user){
+          $code =  $user->code ;
+          $shareUrl = route('register-member', ['user' => $code, 'reference' => '2/' ]);
             $voucherDigit = rand(1000000000,9999999999);
               $voucher = new Voucher();
               $voucher->user_id = $user->id;
               $voucher->voucher = $voucherDigit;
               $voucher->credit = '0';
               $voucher->save();
-  
-              // $wallet = new Wallet();
-              // $wallet->user_id = $user->id;
-              // $wallet->balance = '0';
-              // $wallet->save();
-            
+
               //LOG NEW REGISTER COOPERATIVE
                 $log = new LogActivity();
                 $log->subject = 'Signup';
@@ -120,6 +122,15 @@ class CoopController extends Controller
                 $log->agent =$request->header('user-agent');
                 $log->user_id = $user->id;
                 $log->save();
+                $data = 
+                array(
+                  'user_id'   =>  $user->code,
+                  'coopname'  =>   $user->coopname,  
+                  'email'     =>  $user->email ,
+                  'url'       =>  $shareUrl,
+              );
+              Mail::to($user->email)->send(new CooperativeWelcomeEmail($data));  
+              Mail::cc('lascocomart@gmail.com')->send(new NewUserEmail($data));
          }
             Session::flash('success', ' You have successfully registered!. <br> Verification link has been sent to your email address. <br> Check your inbox or spam/junk'); 
             Session::flash('alert-class', 'alert-success'); 
