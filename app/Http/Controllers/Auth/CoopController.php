@@ -309,6 +309,7 @@ class CoopController extends Controller
         $user->coopname     = $coopname;
         $user->email        = $request->email;
         $user->password     = Hash::make($request['password']);
+        $user->email_verified_at =  Carbon::now();
         $user->save();
          if($user){
           $memberRole = new CooperativeMemberRole;
