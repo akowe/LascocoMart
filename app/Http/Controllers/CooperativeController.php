@@ -67,8 +67,9 @@ class CooperativeController extends Controller
     public function index (Request $request){
         if(Auth::user()->role_name  == 'cooperative'){
             try{
-                $shareUrl = route('register-member', ['user' => $code, 'reference' => '2/' ]);
                 $code = Auth::user()->code; 
+                $shareUrl = route('register-member', ['user' => $code, 'reference' => '2/' ]);
+               
                 $id = Auth::user()->id; //
                 //CREATE  LOAN TYPE FOR ALL COOP  ON LOGIN
                 $productLoantypes = DB::table('loan_type')
