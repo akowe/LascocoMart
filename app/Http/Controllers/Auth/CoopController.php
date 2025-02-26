@@ -92,71 +92,72 @@ class CoopController extends Controller
             $image->move(public_path('assets/cooperativeCert'),$imageName);
             $image_path = "/assets/cooperativeCert/".$imageName; 
            //new User;
-        $user = new User();
-        $user->role         = $role;
-        $user->role_name    = $role_name;
-        $user->fname        =$request->fullname;
-        $user->code         = $code;
-        $user->coopname     = $request->cooperative;
-        $user->address      = $request->address;
-        $user->cooptype     = $request->cooptype; 
-        // $user->payment_days = $request->payment_days; 
-        $user->cooperative_cert = $image_path;
-        $user->email        = $request->email;
-        $user->password     = Hash::make($request['password']);
-        $user->save();
-         if($user){
-          $code =  $user->code ;
-          $shareUrl = route('register-member', ['user' => $code, 'reference' => '2/' ]);
-            $voucherDigit = rand(1000000000,9999999999);
-              $voucher = new Voucher();
-              $voucher->user_id = $user->id;
-              $voucher->voucher = $voucherDigit;
-              $voucher->credit = '0';
-              $voucher->save();
+            $user = new User();
+            $user->role         = $role;
+            $user->role_name    = $role_name;
+            $user->fname        =$request->fullname;
+            $user->code         = $code;
+            $user->coopname     = $request->cooperative;
+            $user->address      = $request->address;
+            $user->cooptype     = $request->cooptype; 
+            // $user->payment_days = $request->payment_days; 
+            $user->cooperative_cert = $image_path;
+            $user->email        = $request->email;
+            $user->password     = Hash::make($request['password']);
+            $user->save();
+            if($user){
+              $code =  $user->code ;
+              $shareUrl = route('register-member', ['user' => $code, 'reference' => '2/' ]);
+                $voucherDigit = rand(1000000000,9999999999);
+                  $voucher = new Voucher();
+                  $voucher->user_id = $user->id;
+                  $voucher->voucher = $voucherDigit;
+                  $voucher->credit = '0';
+                  $voucher->save();
 
-              //LOG NEW REGISTER COOPERATIVE
-                $log = new LogActivity();
-                $log->subject = 'Signup';
-                $log->url = $request->fullUrl();
-                $log->method = $request->method();
-                $log->ip= $request->ip();
-                $log->agent =$request->header('user-agent');
-                $log->user_id = $user->id;
-                $log->save();
-                $data = 
-                array(
-                  'user_id'   =>  $user->code,
-                  'coopname'  =>   $user->coopname,  
-                  'email'     =>  $user->email ,
-                  'url'       =>  $shareUrl,
-              );
-              Mail::to($user->email)->send(new CooperativeWelcomeEmail($data));  
-              Mail::cc('lascocomart@gmail.com')->send(new NewUserEmail($data));
-         }
+                  //LOG NEW REGISTER COOPERATIVE
+                    $log = new LogActivity();
+                    $log->subject = 'Signup';
+                    $log->url = $request->fullUrl();
+                    $log->method = $request->method();
+                    $log->ip= $request->ip();
+                    $log->agent =$request->header('user-agent');
+                    $log->user_id = $user->id;
+                    $log->save();
+                    $data = 
+                    array(
+                      'user_id'   =>  $user->code,
+                      'coopname'  =>   $user->coopname,  
+                      'email'     =>  $user->email ,
+                      'url'       =>  $shareUrl,
+                  );
+                  Mail::to($user->email)->send(new CooperativeWelcomeEmail($data));  
+                  Mail::cc('lascocomart@gmail.com')->send(new NewUserEmail($data));
+              }
+        }catch (Exception $e) {
+
+            //return redirect('request-product-loan/'.$order->id)->with('order', 'You are requesting a product loan. How long do you want to pay back');
+            $message = $e->getMessage();
+            //var_dump('Exception Message: '. $message);
+    
+            $code = $e->getCode();       
+            //var_dump('Exception Code: '. $code);
+    
+            $string = $e->__toString();       
+            // var_dump('Exception String: '. $string);
+    
+            $errorData = 
+            array(
+            'password'   => $string ,   
+            'email'     => $message,
+            );
+            $emailSuperadmin =  Mail::to('lascocomart@gmail.com')->send(new NewUserEmail($errorData));   
+            // exit;
+        }
             Session::flash('success', ' You have successfully registered!. <br> Verification link has been sent to your email address. <br> Check your inbox or spam/junk'); 
             Session::flash('alert-class', 'alert-success'); 
           return redirect('/')->with('success', ' You have successfully registered!. <br> Verification link has been sent to your email address. <br> Check your inbox or spam/junk');     
-        }catch (Exception $e) {
-
-          //return redirect('request-product-loan/'.$order->id)->with('order', 'You are requesting a product loan. How long do you want to pay back');
-          $message = $e->getMessage();
-          //var_dump('Exception Message: '. $message);
-  
-          $code = $e->getCode();       
-          //var_dump('Exception Code: '. $code);
-  
-          $string = $e->__toString();       
-          // var_dump('Exception String: '. $string);
-  
-          $errorData = 
-          array(
-          'password'   => $string ,   
-          'email'     => $message,
-          );
-          $emailSuperadmin =  Mail::to('lascocomart@gmail.com')->send(new NewUserEmail($errorData));   
-          // exit;
-      }
+     
     }
 
     public function registerMember(Request $request){
