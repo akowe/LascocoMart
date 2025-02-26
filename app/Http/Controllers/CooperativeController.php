@@ -276,7 +276,7 @@ class CooperativeController extends Controller
                 ->select(['phone'])
                 ->where('user_id', $id)
                 ->pluck('phone')->first();
-                 $shareUrl= route('register-member', ['reference' => 2, 'user' => $code]);
+                 $shareUrl= route('register-member', ['user' => $code, 'reference' => 2 ]);
 
                 $lastTenDays = Carbon::now()->subDays(10)->format('Y-m-d');
                 $todayDate = Carbon::now()->format('Y-m-d');
