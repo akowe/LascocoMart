@@ -378,8 +378,8 @@
                                                       <tr>
                                                             <td>
                                                             <h4>Welcome Onboard {{ $data['coopname'] }},  </h4>
-                                                            <p>Here is a unique ID for your cooperative <strong >{{ $data['user_id'] }} </strong> </p>
-                                                            <p>Share this ID with your members only, so they can onboard on the platform under your cooperative</p>
+                                                            <p>Here is a unique link for your cooperative <strong >{{ $data['url'] }} </strong> </p>
+                                                            <p>Share this link with your members only, so they can onboard on the platform under your cooperative</p>
                                                             <p>Optionally you can <a href="{{ route('cooperative') }}">onboard your members</a> yourself. </p>
                                                              <p>
                                                                   <h4 style=" text-decoration: underline; font-weight:bold;">Few of many things you can do on Lascocomart Head Admin</h4>
