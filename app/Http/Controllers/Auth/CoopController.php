@@ -281,6 +281,7 @@ class CoopController extends Controller
                 $user->phone        = $request->phone;
                 $user->email        = $request->email;
                 $user->password     = Hash::make($password);
+                $user->email_verified_at =  Carbon::now();
                 $user->password_reset_at = Carbon::now();
                 $user->save();
                 if($user){
