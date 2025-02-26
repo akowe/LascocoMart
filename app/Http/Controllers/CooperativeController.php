@@ -67,6 +67,7 @@ class CooperativeController extends Controller
     public function index (Request $request){
         if(Auth::user()->role_name  == 'cooperative'){
             try{
+                $shareUrl = route('register-member', ['user' => $code, 'reference' => '2/' ]);
                 $code = Auth::user()->code; 
                 $id = Auth::user()->id; //
                 //CREATE  LOAN TYPE FOR ALL COOP  ON LOGIN
@@ -116,6 +117,7 @@ class CooperativeController extends Controller
                     'user_id'   => Auth::user()->code,
                     'coopname'  => Auth::user()->coopname,
                     'email'     => Auth::user()->email,
+                    'url'       => $shareUrl,
                 );
                 Mail::to(Auth::user()->email)->send(new CooperativeWelcomeEmail($data));  
                 $user = Auth::user();
