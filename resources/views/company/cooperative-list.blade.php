@@ -310,7 +310,7 @@
                                                       @endif
 
                                                       <div class="text-secondary">{{ $details->email }}</div>
-                                                      <strong>link</strong>: {{$shareUrl}}
+                                                      <strong>link</strong>: {{route('register-member', ['user' => $details->code, 'reference' => '2/' ])}}
                                                    
 
 
