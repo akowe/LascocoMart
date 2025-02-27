@@ -49,7 +49,7 @@
 <!-- Page body -->
 <div class="page-body">
       <div class="container-xl">
-             <div class="row row-deck row-cards">
+            <div class="row row-deck row-cards">
                   <div class="col-12">
                         <div class="row row-cards">
                               <div class="col-sm-6 col-lg-6">
@@ -63,14 +63,11 @@
                                                                         data-bs-toggle="dropdown" aria-haspopup="true"
                                                                         aria-expanded="false">Last 7 days</a>
                                                                   <div class="dropdown-menu dropdown-menu-end">
-                                                                        <a class="dropdown-item active"
-                                                                              href="">Last 7
+                                                                        <a class="dropdown-item active" href="">Last 7
                                                                               days</a>
-                                                                        <a class="dropdown-item"
-                                                                              href="">Last 30
+                                                                        <a class="dropdown-item" href="">Last 30
                                                                               days</a>
-                                                                        <a class="dropdown-item"
-                                                                              href="">Last 3
+                                                                        <a class="dropdown-item" href="">Last 3
                                                                               months</a>
                                                                   </div>
                                                             </div>
@@ -286,10 +283,13 @@
                                                                                     class="dropdown-item"> Remove
                                                                               </a>
                                                                               <br>
-                                                                              <a href="user_edit/{{$details->id}}" class="dropdown-item "> Edit</a>
+                                                                              <a href="user_edit/{{$details->id}}"
+                                                                                    class="dropdown-item "> Edit</a>
 
                                                                               <br>
-                                                                              <a href="show-certificate/{{$details->id}}" class="dropdown-item "> Certificate</a>
+                                                                              <a href="show-certificate/{{$details->id}}"
+                                                                                    class="dropdown-item ">
+                                                                                    Certificate</a>
                                                                         </div>
                                                                   </div>
                                                             </div>
@@ -310,8 +310,24 @@
                                                       @endif
 
                                                       <div class="text-secondary">{{ $details->email }}</div>
-                                                      <strong>link</strong>: {{route('register-member', ['user' => $details->code, 'reference' => '2/' ])}}
-                                                   
+                                                      <strong>link</strong>: <a href="" alt="Copy" title="Copy"
+                                                            class="text-dark"
+                                                            onclick="copyToClipboard('{{route('register-member', ['user' => $details->code, 'reference' => '2/' ])}}')">
+                                                            <svg xmlns="http://www.w3.org/2000/svg"
+                                                                  class="icon icon-tabler icon-tabler-copy  " width="24"
+                                                                  height="24" viewBox="0 0 24 24" stroke-width="1.5"
+                                                                  stroke="currentColor" fill="none"
+                                                                  stroke-linecap="round" stroke-linejoin="round">
+                                                                  <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                                                  <path
+                                                                        d="M7 7m0 2.667a2.667 2.667 0 0 1 2.667 -2.667h8.666a2.667 2.667 0 0 1 2.667 2.667v8.666a2.667 2.667 0 0 1 -2.667 2.667h-8.666a2.667 2.667 0 0 1 -2.667 -2.667z" />
+                                                                  <path
+                                                                        d="M4.012 16.737a2.005 2.005 0 0 1 -1.012 -1.737v-10c0 -1.1 .9 -2 2 -2h10c.75 0 1.158 .385 1.5 1" />
+                                                            </svg>
+                                                            Copy
+                                                      </a>
+                                                      
+
 
 
                                                 </div>
@@ -350,9 +366,10 @@
                                                       $member+= App\Models\User::where('code',
                                                       $details->code)->where('role_name', '!=', 'cooperative')->count();
                                                       @endphp
-                                                      <a href="all-cooperative-members/{{$details->id}}" class="card-btn">
-                                                         
-                                                           ({{ $member}})  Members
+                                                      <a href="all-cooperative-members/{{$details->id}}"
+                                                            class="card-btn">
+
+                                                            ({{ $member}}) Members
                                                       </a>
 
                                                 </div>
