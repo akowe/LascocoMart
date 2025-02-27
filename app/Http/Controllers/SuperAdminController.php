@@ -776,7 +776,8 @@ public function allCooperative(Request $request){
   ->get();
   $coopCode = User::where('role', '2')
   ->get(['code']);
-
+  $shareUrl = route('register-member', ['user' => $coopCode, 'reference' => '2/' ]);
+ 
   $perPage = $request->perPage ?? 12;
   $search = $request->input('search');
 
@@ -799,13 +800,13 @@ public function allCooperative(Request $request){
       return view ('company.cooperative-list', compact(
       'perPage',
       'users',
-      'adminActiveUser'))->withDetails($pagination );    
+      'adminActiveUser', 'shareUrl'))->withDetails($pagination );    
   }
   else{
       redirect()->back()->with('users-status', 'No record found'); 
   } 
   \LogActivity::addToLog('SuperAdmin Fmcgist');
-  return view('company.cooperative-list', compact(  'perPage', 'users', 'adminActiveUser'));
+  return view('company.cooperative-list', compact('shareUrl',  'perPage', 'users', 'adminActiveUser'));
 
 }
 
