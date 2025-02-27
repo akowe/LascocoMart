@@ -310,6 +310,7 @@
                                                       @endif
 
                                                       <div class="text-secondary">{{ $details->email }}</div>
+                                                      <strong>link</strong>: {{$shareUrl}}
                                                    
 
 
