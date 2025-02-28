@@ -1194,25 +1194,26 @@ $productSettings = Settings::where('coopname', 'superadmin')
                   'vendor_product_percentage' => $request->vendor_pecentage,  
                   'fmcg_product_percentage'  => $request->fmcg_pecentage ]);
 if($productSettings){
-  $getSellerPrice =  Product::where('deleted_at',  null)->get('seller_price');
-  $getFMCGPrice =  FcmgProduct::where('deleted_at',  null)->get('seller_price');
-
-  $getCompanyPercentage = $request->vendor_pecentage ;
-  $companyPercentage  = (int)$getCompanyPercentage;
-  foreach( $getSellerPrice  as $vendorPrice){
-   $productPercentage = $vendorPrice['seller_price'] * $companyPercentage / 100;
-   Product::where('deleted_at',  null)
-   ->update(['price' => $productPercentage + $vendorPrice['seller_price']]);
-  }
-
-  $getFmcgCompanyPercentage  = $request->fmcg_pecentage ;
-  $companyFmcgPercentage  = (int)$getFmcgCompanyPercentage;
-  foreach( $getFMCGPrice  as $fmcgPrice){
-    $fmcgPercentage = $fmcgPrice['seller_price'] * $companyFmcgPercentage / 100;
-    FcmgProduct::where('deleted_at',  null)
-    ->update(['price' => $fmcgPercentage + $fmcgPrice['seller_price']]);
-   }
+  $getSellerID = Product::where('deleted_at',  null)->get('seller_id')->toArray();
   
+  Product::whereIn('seller_id',   $getSellerID)
+    ->update(['company_percentage' =>  $request->vendor_pecentage ,
+  ]);
+
+  Product::whereIn('seller_id',   $getSellerID)
+  ->update(['price' => DB::raw('`seller_price` * `company_percentage` /  100 +  `seller_price`') ]);
+
+  //update fmcg
+  $fmcgSellerID = FcmgProduct::where('deleted_at',  null)->get('seller_id')->toArray();
+  
+  FcmgProduct::whereIn('seller_id',   $fmcgSellerID)
+  ->update(['company_percentage' =>  $request->fmcg_pecentage ,
+  ]);
+
+  FcmgProduct::whereIn('seller_id',   $fmcgSellerID)
+  ->update(['price' => DB::raw('`seller_price` * `company_percentage` /  100 +  `seller_price`') ]);
+
+
   \LogActivity::addToLog('Set product percentage'); 
   return redirect()->back()->with("success","You have   successfully set product percentage");
 }else{
