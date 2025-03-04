@@ -80,7 +80,7 @@
             <div class="container-xl">
                   <div class="row row-cards">
                         <div class="col-12">
-                              <form action="{{ url('update-product/'.$product->id) }}" method="POST">
+                              <form action="{{ url('update-seller-product/'.$product->id) }}" method="POST">
                                     @csrf
                                     @method('PUT')
                                     <div class="card">
