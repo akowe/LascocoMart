@@ -366,8 +366,10 @@ class FmcgController extends Controller
         'description'  => 'max:255',
         ]);
         // add company and coperative percentage
-        $company_percentage = $request->price *  5 / 100;
-        $price = $request->price  + $company_percentage;
+        $company_percentage = Settings::where('coopname', 'superadmin')->pluck('fmcg_product_percentage')->first();
+        $companyInterest = $request->price * (int) $company_percentage / 100;
+        $price = $request->price + $companyInterest;
+
 
         $product = FcmgProduct::find($id);
         $product->prod_name     = $request->productname;
