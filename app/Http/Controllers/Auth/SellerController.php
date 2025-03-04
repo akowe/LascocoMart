@@ -43,7 +43,8 @@ class SellerController extends Controller
      */
     public function __construct()
     {
-       }
+        
+    }
 
 
     public function registerSeller(Request $request){
@@ -57,7 +58,6 @@ class SellerController extends Controller
         $builder->setMaxBehindLines('0');
         $builder->setMaxFrontLines('0');
         Session::put('captcha',$builder->getPhrase());
-       
         return view('auth.seller-register', compact('builder'));
     }
 
@@ -117,7 +117,7 @@ class SellerController extends Controller
                 return redirect('/')->with('success', ' You have successfully registered!. <br> Verification link has been sent to your email address. <br> Check your inbox or spam/junk');   
             } else {
                // echo "<h1>Captcha is not valid!</h1>";
-                return  redirect()->back()->with('error', 'invalid  captcha');
+                return  redirect()->back()->with('error', 'Invalid  captcha');
             }
             // The phrase can't be used twice
             unset($value);

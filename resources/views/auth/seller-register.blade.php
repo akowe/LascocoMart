@@ -181,14 +181,9 @@
                                     <label for="password" class="col-md-4 control-label"></label>
                                     <div class="col-md-6">
                                           <div class="">
-                                                <img src="<?php echo $builder->inline(); ?>" />
-
-                                                <!-- <button type="button" class="btn btn-danger"
-                                                                        class="reload" id="reload">
-                                                                        &#x21bb;<small> Reset</small>
-                                                                  </button> -->
+                                                <h2> <?php echo $builder->getPhrase(); ?></h2>
                                           </div>
-
+                                          <!-- &#x21bb; -->
                                     </div>
                               </div>
 
@@ -199,6 +194,29 @@
                                     <div class="col-md-6">
                                           <input id="captcha" type="text" class="form-control"
                                                 placeholder="Enter the above code here" name="captcha">
+                                                @error('captcha')
+                                          <div class="alert alert-danger alert-dismissible" role="alert">
+                                                <div class="d-flex">
+                                                      <div>
+                                                            <!-- Download SVG icon from http://tabler-icons.io/i/alert-circle -->
+                                                            <svg xmlns="http://www.w3.org/2000/svg"
+                                                                  class="icon alert-icon" width="24" height="24"
+                                                                  viewBox="0 0 24 24" stroke-width="2"
+                                                                  stroke="currentColor" fill="none"
+                                                                  stroke-linecap="round" stroke-linejoin="round">
+                                                                  <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                                                  <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" />
+                                                                  <path d="M12 8v4" />
+                                                                  <path d="M12 16h.01" />
+                                                            </svg>
+                                                      </div>
+                                                      <div>
+                                                            {{ $message }}
+                                                      </div>
+                                                </div>
+                                                <a class="btn-close" data-bs-dismiss="alert" aria-label="close"></a>
+                                          </div>
+                                          @enderror
                                     </div>
 
                               </div>
