@@ -118,7 +118,7 @@ class SellerController extends Controller
                // return  redirect()->back()->with('error', 'invalid  captcha');
             }
             // The phrase can't be used twice
-            unset($_SESSION['captcha']);
+            unset($value);
         }
        
     
