@@ -2,6 +2,101 @@
 
 All notable changes to `laravel-webhook-client` will be documented in this file
 
+## 3.4.2 - 2024-08-07
+
+### What's Changed
+
+* Change hash_equals order parameters by @sylfel in https://github.com/spatie/laravel-webhook-client/pull/221
+
+### New Contributors
+
+* @sylfel made their first contribution in https://github.com/spatie/laravel-webhook-client/pull/221
+
+**Full Changelog**: https://github.com/spatie/laravel-webhook-client/compare/3.4.1...3.4.2
+
+## 3.4.1 - 2024-06-24
+
+### What's Changed
+
+* Fix a typo in webhook-client.php by @kosarinin in https://github.com/spatie/laravel-webhook-client/pull/216
+
+### New Contributors
+
+* @kosarinin made their first contribution in https://github.com/spatie/laravel-webhook-client/pull/216
+
+**Full Changelog**: https://github.com/spatie/laravel-webhook-client/compare/3.4.0...3.4.1
+
+## 3.4.0 - 2024-05-21
+
+### What's Changed
+
+* Update README.md to Laravel 11 Schedule for Prune by @arnebr in https://github.com/spatie/laravel-webhook-client/pull/213
+* Extend InvalidWebhookSignatureEvent with WebhookConfig parameter by @jansgescheit in https://github.com/spatie/laravel-webhook-client/pull/214
+
+### New Contributors
+
+* @jansgescheit made their first contribution in https://github.com/spatie/laravel-webhook-client/pull/214
+
+**Full Changelog**: https://github.com/spatie/laravel-webhook-client/compare/3.3.2...3.4.0
+
+## 3.3.2 - 2024-04-25
+
+### What's Changed
+
+* Add config option to enable/disable unique token by @it-can in https://github.com/spatie/laravel-webhook-client/pull/212
+
+### New Contributors
+
+* @it-can made their first contribution in https://github.com/spatie/laravel-webhook-client/pull/212
+
+**Full Changelog**: https://github.com/spatie/laravel-webhook-client/compare/3.3.1...3.3.2
+
+## 3.3.1 - 2024-04-24
+
+### What's Changed
+
+* Bump stefanzweifel/git-auto-commit-action from 4 to 5 by @dependabot in https://github.com/spatie/laravel-webhook-client/pull/200
+* Bump actions/checkout from 3 to 4 by @dependabot in https://github.com/spatie/laravel-webhook-client/pull/199
+* Add a unique token to route names by @ryanlholt in https://github.com/spatie/laravel-webhook-client/pull/210
+* Bump ramsey/composer-install from 2 to 3 by @dependabot in https://github.com/spatie/laravel-webhook-client/pull/205
+
+### New Contributors
+
+* @dependabot made their first contribution in https://github.com/spatie/laravel-webhook-client/pull/200
+* @ryanlholt made their first contribution in https://github.com/spatie/laravel-webhook-client/pull/210
+
+**Full Changelog**: https://github.com/spatie/laravel-webhook-client/compare/3.3.0...3.3.1
+
+## 3.3.0 - 2024-02-19
+
+### What's Changed
+
+* Drop laravel 8 and php 8.0, add support php 8.3 on github action workflows by @lloricode in https://github.com/spatie/laravel-webhook-client/pull/198
+* Fix typo by @akr4m in https://github.com/spatie/laravel-webhook-client/pull/202
+* Update composer.json to use Larastan Org by @arnebr in https://github.com/spatie/laravel-webhook-client/pull/203
+* Laravel 11 Support by @sweptsquash in https://github.com/spatie/laravel-webhook-client/pull/204
+
+### New Contributors
+
+* @lloricode made their first contribution in https://github.com/spatie/laravel-webhook-client/pull/198
+* @akr4m made their first contribution in https://github.com/spatie/laravel-webhook-client/pull/202
+* @arnebr made their first contribution in https://github.com/spatie/laravel-webhook-client/pull/203
+* @sweptsquash made their first contribution in https://github.com/spatie/laravel-webhook-client/pull/204
+
+**Full Changelog**: https://github.com/spatie/laravel-webhook-client/compare/3.2.0...3.3.0
+
+## 3.2.0 - 2023-08-09
+
+### What's Changed
+
+- Enhance Webhook Client to Support Multiple HTTP Methods for Receiving Requests by @emrancu in https://github.com/spatie/laravel-webhook-client/pull/192
+
+### New Contributors
+
+- @emrancu made their first contribution in https://github.com/spatie/laravel-webhook-client/pull/192
+
+**Full Changelog**: https://github.com/spatie/laravel-webhook-client/compare/3.1.8...3.2.0
+
 ## 3.1.8 - 2023-05-02
 
 ### What's Changed

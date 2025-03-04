@@ -23,11 +23,16 @@ class WebhookClientServiceProvider extends PackageServiceProvider
     {
         Route::macro('webhooks', function (string $url, string $name = 'default', $method = 'post') {
 
-            if(! in_array($method, ['get', 'post', 'put', 'patch', 'delete'])) {
+            if (! in_array($method, ['get', 'post', 'put', 'patch', 'delete'])) {
                 throw InvalidMethod::make($method);
             }
 
-            return Route::{$method}($url, '\Spatie\WebhookClient\Http\Controllers\WebhookController')->name("webhook-client-{$name}");
+            if (config('webhook-client.add_unique_token_to_route_name', false)) {
+                $name .= '.' . Str::random(8);
+            }
+
+            return Route::{$method}($url, '\Spatie\WebhookClient\Http\Controllers\WebhookController')
+                ->name("webhook-client-{$name}");
         });
 
         $this->app->scoped(WebhookConfigRepository::class, function () {
@@ -44,6 +49,12 @@ class WebhookClientServiceProvider extends PackageServiceProvider
             $routeName = Route::currentRouteName() ?? '';
 
             $configName = Str::after($routeName, 'webhook-client-');
+
+            if (config('webhook-client.add_unique_token_to_route_name', false)) {
+                $routeNameSuffix = Str::after($routeName, 'webhook-client-');
+
+                $configName = Str::before($routeNameSuffix, '.');
+            }
 
             $webhookConfig = app(WebhookConfigRepository::class)->getConfig($configName);
 

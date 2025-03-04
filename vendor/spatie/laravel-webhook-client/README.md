@@ -137,17 +137,36 @@ Finally, let's take care of the routing. At the app that sends webhooks, you pro
 Route::webhooks('webhook-receiving-url');
 ```
 
-Behind the scenes, by default this will register a `POST` route to a controller provided by this package. Because the app that sends webhooks to you has no way of getting a csrf-token, you must add that route to the `except` array of the `VerifyCsrfToken` middleware:
+Behind the scenes, by default this will register a `POST` route to a controller provided by this package. Because the app that sends webhooks to you has no way of getting a csrf-token, you must exclude the route from csrf token validation.
+
+Here how you can do that in recent versions of Laravel.
+
+```php
+use Illuminate\Foundation\Application;
+use Illuminate\Foundation\Configuration\Middleware;
+
+return Application::configure(basePath: dirname(__DIR__))
+    ->withRouting(
+       // ...
+    )
+    ->withMiddleware(function (Middleware $middleware) {
+        $middleware->validateCsrfTokens(except: [
+            'your-webhook-receiving-url'
+        ]);
+    })->create();
+```
+
+In old versions of Laravel you can add your webhook route to the `except` array of the `VerifyCsrfToken` middleware:
 
 ```php
 protected $except = [
-    'webhook-receiving-url',
+    'your-webhook-receiving-url',
 ];
 ```
 
 ## Usage
 
-With the installation out of the way, let's take a look at how this package handles webhooks. First, it will verify if the signature of the request is valid. If it is not, we'll throw an exception and fire off the `InvalidSignatureEvent` event. Requests with invalid signatures will not be stored in the database.
+With the installation out of the way, let's take a look at how this package handles webhooks. First, it will verify if the signature of the request is valid. If it is not, we'll throw an exception and fire off the `InvalidWebhookSignatureEvent` event. Requests with invalid signatures will not be stored in the database.
 
 Next, the request will be passed to a webhook profile. A webhook profile is a class that determines if a request should be stored and processed by your app. It allows you to filter out webhook requests that are of interest to your app. You can easily create [your own webhook profile](#determining-which-webhook-requests-should-be-stored-and-processed).
 
@@ -343,27 +362,19 @@ return [
 ```
 
 After configuring the model, you should schedule the `model:prune` Artisan command in your
-application's `Kernel` class. Don't forget to explicitly mention the `WebhookCall` class.
+application's `route/console.php`. Don't forget to explicitly mention the `WebhookCall` class.
 You are free to choose the appropriate interval at which this command should be run:
 
 ```php
-namespace App\Console;
-
-use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
+use Illuminate\Support\Facades\Schedule;
 use Spatie\WebhookClient\Models\WebhookCall;
 
-class Kernel extends ConsoleKernel
-{
-    protected function schedule(Schedule $schedule)
-    {
-        $schedule->command('model:prune', [
-            '--model' => [WebhookCall::class],
-        ])->daily();
-    
-        // This will not work, as models in a package are not used by default
-        // $schedule->command('model:prune')->daily();
-    }
-}
+Schedule::command('model:prune', [
+    '--model' => [WebhookCall::class],
+])->daily();
+
+// This will not work, as models in a package are not used by default
+// Schedule::command('model:prune')->daily();
 ```
 
 ## Testing
