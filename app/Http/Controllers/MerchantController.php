@@ -309,7 +309,7 @@ class MerchantController extends Controller
 
             // add company and coperative percentage
             $company_percentage = Settings::where('coopname', 'superadmin')->pluck('vendor_product_percentage')->first();
-            $companyInterest = $request->price *  (int) $company_percentage / 100;
+            $companyInterest = $request->price * (int)$company_percentage / 100;
             $price = $request->price + $companyInterest;
 
            $product = new Product;
