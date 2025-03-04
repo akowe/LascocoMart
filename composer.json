@@ -8,6 +8,8 @@
         "php": "^7.3|^8.0",
         "barryvdh/laravel-dompdf": "^1.0",
         "fruitcake/laravel-cors": "^2.0",
+        "gregwar/captcha": "1.*",
+        "gregwar/captcha-bundle": "^2.3",
         "guzzlehttp/guzzle": "^7.0.1",
         "haruncpi/laravel-user-activity": "^1.0",
         "hpd/captcha": "^1.0",
@@ -18,7 +20,6 @@
         "laravel/ui": "^3.4",
         "livewire/livewire": "^2.12",
         "mews/captcha": "^3.3",
-        "gregwar/captcha": "1.*",
         "spatie/laravel-cookie-consent": "^3.2",
         "spatie/laravel-webhook-client": "^3.2",
         "unicodeveloper/laravel-paystack": "^1.0"
