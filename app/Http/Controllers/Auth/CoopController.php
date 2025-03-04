@@ -373,8 +373,8 @@ class CoopController extends Controller
       $builder->setMaxFrontLines('0');
       Session::put('captcha',$builder->getPhrase());
       //get params  from  url/route
-      $coopCode =$request->input('user');
-      $coperative = User::where('code',   $coopCoder)->first();  
+      $coopCode =  $request->input('user');
+      $coperative = User::where('code',   $request->input('user'))->first();  
       $coopname = $coperative->coopname;
      // dd($coopCode);
       return view('auth.coop-member-register-url', compact('coopCode', 'builder', 'coopname'));
