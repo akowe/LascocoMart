@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
+use Gregwar\Captcha\CaptchaBuilder;
 //use Intervention\Image\Facades\Image as Image;
 use Intervention\Image\ImageManagerStatic as Image;
 
