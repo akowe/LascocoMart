@@ -367,10 +367,16 @@ class CoopController extends Controller
     }
 
     public function registerCoopMember(Request $request){
+      $phraseBuilder = new PhraseBuilder(5, '0123456789');
+      $builder = new CaptchaBuilder(null, $phraseBuilder);
+      $builder->build();
+      $builder->setMaxBehindLines('0');
+      $builder->setMaxFrontLines('0');
+      Session::put('captcha',$builder->getPhrase());
       //get params  from  url/route
       $coopCode =$request->input('user');
      // dd($coopCode);
-      return view('auth.coop-member-register-url', compact('coopCode'));
+      return view('auth.coop-member-register-url', compact('coopCode', 'builder'));
   }
 
   public function createCoopMember(Request $request){
