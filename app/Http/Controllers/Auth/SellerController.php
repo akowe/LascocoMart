@@ -56,8 +56,11 @@ class SellerController extends Controller
             'password'  => 'required|string|min:6|confirmed', 
             'code'      => 'string', 
             'seller'    => 'required|string|max:255', 
-            'captcha'     => 'required',]);
+            // 'captcha'     => 'required',
+        ]);
  
+        $builder = new CaptchaBuilder;
+        $builder->build();
            $role = '3';
            $role_name = 'merchant';
            $coopID =rand(100,999);
