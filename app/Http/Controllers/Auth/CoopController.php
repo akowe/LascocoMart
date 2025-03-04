@@ -14,6 +14,9 @@ use Illuminate\Auth\Events\Registered;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Routing\UrlGenerator;
 use Illuminate\Support\Facades\URL;
+use Gregwar\Captcha\CaptchaBuilder;
+use Gregwar\Captcha\PhraseBuilder;
+use Gregwar\CaptchaBundle\Type\CaptchaType;
 
 use App\Models\Voucher;
 use App\Models\Wallet;
@@ -63,7 +66,16 @@ class CoopController extends Controller
     }
    
     public function registerCooperative(Request $request){
-        return view('auth.cooperative-register');
+      $phraseBuilder = new PhraseBuilder(5, '0123456789');
+      // Pass it as first argument of CaptchaBuilder, passing it the phrase
+      // builder
+      $builder = new CaptchaBuilder(null, $phraseBuilder);
+     // $builder = new CaptchaBuilder;
+      $builder->build();
+      $builder->setMaxBehindLines('0');
+      $builder->setMaxFrontLines('0');
+      Session::put('captcha',$builder->getPhrase());
+        return view('auth.cooperative-register', compact('builder'));
     }
 
      public function coop_insert(Request $request){
@@ -78,74 +90,81 @@ class CoopController extends Controller
               'file'        => 'required|mimes:jpg,jpeg,png|max:300',
               'captcha'     => 'required',
           ]);
-            // dd("You are here :) .");
-           $role = '2';
-           $role_name = 'cooperative';
-           $coopID =rand(100,999);
-           $code = 'Lascoco'.$coopID;
+          $value = $request->session()->get('captcha');
+  
+          if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+              // Checking that the posted phrase match the phrase stored in the session
+              if (isset($value) && PhraseBuilder::comparePhrases($value, $_POST['captcha'])) {
+              // dd("You are here :) .");
+              $role = '2';
+              $role_name = 'cooperative';
+              $coopID =rand(100,999);
+              $code = 'Lascoco'.$coopID;
 
-           $image= $request->file('file');
+              $image= $request->file('file');
 
-           $extension = $request->file('file')->getClientOriginalExtension(); 
-            $fileName= $request->file('file')->getClientOriginalName(); 
-            $imageName =  rand(1000000000, 9999999999).'.'.$extension;
-            $image->move(public_path('assets/cooperativeCert'),$imageName);
-            $image_path = "/assets/cooperativeCert/".$imageName; 
-           //new User;
-            $user = new User();
-            $user->role         = $role;
-            $user->role_name    = $role_name;
-            $user->fname        =$request->fullname;
-            $user->code         = $code;
-            $user->coopname     = $request->cooperative;
-            $user->address      = $request->address;
-            $user->cooptype     = $request->cooptype; 
-            // $user->payment_days = $request->payment_days; 
-            $user->cooperative_cert = $image_path;
-            $user->email        = $request->email;
-            $user->password     = Hash::make($request['password']);
-            $user->save();
-            if($user){
-              $code =  $user->code ;
-              $shareUrl = route('register-member', ['user' => $code, 'reference' => '2/' ]);
-                $voucherDigit = rand(1000000000,9999999999);
-                  $voucher = new Voucher();
-                  $voucher->user_id = $user->id;
-                  $voucher->voucher = $voucherDigit;
-                  $voucher->credit = '0';
-                  $voucher->save();
+            $extension = $request->file('file')->getClientOriginalExtension(); 
+              $fileName= $request->file('file')->getClientOriginalName(); 
+              $imageName =  rand(1000000000, 9999999999).'.'.$extension;
+              $image->move(public_path('assets/cooperativeCert'),$imageName);
+              $image_path = "/assets/cooperativeCert/".$imageName; 
+            //new User;
+              $user = new User();
+              $user->role         = $role;
+              $user->role_name    = $role_name;
+              $user->fname        =$request->fullname;
+              $user->code         = $code;
+              $user->coopname     = $request->cooperative;
+              $user->address      = $request->address;
+              $user->cooptype     = $request->cooptype; 
+              $user->cooperative_cert = $image_path;
+              $user->email        = $request->email;
+              $user->password     = Hash::make($request['password']);
+              $user->save();
+                if($user){
+                  $code =  $user->code ;
+                  $shareUrl = route('register-member', ['user' => $code, 'reference' => '2/' ]);
+                    $voucherDigit = rand(1000000000,9999999999);
+                      $voucher = new Voucher();
+                      $voucher->user_id = $user->id;
+                      $voucher->voucher = $voucherDigit;
+                      $voucher->credit = '0';
+                      $voucher->save();
+                      //LOG NEW REGISTER COOPERATIVE
+                        $log = new LogActivity();
+                        $log->subject = 'Signup';
+                        $log->url = $request->fullUrl();
+                        $log->method = $request->method();
+                        $log->ip= $request->ip();
+                        $log->agent =$request->header('user-agent');
+                        $log->user_id = $user->id;
+                        $log->save();
+                        $data = 
+                        array(
+                          'user_id'   =>  $user->code,
+                          'coopname'  =>   $user->coopname,  
+                          'email'     =>  $user->email ,
+                          'url'       =>  $shareUrl,
+                      );
+                      Mail::to($user->email)->send(new CooperativeWelcomeEmail($data));  
+                      Mail::cc('lascocomart@gmail.com')->send(new CooperativeWelcomeEmail($data));
+                  }
+                  Session::flash('success', ' You have successfully registered!. <br> Verification link has been sent to your email address. <br> Check your inbox or spam/junk'); 
+                  Session::flash('alert-class', 'alert-success'); 
+                return redirect('/')->with('success', ' You have successfully registered!. <br> Verification link has been sent to your email address. <br> Check your inbox or spam/junk');     
+           
+            } 
+              else {
+                return  redirect()->back()->with('error', 'Invalid  captcha');
+            }
+          }
+            // The phrase can't be used twice
+            unset($value);
+      }catch (Exception $e) {
 
-                  //LOG NEW REGISTER COOPERATIVE
-                    $log = new LogActivity();
-                    $log->subject = 'Signup';
-                    $log->url = $request->fullUrl();
-                    $log->method = $request->method();
-                    $log->ip= $request->ip();
-                    $log->agent =$request->header('user-agent');
-                    $log->user_id = $user->id;
-                    $log->save();
-                    $data = 
-                    array(
-                      'user_id'   =>  $user->code,
-                      'coopname'  =>   $user->coopname,  
-                      'email'     =>  $user->email ,
-                      'url'       =>  $shareUrl,
-                  );
-                  Mail::to($user->email)->send(new CooperativeWelcomeEmail($data));  
-                  Mail::cc('lascocomart@gmail.com')->send(new CooperativeWelcomeEmail($data));
-              }
-        }catch (Exception $e) {
-
-            //return redirect('request-product-loan/'.$order->id)->with('order', 'You are requesting a product loan. How long do you want to pay back');
             $message = $e->getMessage();
-            //var_dump('Exception Message: '. $message);
-    
             $code = $e->getCode();       
-            //var_dump('Exception Code: '. $code);
-    
             $string = $e->__toString();       
-            // var_dump('Exception String: '. $string);
-    
             $errorData = 
             array(
             'password'   => $string ,   
@@ -153,11 +172,7 @@ class CoopController extends Controller
             );
             $emailSuperadmin =  Mail::to('lascocomart@gmail.com')->send(new NewUserEmail($errorData));   
             // exit;
-        }
-            Session::flash('success', ' You have successfully registered!. <br> Verification link has been sent to your email address. <br> Check your inbox or spam/junk'); 
-            Session::flash('alert-class', 'alert-success'); 
-          return redirect('/')->with('success', ' You have successfully registered!. <br> Verification link has been sent to your email address. <br> Check your inbox or spam/junk');     
-     
+        }      
     }
 
     public function registerMember(Request $request){
