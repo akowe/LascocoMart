@@ -477,6 +477,36 @@ public function editFmcgProduct(Request $request, $id){
   }
 } 
 
+   //update vendor /  cooperative product
+   public function updateProduct(Request $request, $id){
+    $this->validate($request, [
+      'quantity'      => 'required|max:255',  
+      'old_price'    => 'max:255',
+      'price'        => 'required|max:255',
+      'productname'  => 'required|max:255',
+      'brand'        => 'max:255',
+      'description'  => 'max:255',
+      ]);
+      // add company and coperative percentage
+      $company_percentage = Settings::where('coopname', 'superadmin')->pluck('vendor_product_percentage')->first();
+      $companyInterest= $request->price *  (int) $company_percentage / 100;
+      $price = $request->price + $companyInterest;
+
+      $product = Product::find($id);
+      $product->prod_name     = $request->productname;
+      $product->quantity      = $request->quantity;
+      $product->old_price     = $request->old_price;
+      $product->seller_price  = $request->price;
+      $product->price         = $price;
+      $product->prod_brand     = $request->brand;
+      $product->description     = $request->description;
+      $product->update();
+
+      $data = 'Edit successful for ' .$request->productname. '';
+      \LogActivity::addToLog('ProductUpdate');
+      return redirect('product_list')->with('success',  $data);
+  }
+
     //update product
     public function updateFmcgProduct(Request $request, $id){
       $this->validate($request, [
