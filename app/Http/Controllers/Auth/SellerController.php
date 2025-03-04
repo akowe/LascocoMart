@@ -52,10 +52,12 @@ class SellerController extends Controller
         // Pass it as first argument of CaptchaBuilder, passing it the phrase
         // builder
         $builder = new CaptchaBuilder(null, $phraseBuilder);
-
        // $builder = new CaptchaBuilder;
         $builder->build();
+        $builder->setMaxBehindLines('0');
+        $builder->setMaxFrontLines('0');
         Session::put('captcha',$builder->getPhrase());
+       
         return view('auth.seller-register', compact('builder'));
     }
 
