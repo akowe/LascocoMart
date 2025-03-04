@@ -488,7 +488,7 @@ public function editFmcgProduct(Request $request, $id){
         'description'  => 'max:255',
         ]);
         // add company and coperative percentage
-        $company_percentage = $request->price *  2 / 100;
+        $company_percentage = Settings::where('coopname', 'superadmin')->pluck('fmcg_product_percentage')->first();
         $price = $request->price  + $company_percentage;
 
         $product = FcmgProduct::find($id);
