@@ -114,8 +114,8 @@ class SellerController extends Controller
       
                 return redirect('/')->with('success', ' You have successfully registered!. <br> Verification link has been sent to your email address. <br> Check your inbox or spam/junk');   
             } else {
-                echo "<h1>Captcha is not valid!</h1>";
-               // return  redirect()->back()->with('error', 'invalid  captcha');
+               // echo "<h1>Captcha is not valid!</h1>";
+                return  redirect()->back()->with('error', 'invalid  captcha');
             }
             // The phrase can't be used twice
             unset($value);
