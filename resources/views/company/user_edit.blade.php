@@ -20,8 +20,10 @@
                         <div class="btn-list">
                         <div class="form-group">
                               <input type="hidden" name="" id="user_id" value="{{$users->id}}">
-                              <a onclick="resetPassword();" class="btn btn-primary btn-block text-white"><i
-                                          class="fa fa-refresh"></i>  &nbsp; Reset Password
+                             
+                              <a href="{{ url('reset-user-password', [$users->id]) }}" class="btn btn-primary btn-block text-white"><i
+                              class="fa fa-refresh"></i>  &nbsp; Reset Password</a>
+                              
                               </a>
 
                         </div>
