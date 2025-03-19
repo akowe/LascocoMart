@@ -979,9 +979,9 @@ public function resetUserPassword(Request $request, $id){
     $username = Arr::pluck($name, 'fname'); // 
     $get_name = implode(" ",$username);
 
-      $user = User::find($id);
+      $users = User::find($id);
       \LogActivity::addToLog('reset user password');
-      return view('company.reset-user-password', compact('user', 
+      return view('company.reset-user-password', compact('users', 
       'username', 'name')); 
   }
     else { return Redirect::to('/login');
