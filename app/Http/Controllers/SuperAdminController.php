@@ -971,38 +971,44 @@ public function user_update(Request $request, $id)
     return redirect()->back()->with('status',  $data);
 }
 
+
+
 public function resetUserPassword(Request $request, $id){
-  $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-  $randomString = '';
-  $num = 8;
-  for ($a = 0; $a < $num; $a++) {
-    $index = rand(0, strlen($characters) - 1);
-    $randomString .= $characters[$index];
+  if( Auth::user()){
+    $name =  \DB::table('users')->where('id', $id)->get('fname') ; 
+    $username = Arr::pluck($name, 'fname'); // 
+    $get_name = implode(" ",$username);
+
+      $user = User::find($id);
+      \LogActivity::addToLog('reset user password');
+      return view('admin.reset-user-password', compact('user', 
+      'role', 'name')); 
   }
-  $tempoaryPassword = str_shuffle($randomString);
-  $user = User::find($id);
-  $user->password = Hash::make($tempoaryPassword);
-  $user->password_reset_at = Carbon::now();
-  $user->update();
-  $msg = 'Password reset was successful!. A login code as been sent to:-> ' .$user->email ;
-  
-  $name =  \DB::table('users')->where('id', $id)->get('fname') ; 
-  $username = Arr::pluck($name, 'fname'); // 
-  $get_name = implode(" ",$username);
-
-  $userEmail = \DB::table('users')->where('id', $id)->get('email') ; 
-  $getEmail= Arr::pluck($userEmail, 'email'); // 
-  $email = implode(" ",$getEmail);
-
-  $data = array(
-    'name'     => $get_name,
-    'password' => $tempoaryPassword,        
-    );
-    //dd($data);
-     Mail::to($email)->send(new PasswordResetEmail($data)); 
-  \LogActivity::addToLog('Reset password'); 
-  return redirect()->back()->with('status',  $msg);
+    else { return Redirect::to('/login');
+  }
 }
+
+public function storeUserPassword(Request $request, $id)
+{
+$this->validate($request, [
+    'password'      => 'required|max:255',
+    ]);
+    $password =  Hash::make($request->password);
+
+    $user = User::find($id);
+    $user->password     = $password;
+    $user->password_reset_at = Carbon::now();
+    $user->update();
+
+    if($user){
+      \LogActivity::addToLog('update user password');
+        return redirect()->back()->with('update-user', 'Password reset was  successful');
+    }
+    else{
+        return redirect()->back()->with('update-error', 'Opps! something went wrong'); 
+    }
+}
+
  
  public function transactions(Request $request){
       if( Auth::user()->role_name  == 'superadmin'){
