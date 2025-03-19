@@ -171,7 +171,10 @@ Route::controller(SuperAdminController::class)->group(function () {
     Route::get('delete-user/{id}', 'deleteUser')->name('delete-user');
     Route::get('edit-fund-request/{id}',  'editFundRequest')->name('edit-fund-request');
     Route::post('/cancel-fund',  'cancelFundRequest')->name('cancel-fund');
-    Route::get('/reset-user-password/{id}',  'resetUserPassword')->name('reset-user-password');
+   // Reset user password
+    Route::get('reset-user-password/{id}',  'resetUserPassword')->name('reset-user-password');
+    Route::post('store-new-password/{id}',  'storeUserPassword')->name('store-new-password');
+    
     Route::get('all-vendors',  'allVendors')->name('all-vendors');
     Route::get('all-cooperatives',  'allCooperative')->name('all-cooperatives');
     Route::get('all-fmcgs',  'allFMCG')->name('all-fmcgs');
