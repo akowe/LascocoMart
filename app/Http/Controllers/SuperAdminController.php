@@ -981,7 +981,7 @@ public function resetUserPassword(Request $request, $id){
 
       $user = User::find($id);
       \LogActivity::addToLog('reset user password');
-      return view('admin.reset-user-password', compact('user', 
+      return view('company.reset-user-password', compact('user', 
       'role', 'name')); 
   }
     else { return Redirect::to('/login');
